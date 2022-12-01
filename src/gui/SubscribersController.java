@@ -9,12 +9,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import logic.Subscriber;
-import logic.SubscriberController;
+import models.Method;
+import models.Request;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import client.ClientUI;
+import models.Subscriber;
 
 public class SubscribersController implements Initializable {
 
@@ -119,7 +123,7 @@ public class SubscribersController implements Initializable {
             	subscriber.setSubscriberNumber(InputsubscriberNumber.getText());
         
             	//send to server
-            	SubscriberController.editSubscriber(subscriber);
+            	editSubscriber(subscriber);
                 subscribers.setItems(currentTableData);
                 subscribers.refresh();
                 break;
@@ -144,7 +148,7 @@ public class SubscribersController implements Initializable {
     private void setupTable(){
 		List<Subscriber> arr = null;
 		try {
-			arr = SubscriberController.getAllSubscribers();
+			arr = getAllSubscribers();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,6 +156,30 @@ public class SubscribersController implements Initializable {
 			subscribers.getItems().add(sub);
 		
     }
+    
+    public static List<Subscriber> getAllSubscribers()
+	{
+		List<Subscriber> arr = new ArrayList<Subscriber>();
+		arr.add(new Subscriber("sss","xxx","sss","333", "asdasdas", "aaaa", "sssss"));
+		arr.add(new Subscriber("ss3223s","x232xx","s232ss","331113", "asd22asdas", "aaa33a", "ssstgss"));
+		return arr;
+		
+	}
+	
+	public static void editSubscriber(Subscriber NewSub)
+	{ 
+		Object[] lst = new Object[1];
+		lst[0] = NewSub;
+		Request request = new Request();
+		request.setPath("/UpdateSubscriber");
+		request.setMethod(Method.PUT);
+		request.setBody(lst);
+		System.out.println("here");
+		
+		//ClientUI.chat.accept((Object) new Dummy());
+		ClientUI.chat.accept(request);
+		System.out.println("after here");
+	}
 
 
 }

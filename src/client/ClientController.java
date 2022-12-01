@@ -6,6 +6,7 @@ import java.io.*;
 import client.*;
 import common.ChatIF;
 import models.IRequest;
+import models.Request;
 
 
 /**
@@ -62,7 +63,7 @@ public class ClientController implements ChatIF
    * This method waits for input from the console.  Once it is 
    * received, it sends it to the client's message handler.
    */
-  public void accept(IRequest request) 
+  public void accept(Object request) 
   {
 	  client.handleMessageFromClientUI(request);
   } 

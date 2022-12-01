@@ -3,7 +3,6 @@ package models;
 import java.io.Serializable;
 
 public class Subscriber implements Serializable {
-	private static final long serialVersionUID = 1L;
 	private String firstName;
 	private String lastName;
 	private String id;
@@ -11,7 +10,11 @@ public class Subscriber implements Serializable {
 	private String emailAddress;
 	private String creditCardNumber;
 	private String subscriberNumber;
-	
+	@Override
+	public String toString() {
+		return null;
+	}
+
 	public Subscriber(String firstName, String lastName, String id, String phoneNumber, String emailAddress,
 					  String creditCardNumber, String subscriberNumber) {
 		this.firstName = firstName;

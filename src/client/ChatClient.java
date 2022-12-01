@@ -6,6 +6,8 @@ package client;
 
 import ocsf.client.*;
 import common.*;
+import models.Request;
+
 import java.io.*;
 
 /**
@@ -26,6 +28,7 @@ public class ChatClient extends AbstractClient
    * the display method in the client.
    */
   ChatIF clientUI; 
+  public static boolean awaitResponse = false;
 
   
   //Constructors ****************************************************
@@ -64,20 +67,52 @@ public class ChatClient extends AbstractClient
    *
    * @param message The message from the UI.    
    */
-  public void handleMessageFromClientUI(String message)  
+//  public void handleMessageFromClientUI(Object message)  
+//  {
+//    	try {
+//			openConnection();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}//in order to send more than one message
+//       	awaitResponse = true;
+//       	
+//       
+//    	try {
+//			sendToServer(message);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//    
+//  }
+  
+  public void handleMessageFromClientUI(Object message)  
   {
     try
     {
+    	openConnection();//in order to send more than one message
+       	awaitResponse = true;
+//    	sendToServer("bye");
     	sendToServer(message);
+    	System.out.println("dididdidi");
+		// wait for response
+//		while (awaitResponse) {
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		}
     }
     catch(IOException e)
     {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
+      e.printStackTrace();
+      clientUI.display("Could not send message to server: Terminating client."+ e);
       quit();
     }
   }
-  
+
   /**
    * This method terminates the client.
    */

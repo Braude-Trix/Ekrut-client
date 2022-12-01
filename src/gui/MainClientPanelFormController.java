@@ -39,7 +39,7 @@ public class MainClientPanelFormController {
     void ViewingSubscribers(ActionEvent event) throws Exception {
     	Stage stage = StageSingleton.getInstance().getStage();
         Parent root = FXMLLoader.load(getClass().getResource("/gui/ViewSubscribers.fxml"));
-        stage.setTitle("Hello World");
+        stage.setTitle("Subscribers Panel");
         stage.setScene(new Scene(root)); 
         stage.show();
     }
