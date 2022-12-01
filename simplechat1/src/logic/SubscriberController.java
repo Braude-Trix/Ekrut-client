@@ -5,6 +5,9 @@ import java.util.List;
 
 import client.ClientController;
 import client.ClientUI;
+import models.IRequest;
+import models.Method;
+import models.Request;
 
 public class SubscriberController {
 	
@@ -20,9 +23,14 @@ public class SubscriberController {
 	
 	public static void editSubscriber(Subscriber NewSub)
 	{ 
-//hey
-	
-		ClientUI.chat.getChatClient().handleMessageFromClientUI(((Object)NewSub));
+		List<Object> lst = new ArrayList<>();
+		lst.add(NewSub);
+		Request request = new Request();
+		request.setPath("/UpdateSubscriber");
+		request.setMethod(Method.PUT);
+		request.setBody(lst);
+		ClientUI.chat.accept(request);
+
 
 	}
 
