@@ -76,6 +76,30 @@ public class SubscribersController implements Initializable {
     	subscriberNumberCol.setCellValueFactory(new PropertyValueFactory<Subscriber, String>("subscriberNumber"));
         setupTable();
     }
+    
+
+//    private boolean ValidatingTextField() {
+//		String strID = InputcreditCardNumber.getText();
+//		if (strID.length() != 16) {
+//			ErrorLabel.setText("You must enter 16 numbers");
+//			InputcreditCardNumber.setStyle("-fx-text-box-border: #B22222; -fx-focus-color: #B22222;");
+//
+//			return false;
+//		} else {
+//
+//			for (char c : strID.toCharArray()) {
+//				if (!Character.isDigit(c)) {
+//					ErrorLabel.setText("Error: id contains only numbers..");
+//					InputcreditCardNumber.setStyle("-fx-text-box-border: #B22222; -fx-focus-color: #B22222;");
+//					return false;
+//				}
+//			}
+//		}
+//		ErrorLabel.setText("");
+//		
+//		InputcreditCardNumber.setStyle("-fx-text-box-border: #6e6b6b; -fx-focus-color: #6e6b6b;");
+//		return true;
+//	}
 
     @FXML
     void submit(ActionEvent event) {
@@ -89,6 +113,8 @@ public class SubscribersController implements Initializable {
             	subscriber.setId(Inputid.getText());
             	subscriber.setPhoneNumber(InputphoneNumber.getText());
             	subscriber.setEmailAddress(InputemailAddress.getText());
+            	
+            	
             	subscriber.setCreditCardNumber(InputcreditCardNumber.getText());
             	subscriber.setSubscriberNumber(InputsubscriberNumber.getText());
         
@@ -126,4 +152,6 @@ public class SubscribersController implements Initializable {
 			subscribers.getItems().add(sub);
 		
     }
+
+
 }
