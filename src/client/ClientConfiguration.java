@@ -1,7 +1,6 @@
 package client;
 
 public class ClientConfiguration {
-<<<<<<< HEAD
 	private String Host;
 	private int port;
 	
@@ -16,22 +15,6 @@ public class ClientConfiguration {
 	}
 	public void setLocalHost(String Host) {
 		this.Host = Host;
-=======
-	private String localHost;
-	private int port;
-	
-	public ClientConfiguration(String localHost, int port) {
-		super();
-		this.localHost = localHost;
-		this.port = port;
-	}
-
-	public String getLocalHost() {
-		return localHost;
-	}
-	public void setLocalHost(String localHost) {
-		this.localHost = localHost;
->>>>>>> 0299c993c15b98b833fafa02e661d3ce144bf591
 	}
 	public int getPort() {
 		return port;
