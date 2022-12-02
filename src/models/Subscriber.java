@@ -10,6 +10,13 @@ public class Subscriber implements Serializable {
 	private String emailAddress;
 	private String creditCardNumber;
 	private String subscriberNumber;
+<<<<<<< HEAD
+=======
+	@Override
+	public String toString() {
+		return null;
+	}
+>>>>>>> 0299c993c15b98b833fafa02e661d3ce144bf591
 
 	public Subscriber(String firstName, String lastName, String id, String phoneNumber, String emailAddress,
 					  String creditCardNumber, String subscriberNumber) {

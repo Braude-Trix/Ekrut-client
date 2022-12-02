@@ -42,9 +42,14 @@ public class ClientController implements ChatIF
    *
    * @param host The host to connect to.
    * @param port The port to connect on.
+<<<<<<< HEAD
  * @throws Exception 
    */
   public ClientController(String host, int port) throws Exception 
+=======
+   */
+  public ClientController(String host, int port) 
+>>>>>>> 0299c993c15b98b833fafa02e661d3ce144bf591
   {
     try 
     {
@@ -53,8 +58,12 @@ public class ClientController implements ChatIF
     catch(IOException exception) 
     {
       System.out.println("Error: Can't setup connection!"+ " Terminating client.");
+<<<<<<< HEAD
       throw new Exception();
 //      System.exit(1);
+=======
+      System.exit(1);
+>>>>>>> 0299c993c15b98b833fafa02e661d3ce144bf591
     }
   }
 
