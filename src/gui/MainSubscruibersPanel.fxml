@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SubscribersController">
    <children>
-      <TableView fx:id="subscribers" layoutX="253.0" layoutY="128.0" onMouseClicked="#rowClicked" prefHeight="626.0" prefWidth="736.0">
+      <TableView fx:id="subscribersTableView" layoutX="253.0" layoutY="128.0" onMouseClicked="#rowClicked" prefHeight="626.0" prefWidth="736.0">
         <columns>
           <TableColumn fx:id="firstNameCol" prefWidth="75.0" text="First Name" />
           <TableColumn fx:id="lastNameCol" prefWidth="75.0" text="Last Name" />

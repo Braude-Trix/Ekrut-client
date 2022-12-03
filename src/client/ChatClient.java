@@ -31,6 +31,7 @@ public class ChatClient extends AbstractClient {
 	 */
 	ChatIF clientUI;
 	public static boolean awaitResponse = false;
+	public static Response resFromServer;
 
 	// Constructors ****************************************************
 
@@ -56,16 +57,10 @@ public class ChatClient extends AbstractClient {
 	 * @param msg The message from the server.
 	 */
 	public void handleMessageFromServer(Object msg) {
-		Response response = (Response) msg;
-//		System.out.println(response.getCode());
-//		System.out.println(response.getDescription());
-		List<Object> lst = response.getBody();
-//		System.out.println(lst.size());
-//		System.out.println(((Subscriber) (lst.get(0))).getId());
-//		System.out.println(((Subscriber) (lst.get(1))).getId());
 
+		resFromServer=(Response)msg;
 		awaitResponse = false;
-		clientUI.display(msg.toString());
+		System.out.println("Got response from server");
 	}
 
 	/**

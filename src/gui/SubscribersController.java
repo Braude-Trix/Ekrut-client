@@ -13,12 +13,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import models.Method;
 import models.Request;
+import models.Response;
+import models.ResponseCode;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import client.ChatClient;
 import client.ClientUI;
 import models.Subscriber;
 
@@ -26,7 +29,7 @@ public class SubscribersController implements Initializable {
 	private static final int CreditCardLength = 16;
 
 	@FXML
-	private TableView<Subscriber> subscribers;
+	private TableView<Subscriber> subscribersTableView;
 
 	@FXML
 	private TableColumn<Subscriber, String> firstNameCol;
@@ -50,7 +53,7 @@ public class SubscribersController implements Initializable {
 	private TableColumn<Subscriber, String> subscriberNumberCol;
 
 	@FXML
-    private Button SubmitBtn;
+	private Button SubmitBtn;
 
 	@FXML
 	private TextField InputfirstName;
@@ -93,12 +96,12 @@ public class SubscribersController implements Initializable {
 		subscriberNumberCol.setCellValueFactory(new PropertyValueFactory<Subscriber, String>("subscriberNumber"));
 		InputcreditCardNumber.setStyle("-fx-text-box-border: #d9d7d7; -fx-focus-color: #d9d7d7;");
 		InputsubscriberNumber.setStyle("-fx-text-box-border: #d9d7d7; -fx-focus-color: #d9d7d7;");
-		setupTable();
+		requestAllSubscribers();
 	}
 
 	@FXML
 	void submit(ActionEvent event) {
-		ObservableList<Subscriber> currentTableData = subscribers.getItems();
+		ObservableList<Subscriber> currentTableData = subscribersTableView.getItems();
 		String currentSubId = Inputid.getText();
 
 		for (Subscriber subscriber : currentTableData) {
@@ -122,7 +125,7 @@ public class SubscribersController implements Initializable {
 
 	@FXML
 	void rowClicked(MouseEvent event) {
-		Subscriber clickedSub = subscribers.getSelectionModel().getSelectedItem();
+		Subscriber clickedSub = subscribersTableView.getSelectionModel().getSelectedItem();
 
 		InputfirstName.setText(String.valueOf(clickedSub.getFirstName()));
 		InputlastName.setText(String.valueOf(clickedSub.getLastName()));
@@ -136,40 +139,60 @@ public class SubscribersController implements Initializable {
 		SubmitBtn.setDisable(false);
 	}
 
-	private void setupTable() {
-		List<Subscriber> arr = null;
-		try {
-			arr = getAllSubscribers();
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void setUpTable(Response response) {
+		List<Subscriber> subscribersList = new ArrayList<>();
+		for (Object subscriber : response.getBody()) {
+			if (subscriber instanceof Subscriber) {
+				subscribersList.add((Subscriber) subscriber);
+			}
 		}
-		for (Subscriber sub : arr)
-			subscribers.getItems().add(sub);
-
+		for (Subscriber sub : subscribersList)
+			subscribersTableView.getItems().add(sub);
+		System.out.println("---> Subscribers table updated successfully.");
 	}
 
-	public List<Subscriber> getAllSubscribers() {
+
+
+	public void requestAllSubscribers() {
 		Request request = new Request();
 		request.setPath("/AllSubscribers");
 		request.setMethod(Method.GET);
 		request.setBody(null);
 		ClientUI.chat.accept(request);
-		List<Subscriber> arr = new ArrayList<Subscriber>();
-		arr.add(new Subscriber("sss", "xxx", "sss", "333", "asdasdas", "aaaa", "sssss"));
-		arr.add(new Subscriber("ss3223s", "x232xx", "s232ss", "331113", "asd22asdas", "aaa33a", "ssstgss"));
-		return arr;
+	//	ChatClient.resFromServer.setCode(ResponseCode.DB_ERROR);//used for bugs testing
+		switch (ChatClient.resFromServer.getCode()) {
+		case OK:
+			// response is fine
+			setUpTable(ChatClient.resFromServer);
+			break;
+		default:
+			handleResponseError();
+			break;
+		}
+
+	}
+
+	private void handleResponseError() {
+		
+		subscribersTableView.getItems().clear();
+		System.out.println(subscribersTableView);
+		System.out.println("response error: " + ChatClient.resFromServer.getDescription());
+		Label errorLbl = new Label("Can't show subscribers..\n" + ChatClient.resFromServer.getDescription());
+		errorLbl.setStyle("-fx-text-fill : #FF3547;-fx-font-weight: bold;-fx-font-family: Inconsolata:700; -fx-font-size: 25");
+		subscribersTableView.setPlaceholder(errorLbl);
+		
 
 	}
 
 	public void editSubscriber(Subscriber NewSub) {
-		boolean isValidateFlag=true;
-		if (!ValidatingTextField(InputsubscriberNumber, "subscruiber number", true,ErrorSubscruiberNumLabel)) {
-			isValidateFlag=false;
+		boolean isValidateFlag = true;
+		if (!ValidatingTextField(InputsubscriberNumber, "subscruiber number", true, ErrorSubscruiberNumLabel)) {
+			isValidateFlag = false;
 		}
-		if (!ValidatingTextField(InputcreditCardNumber, "credit card number", false,ErrorCardNumLabel)) {
-			isValidateFlag=false;
+		if (!ValidatingTextField(InputcreditCardNumber, "credit card number", false, ErrorCardNumLabel)) {
+			isValidateFlag = false;
 		}
-		if(!isValidateFlag) {
+		if (!isValidateFlag) {
 			return;
 		}
 		List<Object> lst = new ArrayList<>();
