@@ -11,9 +11,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SubscribersController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SubscribersController">
    <children>
-      <TableView fx:id="subscribersTableView" layoutX="253.0" layoutY="128.0" onMouseClicked="#rowClicked" prefHeight="626.0" prefWidth="736.0">
+      <TableView fx:id="subscribersTableView" layoutX="253.0" layoutY="128.0" onMouseClicked="#rowClicked" prefHeight="527.0" prefWidth="736.0">
         <columns>
           <TableColumn fx:id="firstNameCol" prefWidth="75.0" text="First Name" />
           <TableColumn fx:id="lastNameCol" prefWidth="75.0" text="Last Name" />
@@ -28,25 +28,25 @@
       <VBox layoutX="32.0" layoutY="128.0" prefHeight="436.0" prefWidth="209.0" spacing="5.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" />
-            <TextField fx:id="InputfirstName" disable="true" />
+            <TextField fx:id="inputFirstName" disable="true" />
             
             <Text layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" />
-            <TextField fx:id="InputlastName" disable="true" />
+            <TextField fx:id="inputLastName" disable="true" />
             
             <Text layoutX="10.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID" />
-            <TextField fx:id="Inputid" disable="true" />
+            <TextField fx:id="inputId" disable="true" />
             
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number" />
-            <TextField fx:id="InputphoneNumber" disable="true" />
+            <TextField fx:id="inputPhoneNumber" disable="true" />
             
             <Text layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address" />
-            <TextField fx:id="InputemailAddress" disable="true" />
+            <TextField fx:id="inputEmailAddress" disable="true" />
             
             <Text layoutX="10.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Credit Card Number" />
-            <TextField fx:id="InputcreditCardNumber" disable="true" />
+            <TextField fx:id="inputCreditCardNumber" disable="true" />
             
             <Text layoutX="10.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subscriber Number" />
-            <TextField fx:id="InputsubscriberNumber" disable="true" />
+            <TextField fx:id="inputSubscriberNumber" disable="true" />
             
             
             <Button fx:id="SubmitBtn" disable="true" mnemonicParsing="false" onAction="#submit" prefHeight="25.0" prefWidth="216.0" text="Submit">
@@ -61,13 +61,13 @@
             <Label fx:id="ErrorCardNumLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="212.0" textFill="RED" />
          </children>
       </VBox>
-      <Button fx:id="ExitBtn" layoutX="65.0" layoutY="729.0" mnemonicParsing="false" onAction="#ExitClientGUI" prefHeight="25.0" prefWidth="78.0" text="Exit" />
-      <Label layoutX="187.0" layoutY="32.0" prefHeight="53.0" prefWidth="646.0" text="Subscruibers Panel - View And Update">
+      <Button fx:id="ExitBtn" layoutX="32.0" layoutY="626.0" mnemonicParsing="false" onAction="#exitClientGUI" prefHeight="25.0" prefWidth="78.0" text="Exit" />
+      <Label layoutX="187.0" layoutY="32.0" prefHeight="53.0" prefWidth="646.0" text="Subscribers Panel - View And Update">
          <font>
             <Font size="36.0" />
          </font>
       </Label>
-      <Label layoutX="253.0" layoutY="102.0" prefHeight="17.0" prefWidth="372.0" text="*In order to update a subscruiber, please click on his row." textFill="#7c7878">
+      <Label layoutX="253.0" layoutY="102.0" prefHeight="17.0" prefWidth="372.0" text="*In order to update a subscriber, please click on his row." textFill="#7c7878">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>

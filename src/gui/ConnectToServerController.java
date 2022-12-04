@@ -37,7 +37,13 @@ public class ConnectToServerController {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+		primaryStage.setOnCloseRequest(e->forcedExit());
 
+	}
+
+	private void forcedExit() {
+		StageSingleton.getInstance().getStage().close();
+		System.exit(0);
 	}
 
 	@FXML
