@@ -8,7 +8,6 @@ import ocsf.client.*;
 import common.*;
 import models.Response;
 
-
 import java.io.*;
 
 /**
@@ -50,8 +49,8 @@ public class ChatClient extends AbstractClient {
 	// Instance methods ************************************************
 
 	/**
-	 * This method handles all data that comes in from the server.
-	 *Added the static response object.
+	 * This method handles all data that comes in from the server. Added the static
+	 * response object.
 	 *
 	 * @param msg The message from the server.
 	 */
