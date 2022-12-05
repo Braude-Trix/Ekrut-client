@@ -301,6 +301,12 @@ public class SubscribersController implements Initializable {
 	public void requestUpdateTableFromServer(Subscriber NewSub) {
 
 		List<Object> lst = new ArrayList<>();
+
+		// send to server null in subscriber number if the string is empty
+		if (NewSub.getSubscriberNumber().isEmpty()) {
+			NewSub.setSubscriberNumber(null);
+		}
+
 		lst.add(NewSub);
 		Request request = new Request();
 		request.setPath("/UpdateSubscriber");
