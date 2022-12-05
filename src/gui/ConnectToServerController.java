@@ -35,6 +35,7 @@ public class ConnectToServerController {
 		Scene scene = new Scene(root);
 		primaryStage.setTitle("Connect To Server");
 		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
@@ -71,6 +72,7 @@ public class ConnectToServerController {
 		stage.setTitle("Subscribers Panel");
 		stage.setScene(new Scene(root));
 		stage.centerOnScreen();
+		stage.setResizable(false);
 		stage.show();
 		stage.setMinHeight(stage.getHeight());
 		stage.setMinWidth(stage.getWidth());

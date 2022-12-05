@@ -335,6 +335,7 @@ public class SubscribersController implements Initializable {
 			Stage stage = new Stage();
 			stage.setTitle("Successful Update");
 			stage.setScene(scene);
+			stage.setResizable(false);
 			stage.show();
 			stage.setMinHeight(stage.getHeight());
 			stage.setMinWidth(stage.getWidth());
@@ -352,6 +353,7 @@ public class SubscribersController implements Initializable {
 			Stage stage = new Stage();
 			stage.setTitle("Fail Update");
 			stage.setScene(scene);
+			stage.setResizable(false);
 			stage.show();
 			stage.setMinHeight(stage.getHeight());
 			stage.setMinWidth(stage.getWidth());
