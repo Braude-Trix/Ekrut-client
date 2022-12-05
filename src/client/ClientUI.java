@@ -12,6 +12,8 @@ public class ClientUI extends Application {
 		    launch(args);  
 	   } // end main 
 	 
+	
+//	start method, starts the whole application.
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -19,7 +21,8 @@ public class ClientUI extends Application {
 		StageSingleton.getInstance().setStage(primaryStage);
 		connectToServer.start(primaryStage);
 
-		
+		primaryStage.setMinHeight(primaryStage.getHeight());
+		primaryStage.setMinWidth(primaryStage.getWidth());
 	}
 	
 	

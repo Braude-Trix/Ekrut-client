@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SubscribersController">
    <children>
-      <TableView fx:id="subscribersTableView" layoutX="253.0" layoutY="128.0" onMouseClicked="#rowClicked" prefHeight="527.0" prefWidth="736.0">
+      <TableView fx:id="subscribersTableView" focusTraversable="false" layoutX="253.0" layoutY="128.0" onMouseClicked="#rowClicked" prefHeight="527.0" prefWidth="736.0">
         <columns>
           <TableColumn fx:id="firstNameCol" prefWidth="75.0" text="First Name" />
           <TableColumn fx:id="lastNameCol" prefWidth="75.0" text="Last Name" />
@@ -53,12 +53,12 @@
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin></Button>
-            <Label fx:id="ErrorSubscruiberNumLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="209.0" textFill="RED">
+            <Label fx:id="FirstInputErrorLabel" prefHeight="34.0" prefWidth="210.0" textFill="RED">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Label>
-            <Label fx:id="ErrorCardNumLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="212.0" textFill="RED" />
+            <Label fx:id="SecondInputErrorLabel" prefHeight="17.0" prefWidth="212.0" textFill="RED" />
          </children>
       </VBox>
       <Button fx:id="ExitBtn" layoutX="32.0" layoutY="626.0" mnemonicParsing="false" onAction="#exitClientGUI" prefHeight="25.0" prefWidth="78.0" text="Exit" />

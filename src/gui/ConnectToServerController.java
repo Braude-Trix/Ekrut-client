@@ -29,6 +29,7 @@ public class ConnectToServerController {
 	@FXML
 	private Label ErrorHelpLabel;
 
+//	start method - starts the first stage.
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/gui/ConnectToServer.fxml"));
 		Scene scene = new Scene(root);
@@ -41,16 +42,20 @@ public class ConnectToServerController {
 
 	}
 
+//	forcedExit method - deals with forced exits - closes the single stage and closes the program.
 	private void forcedExit() {
 		StageSingleton.getInstance().getStage().close();
 		System.exit(0);
 	}
 
+//	connectToServer method - checks for valid server input and if valid - tried to connect to the server.
+//	creates new stage using the singletone stage.
 	@FXML
 	void connectToServer(ActionEvent event) throws Exception {
 
 		if (!ValidatingTextField(txtPort,"port"))
 			return;
+			
 		ClientConfiguration clientConfig = new ClientConfiguration(txtHost.getText(),
 				Integer.parseInt(txtPort.getText()));
 		try {
@@ -64,10 +69,14 @@ public class ConnectToServerController {
 		Parent root = FXMLLoader.load(getClass().getResource("/gui/MainSubscruibersPanel.fxml"));
 		stage.setTitle("Subscribers Panel");
 		stage.setScene(new Scene(root));
+		stage.centerOnScreen();
 		stage.show();
+		stage.setMinHeight(stage.getHeight());
+		stage.setMinWidth(stage.getWidth());
 
 	}
 
+//	HandleConnectionError method - deals with invalid connection errors.
 	private void HandleConnectionError() {
 
 		ErrorLabel.setText("Error: can't connect to the server");
@@ -75,8 +84,15 @@ public class ConnectToServerController {
 
 	}
 
+//	ValidatingTextField - checks for correct server input and responds with correct error labels.
 	private boolean ValidatingTextField(TextField textField, String errorSubject) {
 		String str = textField.getText();
+		if (txtPort.getText().isEmpty()) {
+			ErrorLabel.setText("Error: "+errorSubject+" can't be empty port");
+			ErrorHelpLabel.setText("Please try again.");
+			textField.setStyle("-fx-text-box-border: #B22222; -fx-focus-color: #B22222;");
+			return false;
+		}
 
 		for (char c : str.toCharArray()) {
 			if (!Character.isDigit(c)) {

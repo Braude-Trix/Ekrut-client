@@ -6,12 +6,10 @@ package client;
 
 import ocsf.client.*;
 import common.*;
-import models.Request;
 import models.Response;
-import models.Subscriber;
+
 
 import java.io.*;
-import java.util.List;
 
 /**
  * This class overrides some of the methods defined in the abstract superclass
@@ -53,12 +51,13 @@ public class ChatClient extends AbstractClient {
 
 	/**
 	 * This method handles all data that comes in from the server.
+	 *Added the static response object.
 	 *
 	 * @param msg The message from the server.
 	 */
 	public void handleMessageFromServer(Object msg) {
 
-		resFromServer=(Response)msg;
+		resFromServer = (Response) msg;
 		awaitResponse = false;
 		System.out.println("Got response from server");
 	}
@@ -77,13 +76,13 @@ public class ChatClient extends AbstractClient {
 			sendToServer(message);
 			System.out.println("Sent Request To Server");
 			// wait for response
-		while (awaitResponse) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			while (awaitResponse) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-		}
 		} catch (IOException e) {
 			e.printStackTrace();
 			clientUI.display("Could not send message to server: Terminating client." + e);

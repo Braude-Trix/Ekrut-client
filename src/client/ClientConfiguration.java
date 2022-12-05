@@ -1,5 +1,6 @@
 package client;
 
+//ClientConfiguration class - sets a configuration for client connection to server request
 public class ClientConfiguration {
 	private String Host;
 	private int port;

@@ -3,10 +3,8 @@
 // license found at www.lloseng.com 
 package client;
 import java.io.*;
-import client.*;
 import common.ChatIF;
-import models.IRequest;
-import models.Request;
+
 
 
 /**
