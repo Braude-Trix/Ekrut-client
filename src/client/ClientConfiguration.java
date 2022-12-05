@@ -11,6 +11,7 @@ public class ClientConfiguration {
 		this.port = port;
 	}
 
+	//getters and setters
 	public String getHost() {
 		return Host;
 	}

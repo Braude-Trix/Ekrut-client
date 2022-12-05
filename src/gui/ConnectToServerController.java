@@ -59,6 +59,7 @@ public class ConnectToServerController {
 		ClientConfiguration clientConfig = new ClientConfiguration(txtHost.getText(),
 				Integer.parseInt(txtPort.getText()));
 		try {
+			//try connect to server
 			ClientUI.chat = new ClientController(clientConfig.getHost(), clientConfig.getPort());
 		} catch (Exception e) {
 			HandleConnectionError();
@@ -87,6 +88,8 @@ public class ConnectToServerController {
 //	ValidatingTextField - checks for correct server input and responds with correct error labels.
 	private boolean ValidatingTextField(TextField textField, String errorSubject) {
 		String str = textField.getText();
+		
+		//checks if the port is empty and throws error 
 		if (txtPort.getText().isEmpty()) {
 			ErrorLabel.setText("Error: "+errorSubject+" can't be empty port");
 			ErrorHelpLabel.setText("Please try again.");
@@ -94,6 +97,7 @@ public class ConnectToServerController {
 			return false;
 		}
 
+		//checks if in the text field has a character
 		for (char c : str.toCharArray()) {
 			if (!Character.isDigit(c)) {
 				ErrorLabel.setText("Error: "+errorSubject+" contains only numbers..");
