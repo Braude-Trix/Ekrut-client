@@ -4,11 +4,12 @@
 
 package client;
 
-import ocsf.client.*;
-import common.*;
+import common.ChatIF;
+import gui.SubscribersController;
 import models.Response;
+import ocsf.client.AbstractClient;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * This class overrides some of the methods defined in the abstract superclass
@@ -87,6 +88,18 @@ public class ChatClient extends AbstractClient {
 			clientUI.display("Could not send message to server: Terminating client." + e);
 			quit();
 		}
+	}
+
+	/**
+	 * Hook method called each time an exception is thrown by the
+	 * client's thread that is waiting for messages from the server.
+	 * The method may be overridden by subclasses. (Called when Server is disconnected)
+	 *
+	 * @param exception the exception raised.
+	 */
+	protected void connectionException(Exception exception) {
+		System.out.println("connectionException, server could be disconnected");
+		SubscribersController.moveToConnectToServer();
 	}
 
 	/**
