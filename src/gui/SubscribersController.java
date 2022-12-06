@@ -55,6 +55,9 @@ public class SubscribersController implements Initializable {
 
 	@FXML
 	private Button SubmitBtn;
+	
+	@FXML
+	private Button refreshBtn;
 
 	@FXML
 	private TextField inputFirstName;
@@ -273,6 +276,7 @@ public class SubscribersController implements Initializable {
 	// this method is being called after the request of table data from server
 	// occurred and after getting the response.
 	private void setUpTable(Response response) {
+		subscribersTableView.getItems().clear();
 		List<Subscriber> subscribersList = new ArrayList<>();
 		for (Object subscriber : response.getBody()) {
 			if (subscriber instanceof Subscriber) {
