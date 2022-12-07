@@ -1,6 +1,6 @@
 package gui;
 
-import client.ChatClient;
+import client.Client;
 import client.ClientUI;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -14,7 +14,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import models.Method;
@@ -101,6 +104,14 @@ public class SubscribersController implements Initializable {
         creditCardNumberCol.setCellValueFactory(new PropertyValueFactory<Subscriber, String>("creditCardNumber"));
         subscriberNumberCol.setCellValueFactory(new PropertyValueFactory<Subscriber, String>("subscriberNumber"));
         requestAllSubscribers();
+
+        // init table-refresh btn
+        refreshBtn.setText("");
+        Image img = new Image("/assets/reload.png", refreshBtn.getMaxWidth(), refreshBtn.getMaxHeight(),
+                true, true, true);
+        ImageView imgView = new ImageView(img);
+        refreshBtn.setGraphic(imgView);
+        refreshBtn.setTooltip(new Tooltip("Refresh to reload table"));
     }
 
     // submit function, handles click on 'submit' update subscriber form.
@@ -125,7 +136,7 @@ public class SubscribersController implements Initializable {
 //				create new update request.
                 requestUpdateTableFromServer(subscriber);
 //				handle response info:
-                switch (ChatClient.resFromServer.getCode()) {
+                switch (Client.resFromServer.getCode()) {
                     // response is OK, Server updated.
                     case OK:
                         //				updating local subscribers table view.
@@ -260,10 +271,10 @@ public class SubscribersController implements Initializable {
         ClientUI.chat.accept(request);// sending the request to the server.
 
 //		handle response info:
-        switch (ChatClient.resFromServer.getCode()) {
+        switch (Client.resFromServer.getCode()) {
             case OK:
                 // response is fine
-                setUpTable(ChatClient.resFromServer);
+                setUpTable(Client.resFromServer);
                 break;
 
 //		response is ERROR, Server didn't send subscribers data.
@@ -294,8 +305,8 @@ public class SubscribersController implements Initializable {
     private void handleResponseError() {
 //		clears subscribers table, sets placeholder to be error details.
         subscribersTableView.getItems().clear();
-        System.out.println("response error: " + ChatClient.resFromServer.getDescription());
-        Label errorLbl = new Label("Can't show subscribers..\n" + ChatClient.resFromServer.getDescription());
+        System.out.println("response error: " + Client.resFromServer.getDescription());
+        Label errorLbl = new Label("Can't show subscribers..\n" + Client.resFromServer.getDescription());
         errorLbl.setStyle(
                 "-fx-text-fill : #FF3547;-fx-font-weight: bold;-fx-font-family: Inconsolata:700; -fx-font-size: 25");
         subscribersTableView.setPlaceholder(errorLbl);
