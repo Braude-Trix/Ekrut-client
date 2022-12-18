@@ -1,4 +1,4 @@
-package client;
+package clientModels;
 
 //ClientConfiguration class - sets a configuration for client connection to server request
 public class ClientConfiguration {

@@ -1,6 +1,6 @@
 package gui;
 
-import client.ClientConfiguration;
+import clientModels.ClientConfiguration;
 import client.ClientController;
 import client.ClientUI;
 import javafx.event.ActionEvent;
@@ -33,7 +33,7 @@ public class ConnectToServerController {
 
     //	start method - starts the first stage.
     public static void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(ConnectToServerController.class.getResource("/gui/ConnectToServer.fxml"));
+        Parent root = FXMLLoader.load(ConnectToServerController.class.getResource("/assets/ConnectToServer.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Connect To Server");
         primaryStage.setScene(scene);
@@ -68,7 +68,7 @@ public class ConnectToServerController {
         }
 
         Stage stage = StageSingleton.getInstance().getStage();
-        Parent root = FXMLLoader.load(getClass().getResource("/gui/MainSubscruibersPanel.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/assets/MainSubscruibersPanel.fxml"));
         stage.setTitle("Subscribers Panel");
         stage.setScene(new Scene(root));
         stage.centerOnScreen();
