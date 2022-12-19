@@ -91,6 +91,8 @@
     }
 
 #logoutBtn {
+    -fx-border-radius: 60 60 60 60;
+    -fx-border-color: black;
     -fx-background-color: #ffd9c1;
     -fx-backgroup-radius: 60 60 60 60;
     -fx-background-radius: 15px;

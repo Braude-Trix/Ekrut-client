@@ -13,6 +13,8 @@
     }
 
 #logoutBtn {
+    -fx-border-radius: 60 60 60 60;
+    -fx-border-color: black;
     -fx-background-color: #ffd9c1;
     -fx-backgroup-radius: 60 60 60 60;
     -fx-background-radius: 15px;
@@ -25,6 +27,11 @@
     }
 
 .combo-box {
-    -fx-background-color: #ffc39c;
+     -fx-background-color: #ffc39c;
+
 }
-/* #ffc39c*/
+
+.validation-error {
+    -fx-background-color: #FFF0F0;
+    -fx-border-color: #ff0000;
+}

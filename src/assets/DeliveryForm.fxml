@@ -35,9 +35,9 @@
                   </Label>
                </children>
             </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <HBox prefHeight="114.0" prefWidth="900.0">
                <children>
-                  <VBox prefHeight="100.0" prefWidth="545.0">
+                  <VBox prefHeight="100.0" prefWidth="564.0">
                      <children>
                         <Label fx:id="contactHeaderLabel1" prefHeight="20.0" prefWidth="130.0" text="Contact Details" underline="true">
                            <font>
@@ -50,33 +50,36 @@
                                  <children>
                                     <HBox prefHeight="19.0" prefWidth="206.0">
                                        <children>
-                                          <Label fx:id="nameLabel1" text="    First Name" />
+                                          <Label fx:id="nameLabel1" text="First Name" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField focusTraversable="false" promptText="Enter First Name Here" />
+                                    <TextField fx:id="txtFirstName" focusTraversable="false" promptText="Enter First Name Here" />
+                                    <Label fx:id="errorLabelFirstName" textFill="RED" />
                                  </children>
                               </VBox>
                               <VBox prefHeight="70.0" prefWidth="205.0">
                                  <children>
                                     <HBox prefHeight="19.0" prefWidth="206.0">
                                        <children>
-                                          <Label fx:id="nameLabel11" text="    Last Name" />
+                                          <Label fx:id="nameLabel11" text="Last Name" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField focusTraversable="false" promptText="Enter Last Name Here" />
+                                    <TextField fx:id="txtLastName" focusTraversable="false" promptText="Enter Last Name Here" />
+                                    <Label fx:id="errorLabelLastName" textFill="RED" />
                                  </children>
                               </VBox>
                               <VBox prefHeight="70.0" prefWidth="202.0">
                                  <children>
                                     <HBox prefHeight="18.0" prefWidth="202.0">
                                        <children>
-                                          <Label fx:id="phoneLabel1" text="    Phone Number" />
+                                          <Label fx:id="phoneLabel1" text="Phone Number" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField focusTraversable="false" promptText="Example: 05xxxxxxxx" />
+                                    <TextField fx:id="txtPhoneNumber" focusTraversable="false" promptText="Example: 05xxxxxxxx" />
+                                    <Label fx:id="errorLabelPhone" textFill="RED" />
                                  </children>
                               </VBox>
                            </children>
@@ -91,7 +94,7 @@
                   </VBox>
                </children>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets top="5.0" />
                </VBox.margin>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
@@ -114,11 +117,12 @@
                                  <children>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="addressLabel1" text="    Full Address" />
+                                          <Label fx:id="addressLabel1" text="Full Address" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField focusTraversable="false" promptText="Enter Full Address Here. Example: Yakinton 7th." />
+                                    <TextField fx:id="txtFullAddress" focusTraversable="false" promptText="Enter Full Address Here. Example: Yakinton 7th." />
+                                    <Label fx:id="errorLabelFullAddress" textFill="RED" />
                                  </children>
                               </VBox>
                            </children>
@@ -132,11 +136,12 @@
                                  <children>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="cityLabel1" text="    City" />
+                                          <Label fx:id="cityLabel1" text="City" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField focusTraversable="false" promptText="Enter Full Name Here" />
+                                    <TextField fx:id="txtCity" focusTraversable="false" promptText="Enter Full Name Here" />
+                                    <Label fx:id="errorLabelCity" textFill="RED" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -146,16 +151,17 @@
                                  <children>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="pincodeLabel1" text="    Pincode" />
+                                          <Label fx:id="pincodeLabel1" text="Pincode" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField focusTraversable="false" promptText="Enter Pincode Here" />
+                                    <TextField fx:id="txtPinCode" focusTraversable="false" promptText="Enter Pincode Here" />
+                                    <Label fx:id="errorLabelPinCode" textFill="RED" />
                                  </children>
                               </VBox>
                            </children>
                            <VBox.margin>
-                              <Insets top="15.0" />
+                              <Insets top="10.0" />
                            </VBox.margin>
                         </HBox>
                      </children>
@@ -172,7 +178,7 @@
                <children>
                   <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="502.0">
                      <children>
-                        <Button focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="39.0" prefWidth="470.0" text="Continue">
+                        <Button focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ContinueToOrder" prefHeight="39.0" prefWidth="470.0" text="Continue">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -187,7 +193,7 @@
                   </HBox>
                </children>
                <VBox.margin>
-                  <Insets top="35.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </HBox>
          </children>

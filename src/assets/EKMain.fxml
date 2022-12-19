@@ -79,7 +79,7 @@
                         </Label>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <TextField alignment="TOP_LEFT" focusTraversable="false" prefHeight="26.0" prefWidth="192.0" promptText="Enter PickUp Code">
+                              <TextField fx:id="txtPickupCode" alignment="TOP_LEFT" focusTraversable="false" prefHeight="26.0" prefWidth="192.0" promptText="Enter PickUp Code">
                                  <HBox.margin>
                                     <Insets right="40.0" />
                                  </HBox.margin>
@@ -91,7 +91,7 @@
                               </Button>
                            </children>
                         </HBox>
-                        <Label prefHeight="26.0" prefWidth="302.0" text="Invalid Code" textFill="RED" visible="false" />
+                        <Label fx:id="errorLabel" prefHeight="26.0" prefWidth="302.0" textFill="RED" />
                         <Label prefHeight="43.0" prefWidth="310.0" text="Having trouble with your code? Please check your&#10;email or order status" />
                      </children>
                   </VBox>

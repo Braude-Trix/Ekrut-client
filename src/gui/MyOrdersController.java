@@ -84,10 +84,19 @@ public class MyOrdersController implements Initializable {
 	}
 	
     @FXML
-    void LogOut(ActionEvent event) {
+    void LogOut(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
-		stage.setScene(loginController.scene);
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
+		
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
+		stage.setTitle("Login");
+		stage.setScene(scene);
+		stage.centerOnScreen();
+		stage.setResizable(false);
 		stage.show();
+		stage.setMinHeight(stage.getHeight());
+		stage.setMinWidth(stage.getWidth());
     }
 
     @FXML

@@ -114,26 +114,27 @@
             </HBox>
             <HBox prefHeight="46.0" prefWidth="523.0">
                <children>
-                  <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="502.0">
-                     <children>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="39.0" prefWidth="471.0" text="Continue">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Button>
-                     </children>
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ContinueToOrder" prefHeight="39.0" prefWidth="471.0" text="Continue">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
-                  </HBox>
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
                </children>
                <VBox.margin>
-                  <Insets top="35.0" />
+                  <Insets top="20.0" />
                </VBox.margin>
             </HBox>
+            <Label fx:id="errorLabel" textFill="RED">
+               <VBox.margin>
+                  <Insets left="20.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
          </children>
       </VBox>
       <HBox alignment="CENTER" layoutX="10.0" layoutY="40.0" prefHeight="58.0" prefWidth="795.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="0.0">

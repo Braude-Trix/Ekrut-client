@@ -6,12 +6,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class EKController {
-	public static Scene scene;
-
+	public Scene scene;
+	
+    @FXML
+    private Label errorLabel;
+    
+    @FXML
+    private TextField txtPickupCode;
+    
     @FXML
     private VBox VBoxEnterPickUp;
 
@@ -37,14 +45,28 @@ public class EKController {
 	}
 	
     @FXML
-    void LogOut(ActionEvent event) {
+    void LogOut(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
-		stage.setScene(loginController.scene);
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
+		
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
+		stage.setTitle("Login");
+		stage.setScene(scene);
+		stage.centerOnScreen();
+		stage.setResizable(false);
 		stage.show();
+		stage.setMinHeight(stage.getHeight());
+		stage.setMinWidth(stage.getWidth());
     }
     
     @FXML
     void SubmitPickupCode(ActionEvent event) {
+    	removeErrorStyle();
+    	boolean isBlankCode = isBlankTextField(txtPickupCode);
+    	if (isBlankCode) {
+    		return;
+    	}
     	VBoxEnterPickUp.setVisible(false);
     	VboxSuccessfulPickUpCode.setVisible(true);
     }
@@ -52,7 +74,22 @@ public class EKController {
 
     @FXML
     void EnterAnotherPickupCode(ActionEvent event) {
+    	txtPickupCode.setText("");
     	VBoxEnterPickUp.setVisible(true);
     	VboxSuccessfulPickUpCode.setVisible(false);
+    }
+    
+    private void removeErrorStyle() {
+    	txtPickupCode.getStyleClass().remove("validation-error");
+    	errorLabel.setText("");
+    }
+    
+    private boolean isBlankTextField(TextField textField) {
+    	if (textField.getText().isBlank()) {
+    		errorLabel.setText("Invalid Code");
+    		textField.getStyleClass().add("validation-error");
+    		return true;
+    	}
+    	return false;    	
     }
 }

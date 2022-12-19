@@ -13,6 +13,8 @@
     }
 
 #logoutBtn {
+    -fx-border-radius: 60 60 60 60;
+    -fx-border-color: black;
     -fx-background-color: #ffd9c1;
     -fx-backgroup-radius: 60 60 60 60;
     -fx-background-radius: 15px;
@@ -25,12 +27,13 @@
     }
 
 
-.text-field {
+/*.text-field {
     -fx-border-radius: 20px;
     -fx-border-color: grey;
     -fx-padding: 0.333333em 1em 0.333333em 1em;
     -fx-background-color: transparent;
     -fx-pref-height: 0px;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
 }
 
     .text-field:focused {
@@ -39,6 +42,21 @@
         -fx-translate-y: 0px;
         -fx-background-color: transparent;
         -fx-pref-height: 0px;
+    }*/
+
+
+.text-field {
+    -fx-accent: #ffc39c;
+    -fx-background-insets: -1, 0 0 1 0;
+    -fx-background-radius: 0;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+}
+
+    .text-field:focused {
+        -fx-background-color: #ffc39c, white;
     }
 
-
+.validation-error {
+    -fx-background-color: #FFF0F0;
+    -fx-border-color: #ff0000;
+}

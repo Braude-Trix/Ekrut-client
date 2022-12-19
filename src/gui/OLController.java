@@ -18,9 +18,9 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class OLController implements Initializable {
-	public static MyOrdersController MyOrderCon = null;
-	public static DeliveryFormController DeliveryCon = null;
-	public static PickupController PickupCon = null;
+	public MyOrdersController MyOrderCon = null;
+	public DeliveryFormController DeliveryCon = null;
+	public PickupController PickupCon = null;
 
 	public static Scene scene;
 
@@ -102,10 +102,19 @@ public class OLController implements Initializable {
     }
     
     @FXML
-    void LogOut(ActionEvent event) {
+    void LogOut(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
-		stage.setScene(loginController.scene);
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
+		
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
+		stage.setTitle("Login");
+		stage.setScene(scene);
+		stage.centerOnScreen();
+		stage.setResizable(false);
 		stage.show();
+		stage.setMinHeight(stage.getHeight());
+		stage.setMinWidth(stage.getWidth());
     }
 //    IpRefreshBtn.setText("");
 //    Image img = new Image("/assets/reload.png", IpRefreshBtn.getMaxWidth(), IpRefreshBtn.getMaxHeight(),
