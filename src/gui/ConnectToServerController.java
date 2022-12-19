@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ConnectToServerController {
+	public static loginController LoginCon;
+
     @FXML
     private TextField txtHost;
 
@@ -67,15 +69,10 @@ public class ConnectToServerController {
             return;
         }
 
-        Stage stage = StageSingleton.getInstance().getStage();
-        Parent root = FXMLLoader.load(getClass().getResource("/assets/MainSubscruibersPanel.fxml"));
-        stage.setTitle("Subscribers Panel");
-        stage.setScene(new Scene(root));
-        stage.centerOnScreen();
-        stage.setResizable(false);
-        stage.show();
-        stage.setMinHeight(stage.getHeight());
-        stage.setMinWidth(stage.getWidth());
+		LoginCon = new loginController();
+		Stage stage = StageSingleton.getInstance().getStage();
+		LoginCon.start(stage);
+
     }
 
     //	HandleConnectionError method - deals with invalid connection errors.

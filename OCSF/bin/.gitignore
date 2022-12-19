@@ -1,5 +1,9 @@
+/assets/
 /client/
-/common/
+/clientModels/
 /gui/
+/logic/
 /models/
 /ocsf/
+/styles/
+/utils/
