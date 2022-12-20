@@ -1,0 +1,106 @@
+
+.table-view {
+    -fx-background-color: transparent;
+}
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+.table-view .corner {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(to bottom, #b4c4d0, #b4c4d0);
+    -fx-background-radius: 7px 7px 0px 0px;
+    -fx-background-insets: 0 0 0 0;
+    -fx-padding: 0 0 5px 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+.table-view .table-cell{
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 2 10px;
+}
+
+.table-row-cell: hover {
+    -fx-background-color: gray;
+    -fx-text-background-color: white;
+}
+
+
+.table-row-cell: odd {
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+.table-row-cell: even{
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background,
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+.table-view .virtual-flow .scroll-bar .increment-button,
+.table-view .virtual-flow .scroll-bar .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 2;
+}
+.table-view .virtual-flow .scroll-bar:vertical .thumb{
+    -fx-background-color:  linear-gradient(to bottom, #ffc39c, #ffc39c);
+}
+.table-view .virtual-flow .scroll-bar:horizontal .thumb {
+	-fx-opacity: 0;
+
+}
+
+.table-row-cell: highlighted {
+    -fx-background-color: #81c483;
+    -fx-background-radius: 15px;
+}
+.table-cell {
+    -fx-alignment: CENTER;
+    /* The rest is from caspian.css */
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}
+
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+}
+
+.button {
+    -fx-background-color: #ffc39c;
+    -fx-backgroup-radius: 60 60 60 60;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #000000;
+}
+
+    .button:hover {
+        -fx-background-color: #00ff90;
+        -fx-backgroup-radius: 30 30 30 30;
+    }
+
+#logoutBtn {
+    -fx-border-radius: 60 60 60 60;
+    -fx-border-color: black;
+    -fx-background-color: #ffd9c1;
+    -fx-backgroup-radius: 60 60 60 60;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #000000;
+}
+
+    #logoutBtn:hover {
+        -fx-background-color: #00ff90;
+        -fx-backgroup-radius: 30 30 30 30;
+    }
+   

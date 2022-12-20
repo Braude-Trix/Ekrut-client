@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BillWindowController">
+   <children>
+      <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <image>
+            <Image url="@../styles/billBackground.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="backBtn" accessibleText="Back" fitHeight="50.0" fitWidth="66.0" layoutX="23.0" layoutY="439.0" onMouseClicked="#backBtnClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="23.0">
+         <image>
+            <Image url="@../styles/backBtn.png" />
+         </image>
+      </ImageView>
+      <TableView fx:id="billTable" layoutX="65.0" layoutY="119.0" prefHeight="345.0" prefWidth="410.0" stylesheets="@../styles/BillTable.css" AnchorPane.leftAnchor="65.0">
+        <columns>
+          <TableColumn fx:id="productCol" prefWidth="127.0" text="Product" />
+          <TableColumn fx:id="amountCol" prefWidth="153.0" text="Amount" />
+            <TableColumn fx:id="priceCol" prefWidth="129.0" text="Price" />
+        </columns>
+      </TableView>
+      <Label layoutX="120.0" layoutY="60.0" prefHeight="48.0" prefWidth="110.0" style="-fx-font-style: Arial;" text="My Bill">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <VBox layoutX="489.0" layoutY="183.0" prefHeight="108.0" prefWidth="218.0">
+         <children>
+            <HBox prefHeight="54.0" prefWidth="218.0">
+               <children>
+                  <Label fx:id="totalPriceLabel" prefHeight="48.0" prefWidth="215.0" text="Total price: 64₪">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="33.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../styles/paymentImg.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </HBox>
+            <Button fx:id="proceedPaymentBtn" mnemonicParsing="false" onAction="#proceedPaymentClicked" prefHeight="36.0" prefWidth="230.0" stylesheets="@../styles/GoodButton.css" text="Proceed payment" />
+         </children>
+      </VBox>
+      <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="80.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="80.0">
+         <image>
+            <Image url="@../styles/Bill_Icon.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" stylesheets="@../styles/BadButton.css" text="Log Out" AnchorPane.bottomAnchor="461.0" AnchorPane.leftAnchor="816.0" />
+      <Label layoutX="746.0" layoutY="23.0" text="Yosi Sabag" />
+      <ImageView fitHeight="29.0" fitWidth="29.0" layoutX="707.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../styles/avatar.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class ConnectToServerController {
         }
 
         Stage stage = StageSingleton.getInstance().getStage();
-        Parent root = FXMLLoader.load(getClass().getResource("/assets/MainSubscruibersPanel.fxml"));
+        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/RegionalDeliveryWindow.fxml"));
         stage.setTitle("Subscribers Panel");
         stage.setScene(new Scene(root));
         stage.centerOnScreen();

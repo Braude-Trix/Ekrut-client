@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ConfirmationOrderPopUpWindowController">
+   <children>
+      <ImageView fitHeight="361.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/styles/popUpImage.jpg" />
+         </image>
+      </ImageView>
+      <Label layoutX="167.0" prefHeight="50.0" prefWidth="293.0" text="Order confirmation">
+         <font>
+            <Font size="34.0" />
+         </font>
+      </Label>
+      <VBox fx:id="vboxContainer" layoutX="23.0" layoutY="44.0" prefHeight="273.0" prefWidth="580.0">
+         <children>
+            <Label fx:id="totalPriceLabel" text="Total price: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Region prefHeight="12.0" prefWidth="530.0" />
+            <Label fx:id="pickUpMethodLabel" prefHeight="31.0" prefWidth="275.0" text="Pick-up method: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Region fx:id="regionId" prefHeight="12.0" prefWidth="530.0" />
+            <Label fx:id="pickUpMachineLabel" prefHeight="27.0" prefWidth="293.0" text="Pick-up machine: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="deliveryAddressLabel" prefHeight="27.0" prefWidth="324.0" text="Delivery address: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="pickUpCodeLabel" prefHeight="27.0" prefWidth="293.0" text="Pick-up code: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="monthlyBillLabel" prefHeight="27.0" prefWidth="293.0" text="Currently monthly bill : ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Region prefHeight="12.0" prefWidth="530.0" />
+            <Label fx:id="orderDateLabel" prefHeight="27.0" prefWidth="324.0" text="Order date: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Region prefHeight="70.0" prefWidth="530.0" />
+            <Label fx:id="thankLabel" prefHeight="118.0" prefWidth="530.0" text="Dear customer, The credit card you provided was successfully charged, thank you for shopping with us" wrapText="true">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
