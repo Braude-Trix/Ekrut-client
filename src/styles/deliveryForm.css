@@ -60,3 +60,8 @@
     -fx-background-color: #FFF0F0;
     -fx-border-color: #ff0000;
 }
+
+.progress-bar > .bar {
+    -fx-background-insets: 1 1 2 1;
+    -fx-padding: 0.40em;
+}

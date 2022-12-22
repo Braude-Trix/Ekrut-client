@@ -8,9 +8,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import utils.Util;
 
+/**
+ * @author gal
+ * This class describes the client home page in EK configuration
+ */
 public class EKController {
 	public Scene scene;
 	
@@ -29,6 +36,14 @@ public class EKController {
     @FXML
     private Button submitPickUpBtn;
     
+    @FXML
+    private AnchorPane anchorPane;
+    
+	/**
+	 * This method describes setting up a new scene.
+	 * @param primaryStage, Description: The stage on which the scene is presented
+	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
 				
@@ -44,6 +59,12 @@ public class EKController {
 		primaryStage.setMinWidth(primaryStage.getWidth());
 	}
 	
+    /**
+     * This method describes what happens after clicking the logout button.
+     * Clicking this button will lead to the login screen.
+     * @param event, Description: Event - clicking the Logout button
+     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
@@ -60,36 +81,50 @@ public class EKController {
 		stage.setMinWidth(stage.getWidth());
     }
     
+    /**
+     * This method describes clicking the submit button.
+     *  Clicking this button, if the pickup code entered is correct, 
+     *  will transfer the order to ek-op which it will have to bring to the customer.
+     * @param event, Description: Event - clicking the Submit button
+     */
     @FXML
     void SubmitPickupCode(ActionEvent event) {
     	removeErrorStyle();
-    	boolean isBlankCode = isBlankTextField(txtPickupCode);
-    	if (isBlankCode) {
+    	if (Util.isBlankString(txtPickupCode.getText())) {
+    		errorLabel.setText("Invalid Code");
+    		Util.setFieldTextErrorBorder(txtPickupCode);
     		return;
     	}
     	VBoxEnterPickUp.setVisible(false);
     	VboxSuccessfulPickUpCode.setVisible(true);
+    	txtPickupCode.setText("");
     }
     
-
+    /**
+     * This method describes the possibility of entering an additional pickup code if the customer has another code.
+     * @param event, Description: Event - clicking the hyper link "Would you like to enter another code? Click here"
+     */
     @FXML
     void EnterAnotherPickupCode(ActionEvent event) {
-    	txtPickupCode.setText("");
     	VBoxEnterPickUp.setVisible(true);
     	VboxSuccessfulPickUpCode.setVisible(false);
     }
     
+    /**
+     * This method requires when you click anywhere else on the screen to get the focus.
+     * @param event, Description: The screen is clicked the event is sent
+     */
+    @FXML
+    void requestFocus(MouseEvent event) {
+    	anchorPane.requestFocus();
+    }
+    
+    /**
+     * This method removes error formatting for normal outputs.
+     */
     private void removeErrorStyle() {
     	txtPickupCode.getStyleClass().remove("validation-error");
     	errorLabel.setText("");
     }
     
-    private boolean isBlankTextField(TextField textField) {
-    	if (textField.getText().isBlank()) {
-    		errorLabel.setText("Invalid Code");
-    		textField.getStyleClass().add("validation-error");
-    		return true;
-    	}
-    	return false;    	
-    }
 }

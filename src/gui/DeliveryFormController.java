@@ -9,7 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import utils.Util;
 
 public class DeliveryFormController {
 	public static Scene scene;
@@ -50,6 +52,9 @@ public class DeliveryFormController {
 
     @FXML
     private Label errorLabelPinCode;
+    
+    @FXML
+    private AnchorPane anchorPane;
 	
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/DeliveryForm.fxml"));
@@ -68,6 +73,7 @@ public class DeliveryFormController {
 	
     @FXML
     void ContinueToOrder(ActionEvent event) {
+    	anchorPane.requestFocus();
     	removeErrorStyle();
     	boolean isValidFirstName = isBlankTextField(txtFirstName, errorLabelFirstName);
     	boolean isValidLastName = isBlankTextField(txtLastName, errorLabelLastName);
@@ -81,7 +87,11 @@ public class DeliveryFormController {
     	}
     }
 	
-	
+    @FXML
+    void requestFocus(MouseEvent event) {
+    	anchorPane.requestFocus();
+
+    }
 	
 	
     @FXML
@@ -108,9 +118,9 @@ public class DeliveryFormController {
     }
     
     private boolean isBlankTextField(TextField textField, Label errorLabel) {
-    	if (textField.getText().isBlank()) {
+    	if (Util.isBlankString(textField.getText())) {
     		errorLabel.setText("Required field");
-    		textField.getStyleClass().add("validation-error");
+    		Util.setFieldTextErrorBorder(textField);
     		return true;
     	}
     	return false;    	
@@ -127,21 +137,24 @@ public class DeliveryFormController {
     }
     
     private boolean isValidatePhone(TextField textField, Label errorLabel) {
+    	if (isBlankTextField(textField, errorLabel)) {
+    		return false;
+    	}
         if (textField.getText().length() != NUMBER_DIGIT_IN_PHONE_NUMBER) {
     		textField.getStyleClass().add("validation-error");
-    		errorLabel.setText("A phone number\ncontains 10 digits");
+    		errorLabel.setText("10 digits are required");
             return false;
         }
         
         if (!isOnlyDigits(textField.getText())){
     		textField.getStyleClass().add("validation-error");
-    		errorLabel.setText("A phone number\ncontains only digits");
+    		errorLabel.setText("Digits only required");
         	return false;
         }
         
         if (textField.getText().charAt(0) != '0' || textField.getText().charAt(1) != '5') {
     		textField.getStyleClass().add("validation-error");
-    		errorLabel.setText("Phone number should\nstart with 05");
+    		errorLabel.setText("Phone starts with 05");
         	return false;
         }
         return true;

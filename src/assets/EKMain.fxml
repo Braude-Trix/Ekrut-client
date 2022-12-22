@@ -12,14 +12,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.EKController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.EKController">
    <children>
       <ImageView fitHeight="505.0" fitWidth="950.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@NewOrder.jpg" />
          </image>
       </ImageView>
-      <VBox alignment="CENTER" layoutX="295.0" layoutY="-40.0" prefHeight="419.0" prefWidth="307.0">
+      <VBox alignment="CENTER" layoutX="295.0" prefHeight="419.0" prefWidth="307.0">
          <children>
             <Label>
                <font>
@@ -69,7 +69,7 @@
                   </VBox>
                   <VBox fx:id="VBoxEnterPickUp" prefHeight="178.0" prefWidth="310.0">
                      <children>
-                        <Label text="Here for a PickUp?">
+                        <Label text="Here for a Pickup?">
                            <font>
                               <Font size="18.0" />
                            </font>

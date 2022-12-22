@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DeliveryFormController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DeliveryFormController">
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -25,7 +25,7 @@
          <children>
             <HBox prefHeight="97.0" prefWidth="890.0">
                <children>
-                  <Label text="Enter Delivery                    Details">
+                  <Label text="Enter Delivery Details">
                      <HBox.margin>
                         <Insets left="15.0" top="65.0" />
                      </HBox.margin>
@@ -201,13 +201,13 @@
       <HBox alignment="CENTER" layoutX="410.0" layoutY="30.0" prefHeight="58.0" prefWidth="288.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="0.0">
          <children>
             <Circle fill="#ff9b1f" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
-            <ProgressBar prefHeight="10.0" prefWidth="200.0" progress="0.0" style="-fx-background-color: #c9ad73;" />
+            <ProgressBar prefWidth="200.0" progress="0.0" style="-fx-background-color: #c9ad73;" />
             <Circle fill="#ddd8af" radius="10.0" stroke="BLACK" strokeType="INSIDE">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Circle>
-            <ProgressBar prefHeight="10.0" prefWidth="200.0" progress="0.0" style="-fx-background-color: #c9ad73;" />
+            <ProgressBar prefWidth="200.0" progress="0.0" style="-fx-background-color: #c9ad73;" />
             <Circle fill="#ddd8af" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
          <opaqueInsets>

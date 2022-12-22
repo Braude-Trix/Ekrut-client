@@ -12,7 +12,6 @@
 .table-view .column-header-background{
     -fx-background-color: linear-gradient(to bottom, #ffc39c, #ffc39c);
     -fx-background-radius: 7px 7px 0px 0px;
-    -fx-background-insets: 0 0 0 0;
     -fx-padding: 0 0 5px 0;
 }
 
@@ -31,11 +30,9 @@
 
 
 .table-row-cell: odd {
-    -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
 }
 .table-row-cell: even{
-    -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
 }
 .table-view .virtual-flow .scroll-bar:vertical,
@@ -103,4 +100,22 @@
         -fx-background-color: #00ff90;
         -fx-backgroup-radius: 30 30 30 30;
     }
-   
+
+.validation-error {
+    -fx-background-color: #FFF0F0;
+    -fx-border-color: #ff0000;
+}
+
+
+
+
+.text-field {
+    -fx-accent: #ffc39c;
+    -fx-background-insets: -1, 0 0 1 0;
+    -fx-background-radius: 0;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+}
+
+    .text-field:focused {
+        -fx-background-color: #ffc39c, white;
+    }

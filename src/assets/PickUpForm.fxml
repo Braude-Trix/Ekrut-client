@@ -50,11 +50,11 @@
                                  <children>
                                     <HBox prefHeight="19.0" prefWidth="206.0">
                                        <children>
-                                          <Label fx:id="nameLabel1" text="City" />
+                                          <Label fx:id="nameLabel1" text="Region" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="regionList" onAction="#selectItem" prefHeight="29.0" prefWidth="152.0" promptText="Choose A Region" />
+                                    <ComboBox fx:id="regionList" onAction="#selectItem" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Region" />
                                  </children>
                               </VBox>
                               <VBox prefHeight="70.0" prefWidth="202.0">
@@ -65,7 +65,7 @@
                                           <Label text="*" textFill="#e15959" />
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="machineList" disable="true" promptText="Choose A Machine" />
+                                    <ComboBox fx:id="machineList" disable="true" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Machine" />
                                  </children>
                               </VBox>
                            </children>
