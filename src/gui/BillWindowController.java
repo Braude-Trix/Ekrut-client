@@ -3,9 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import client.Client;
 import client.ClientUI;
@@ -55,8 +53,9 @@ public class BillWindowController implements Initializable {
 
     public static Order order;
 
-    int customerId = 100;
 
+    Integer machineId = 1;
+    int customerId = 100;
 
     public void initBillWindow() {
         totalPriceLabel.setText("Total price:" + Double.toString(NewOrderController.previousOrder.getPrice()) + " ₪");
@@ -83,6 +82,8 @@ public class BillWindowController implements Initializable {
     @FXML
     void proceedPaymentClicked(ActionEvent event) {
         requestSaveOrder();
+        requestSaveProductsInOrder();
+        updateInventoryInDB();
         changeToConfirmationOrderPopUpWindow();
     }
 
@@ -91,6 +92,9 @@ public class BillWindowController implements Initializable {
         Request request = new Request();
         request.setPath("/newOrder");
         request.setMethod(Method.POST);
+        UUID uuid = UUID.randomUUID();
+        String orderId = uuid.toString();
+        NewOrderController.previousOrder.setOrderId(orderId);
         orderList.add(NewOrderController.previousOrder);
         request.setBody(orderList);
         ClientUI.chat.accept(request);// sending the request to the server.
@@ -100,6 +104,114 @@ public class BillWindowController implements Initializable {
             default:
                 System.out.println("Some error occurred");
         }
+    }
+
+    void requestSaveProductsInOrder() {
+        List<Object> orderList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/saveProductsInOrder");
+        request.setMethod(Method.POST);
+        orderList.add(restoreOrder.getOrderId());
+        orderList.add(NewOrderController.previousOrder.getProductsInOrder());
+        request.setBody(orderList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                break;
+            default:
+                System.out.println("Some error occurred");
+        }
+    }
+
+    public int getMachineThreshold() {
+        int threshold = -1;
+        List<Object> paramList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/getMachineThreshold");
+        request.setMethod(Method.GET);
+        paramList.add(machineId);
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                threshold = (Integer) Client.resFromServer.getBody().get(0);
+            default:
+                System.out.println("Some error occurred");
+        }
+        System.out.println(threshold);
+        return threshold;
+    }
+
+
+
+
+    public void updateInventoryInDB(){
+        List<ProductInMachine> updatedInventory = getUpdatedInventory();
+        List<Object> paramList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/updateInventory");
+        request.setMethod(Method.PUT);
+        paramList.add(updatedInventory);
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                break;
+            default:
+                System.out.println("Some error occurred");
+        }
+    }
+
+    public List<ProductInMachine> getUpdatedInventory() {
+        List<ProductInMachine> updatedMachineList = new ArrayList<>();
+        List<ProductInMachine> productsInMachineList = requestMachineProducts(machineId);
+        StatusInMachine newStatusInMachine;
+        Integer getMachineThreshold = getMachineThreshold();
+        ProductInMachine productInMachine;
+        for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
+            int newAmount = getProductMachineAmountFromList(productsInMachineList, machineId, Integer.valueOf(productInOrder.getProduct().getProductId())) - productInOrder.getAmount();
+            if (newAmount == 0)
+                newStatusInMachine = StatusInMachine.Not_Available;
+            else if (newAmount < getMachineThreshold) {
+                newStatusInMachine = StatusInMachine.Below;
+            } else {
+                newStatusInMachine = StatusInMachine.Above;
+            }
+            productInMachine = new ProductInMachine(machineId.toString(), productInOrder.getProduct().getProductId(), newStatusInMachine, newAmount);
+            updatedMachineList.add(productInMachine);
+        }
+        return updatedMachineList;
+    }
+
+
+
+    public Integer getProductMachineAmountFromList(List<ProductInMachine> productsInMachineList, Integer machineId, Integer productId) {
+        for (ProductInMachine productInMachine : productsInMachineList) {
+            if ((machineId.toString()).equals(productInMachine.getMachineId()) && Objects.equals(productId, Integer.valueOf(productInMachine.getProductId())))
+                return productInMachine.getAmount();
+        }
+        return -1;
+    }
+
+    public List<ProductInMachine> requestMachineProducts(Integer machineId) {
+        List<ProductInMachine> productInMachineList = new ArrayList<>();
+        List<Object> listObject = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/requestMachineProducts");
+        request.setMethod(Method.GET);
+        listObject.add(machineId);
+        request.setBody(listObject);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                List<Object> result = Client.resFromServer.getBody();
+                for (Object obj : result) {
+                    productInMachineList.add((ProductInMachine) obj);
+                }
+            default:
+                System.out.println("Some error occurred");
+        }
+        return productInMachineList;
     }
 
 
@@ -141,34 +253,6 @@ public class BillWindowController implements Initializable {
         stage.centerOnScreen();
         stage.setResizable(false);
     }
-
-
-//    public class checkMessages implements Runnable {
-//        public void run() {
-//            while (true) {
-//                try {
-//                    checkNewMessage();
-//                    Thread.sleep(5000);
-//
-//                } catch (InterruptedException e) {
-//                    System.out.println(e);
-//                }
-//
-//            }
-//        }
-//
-//        public void checkNewMessage(){
-//            switch (Client.resFromServer.getCode()) {
-//                case OK:
-//                    if(Client.resFromServer.getBody() != null){
-//                        System.out.println((String)Client.resFromServer.getBody().get(0));
-//                    }
-//                default:
-//                    System.out.println("No message");
-//            }
-//
-//        }
-//    }
 
 
 }

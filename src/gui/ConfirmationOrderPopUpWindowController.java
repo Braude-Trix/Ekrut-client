@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import models.Order;
 import models.PickUpMethod;
 
 import java.net.URL;
@@ -47,6 +48,7 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
     @FXML
     private Region regionId;
 
+    private static Order order = BillWindowController.restoreOrder;
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initWindow();
@@ -56,11 +58,11 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String date = LocalDate.now().format(formatter);
         boolean isSubscriber = false;
-        PickUpMethod pickUpMethod = PickUpMethod.latePickUp;
+        PickUpMethod pickUpMethod = order.getPickUpMethod();
         String deliveryAddress = "NESHER";
         String choosenMachine = "L Building";
         monthlyBillLabel.setVisible(true);
-        totalPriceLabel.setText(totalPriceLabel.getText() + "100₪");
+        totalPriceLabel.setText(totalPriceLabel.getText() + order.getPrice());
         orderDateLabel.setText(orderDateLabel.getText() + " " + date);
         if (isSubscriber) {
             thankLabel.setText(SUBSCRIBER_MSG);
@@ -89,5 +91,13 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
             vboxContainer.getChildren().remove(pickUpMachineLabel);
             vboxContainer.getChildren().remove(deliveryAddressLabel);
         }
+    }
+
+    public void getMonthlyBill(){
+
+    }
+
+    public void setMonthlyBillLabel(){
+
     }
 }

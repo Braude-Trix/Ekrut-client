@@ -1,20 +1,28 @@
 package gui;
 
+import client.Client;
 import clientModels.ClientConfiguration;
 import client.ClientController;
 import client.ClientUI;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Method;
+import models.ProductInMachine;
+import models.Request;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectToServerController {
     @FXML
@@ -77,6 +85,11 @@ public class ConnectToServerController {
         stage.show();
         stage.setMinHeight(stage.getHeight());
         stage.setMinWidth(stage.getWidth());
+
+
+        /////////
+        Thread thread = new Thread(new getMessages());
+        thread.start();
     }
 
     //	HandleConnectionError method - deals with invalid connection errors.
@@ -113,6 +126,53 @@ public class ConnectToServerController {
         ErrorHelpLabel.setText("");
         textField.setStyle("-fx-text-box-border: #6e6b6b; -fx-focus-color: #6e6b6b;");
         return true;
+    }
+
+
+    public class getMessages implements Runnable {
+
+        @Override
+        public void run() {
+            while (true) {
+                List<Object> paramList = new ArrayList<>();
+                Request request = new Request();
+                request.setPath("/getMessages");
+                request.setMethod(Method.GET);
+                paramList.add("1");
+                request.setBody(paramList);
+                ClientUI.chat.accept(request);// sending the request to the server.
+                switch (Client.MsgResFromServer.getCode()) {
+                    case OK:
+                        StringBuilder msgToClient = new StringBuilder();
+                        List<Object> result = Client.MsgResFromServer.getBody();
+                        if (result.size() == 0 || result.size() == 1)
+                            break;
+                        for(int i = 1; i < result.size(); i++){
+                            msgToClient.append("\n");
+                            msgToClient.append(result.get(i).toString());
+                        }
+                        Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
+                        break;
+
+                    default:
+                        System.out.println("Some error occurred");
+                }
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                Client.MsgResFromServer = null;
+            }
+
+        }
+
+        public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
+            Alert alert = new Alert(alertType); //Information, Error
+            alert.setContentText(alertTitle); // Information, Error
+            alert.setContentText(alertMessage);
+            alert.show();
+        }
     }
 
 }
