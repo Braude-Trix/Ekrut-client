@@ -195,7 +195,6 @@ public class BillWindowController implements Initializable {
 
     public List<ProductInMachine> requestMachineProducts(Integer machineId) {
         List<ProductInMachine> productInMachineList = new ArrayList<>();
-
         List<Object> listObject = new ArrayList<>();
         Request request = new Request();
         request.setPath("/requestMachineProducts");

@@ -5,6 +5,7 @@ import models.Response;
 import ocsf.client.AbstractClient;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This class overrides some of the methods defined in the abstract superclass
@@ -19,6 +20,8 @@ public class Client extends AbstractClient {
 	 */
 	public static boolean awaitResponse = false;
 	public static Response resFromServer;
+	public static Response MsgResFromServer;
+
 
 	// Constructors ****************************************************
 
@@ -44,7 +47,12 @@ public class Client extends AbstractClient {
 	 */
 	public void handleMessageFromServer(Object msg) {
 
-		resFromServer = (Response) msg;
+		//////
+		List<Object> listObject = ((Response)msg).getBody();
+		if(listObject != null && listObject.get(0) instanceof String && listObject.get(0).toString().equals("Msg"))
+			MsgResFromServer = (Response)msg;
+		else
+			resFromServer = (Response) msg;
 		awaitResponse = false;
 		System.out.println("Got response from server");
 	}
