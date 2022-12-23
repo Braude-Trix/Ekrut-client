@@ -1,13 +1,12 @@
 package gui;
 
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.math.RoundingMode;
-
 import client.Client;
 import client.ClientUI;
 import javafx.fxml.FXMLLoader;
@@ -25,10 +24,15 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import models.*;
 
+import javax.swing.text.Style;
+
+import static java.lang.Thread.sleep;
+
 
 public class NewOrderController implements Initializable {
 
     static Order previousOrder;
+
     @FXML
     private ListView<VBox> ProductsList;
 
@@ -52,8 +56,6 @@ public class NewOrderController implements Initializable {
 
     List<ProductInMachineMonitor> allProductsMonitors = new ArrayList<>();
 
-   ///////////////// CHANGE//////////////////////////
-
     List<Object> MaxAmountsList;
     public List<Object> requestMachineProducts(String machineId) {
         if(MaxAmountsList != null)
@@ -67,7 +69,6 @@ public class NewOrderController implements Initializable {
         machineIdList.add(machineId);
         request.setBody(machineIdList);
         ClientUI.chat.accept(request);// sending the request to the server.
-
         switch (Client.resFromServer.getCode()) {
             case OK:
                 List<Object> result = Client.resFromServer.getBody();
@@ -78,14 +79,13 @@ public class NewOrderController implements Initializable {
         }
         return machineIdList;
     }
-///////////////////////////////////////////////////////////
+
     public List<Object> requestProducts() {
         Request request = new Request();
         request.setPath("/requestProducts");
         request.setMethod(Method.GET);
         request.setBody(null);
         ClientUI.chat.accept(request);// sending the request to the server.
-
         switch (Client.resFromServer.getCode()) {
             case OK:
                 List<Object> products = Client.resFromServer.getBody();
@@ -98,8 +98,6 @@ public class NewOrderController implements Initializable {
 
     private int getMaxAmountOfProductInMachineFromDB(Order order, String productId) {
         List<Object> objectedProdInMachine = requestMachineProducts(order.getMachineId());
-
-
         for(Object prodInMachine : objectedProdInMachine) {
             if(prodInMachine instanceof ProductInMachine) {
                 if(((ProductInMachine)prodInMachine).getProductId().equals(productId))
@@ -117,27 +115,15 @@ public class NewOrderController implements Initializable {
     }
 
     private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
-
     {
         if (amount == 2)
         {
             return pricePerItem;
-
         }
         return amount*pricePerItem;
-
-
     }
 
-
     private List<Product> getAllProductsFromDB(Order order) {
-//        Product product1 = (new Product("Bamba", "bambaaa", 4.6));
-//        Product product2 = (new Product("Bisli", "Bisliiiii", 3.5));
-//        Product product3 = (new Product("Cola", "Colaaaaa", 2.0));
-//        Product product4 = (new Product("Bamba", "hello", 4.6));
-//        Product product5 = (new Product("Bisli", "world", 3.5));
-//        Product product6 = (new Product("Cola", "sucka", 2.0));
-
         List<Object> objectedProducts = requestProducts();
         List<Product> newProductsList = new ArrayList<>();
         List<Object> objectedProdInMachine = requestMachineProducts(order.getMachineId());
@@ -146,32 +132,22 @@ public class NewOrderController implements Initializable {
             System.out.println("Error in getAllProductsFromDB()");
             return null;
         }
-        for(Object product : objectedProducts)
-        {
-            if(product instanceof Product)
-            {
-                for(Object prodInMachine : objectedProdInMachine) {
-                    if(prodInMachine instanceof ProductInMachine) {
-                        if(((ProductInMachine)prodInMachine).getProductId().equals(((Product)product).getProductId()))
-                        {
+        for(Object product : objectedProducts) {
+            if (product instanceof Product) {
+                for (Object prodInMachine : objectedProdInMachine) {
+                    if (prodInMachine instanceof ProductInMachine) {
+                        if (((ProductInMachine) prodInMachine).getProductId().equals(((Product) product).getProductId())) {
                             newProductsList.add((Product) product);
                         }
                     }
                 }
             }
-
         }
-
-
-
-
-
         ObservableList<Product> products = FXCollections.observableArrayList();
         products.addAll(newProductsList);
         EmptyCartAlert.setVisible(false);
         return products;
     }
-
 
     public class ProductInMachineMonitor {
         Product product;
@@ -209,7 +185,6 @@ public class NewOrderController implements Initializable {
                     return prod.getAmount();
                 }
             }
-
             return 0;
         }
 
@@ -221,22 +196,18 @@ public class NewOrderController implements Initializable {
 
         public void increaseAmount() {
             EmptyCartAlert.setVisible(false);
-
             try {
                 if (amountSelected >= productMaxAmount) { // Throw label
-                    plusImage.setOpacity(0.3);
+                    plusImage.setOpacity(StyleConstants.LOW_OPACITY);
                     return;
-
                 }
                 minusImage.setOpacity(1);
                 plusImage.setOpacity(1);
                 amountSelected++;
                 if (amountSelected >= productMaxAmount) {
-                    plusImage.setOpacity(0.3);
+                    plusImage.setOpacity(StyleConstants.LOW_OPACITY);
                 }
-
-           //     AddToCartButton.setText("Add To Cart - " + String.format("%.2f", amountSelected * product.getPrice()) + "₪");
-                AddToCartButton.setText("Add To Cart - " + String.format("%.2f", calculatePriceAfterDiscount(amountSelected,product.getPrice())) + "₪");
+                AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, calculatePriceAfterDiscount(amountSelected,product.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                 counter.setText("  " + amountSelected + "  ");
             } catch (Exception e) {
                 System.out.println(e);
@@ -246,51 +217,38 @@ public class NewOrderController implements Initializable {
         public void decreaseAmount() {
             try {
                 if (amountSelected <= 1) { // Throw label
-                    minusImage.setOpacity(0.3);
+                    minusImage.setOpacity(StyleConstants.LOW_OPACITY);
                     return;
                 }
                 minusImage.setOpacity(1);
                 plusImage.setOpacity(1);
-
                 amountSelected--;
                 if (amountSelected <= 1) { // Throw label
-                    minusImage.setOpacity(0.3);
+                    minusImage.setOpacity(StyleConstants.LOW_OPACITY);
                 }
-               // AddToCartButton.setText("Add To Cart - " + String.format("%.2f", amountSelected * product.getPrice()) + "₪");
-                AddToCartButton.setText("Add To Cart - " + String.format("%.2f", calculatePriceAfterDiscount(amountSelected,product.getPrice())) + "₪");
+                AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, calculatePriceAfterDiscount(amountSelected,product.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                 counter.setText("  " + amountSelected + "  ");
             } catch (Exception e) {
                 System.out.println(e);
             }
         }
-
         public void AddToCart() {
-
-            minusImage.setOpacity(0.3);
+            minusImage.setOpacity(StyleConstants.LOW_OPACITY);
             productMaxAmount -= amountSelected;
-
             if (productMaxAmount <= 0) {
-
-                counter.setText("  0  ");
-                AddToCartButton.setText("Out Of Stock");
-                plusImage.setOpacity(0.3);
-                AddToCartButton.setOpacity(0.3);
+                counter.setText(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ZERO);
+                AddToCartButton.setText(StyleConstants.OUT_OF_STOCK_LABEL);
+                plusImage.setOpacity(StyleConstants.LOW_OPACITY);
+                AddToCartButton.setOpacity(StyleConstants.LOW_OPACITY);
                 AddToCartButton.disabledProperty();
-
                 AddProductInOrderToOrder(product, amountSelected);
-
-            //    System.out.println("X" + amountSelected + " " + product.getName() + " Added for price: " + String.format("%.2f", amountSelected * product.getPrice()));
                 amountSelected = 0;
 
             } else {
-
-                counter.setText("  1  ");
-                AddToCartButton.setText("Add To Cart - " + product.getPrice() + "₪");
+                counter.setText(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ONE);
+                AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + product.getPrice() + StyleConstants.CURRENCY_SYMBOL);
                 AddProductInOrderToOrder(product, amountSelected);
-            //    System.out.println("X" + amountSelected + " " + product.getName() + " Added for price: " + String.format("%.2f", amountSelected * product.getPrice()));
                 amountSelected = 1;
-
-
             }
         }
 
@@ -300,7 +258,6 @@ public class NewOrderController implements Initializable {
             } else {
                 order.setPrice(originalPrice);
             }
-
         }
 
         private void AddProductInOrderToOrder(Product product, int amount) {
@@ -311,11 +268,9 @@ public class NewOrderController implements Initializable {
                 productId = prod.getProduct().getProductId();
                 if (productId.equals(product.getProductId())) {
                     prod.setAmount(amount + prod.getAmount());
-
                     prodInOrder.setTotalProductPrice(roundTo2Digit(calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice())));
                     priceSetterForSmallNumbers(roundTo2Digit(order.getPrice()-calculatePriceAfterDiscount(prod.getAmount()-amount,prod.getProduct().getPrice())
                             + (calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice()))));
-
                     existingFlag = true;
                     break;
                 }
@@ -326,23 +281,14 @@ public class NewOrderController implements Initializable {
                 priceSetterForSmallNumbers(roundTo2Digit(order.getPrice()-calculatePriceAfterDiscount(prodInOrder.getAmount()-amount,prodInOrder.getProduct().getPrice())
                         + (calculatePriceAfterDiscount(prodInOrder.getAmount(),prodInOrder.getProduct().getPrice()))));
             }
-
-          //  prodInOrder.setTotalProductPrice(roundTo2Digit(prodInOrder.getAmount() * prodInOrder.getProduct().getPrice()));
-           // priceSetterForSmallNumbers(roundTo2Digit(order.getPrice() + (prodInOrder.getAmount() * prodInOrder.getProduct().getPrice())));
-
-
-
             UpdateCart(order);
-            TotalOrderPrice.setText("Total Price: " + String.format("%.2f", order.getPrice()));
-
+            TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
         }
 
         private double roundTo2Digit(double num) {
-
             BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
             return bd.doubleValue();
         }
-
 
         private void removeItem() {
             String productId;
@@ -351,33 +297,24 @@ public class NewOrderController implements Initializable {
                 if (productId.equals(product.getProductId())) {
                     order.getProductsInOrder().remove(produtToRemove);
                     this.productMaxAmount = getMaxAmountOfProductInMachine();
-                    counter.setText("  1  ");
+                    counter.setText(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ONE);
                     amountSelected = 1;
                     plusImage.setOpacity(1);
-                  //  AddToCartButton.setText("Add To Cart - " + String.format("%.2f", amountSelected * product.getPrice()) + "₪");
-                    AddToCartButton.setText("Add To Cart - " + String.format("%.2f", calculatePriceAfterDiscount(amountSelected,product.getPrice())) + "₪");
-//                    priceSetterForSmallNumbers(order.getPrice() - produtToRemove.getAmount() * produtToRemove.getProduct().getPrice());
-
-
+                    AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, calculatePriceAfterDiscount(amountSelected,product.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                     priceSetterForSmallNumbers(order.getPrice() - calculatePriceAfterDiscount( produtToRemove.getAmount(), produtToRemove.getProduct().getPrice()));
-
-
-                    TotalOrderPrice.setText("Total Price: " + String.format("%.2f", order.getPrice()));
+                    TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
                     AddToCartButton.setOpacity(1);
                     break;
                 }
             }
-
             UpdateCart(order);
-            TotalOrderPrice.setText("Total Price: " + String.format("%.2f", order.getPrice()));
-
+            TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
         }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         putProductsInMachine();
-
     }
 
     private Order recieveCurrentOrder() {
@@ -393,11 +330,9 @@ public class NewOrderController implements Initializable {
         return order;
     }
 
-
     private void UpdateCart(Order order) {
         List<ProductInOrder> productsInOrder = order.getProductsInOrder();
         CartListShop.getItems().clear();
-
         Image prodImage = null;
         if (order.getProductsInOrder().size() > 0) {
             ClearCart.setVisible(true);
@@ -410,50 +345,37 @@ public class NewOrderController implements Initializable {
             try {
                 HBox hboxTop = new HBox();
                 Pane pane = new Pane();
-
                 try {
-                    prodImage = new Image("styles/" + prodInOrder.getProduct().getName() + ".png");
+
+                    prodImage = recieveImageForProduct(prodInOrder.getProduct());
                 } catch (Exception e) {
-                    prodImage = new Image("styles/defultProductImage.png");
+                    prodImage = new Image(StylePaths.DEFAULT_PRODUCT_IMAGE);
                 }
                 ImageView productImage = new ImageView(prodImage);
-                productImage.setFitWidth(25);
-                productImage.setFitHeight(30);
-
-                Image xmark = new Image("styles/x-mark.png");
+                productImage.setFitWidth(StyleConstants.CART_PRODUCT_IMAGE_WIDTH);
+                productImage.setFitHeight(StyleConstants.CART_PRODUCT_IMAGE_HEIGHT);
+                Image xmark = new Image(StylePaths.REMOVE_PRODUCT_IMAGE);
                 ImageView xmarkImage = new ImageView(xmark);
-                xmarkImage.setFitWidth(20);
-                xmarkImage.setFitHeight(20);
+                xmarkImage.setFitWidth(StyleConstants.REMOVE_BUTTON_SIZE);
+                xmarkImage.setFitHeight(StyleConstants.REMOVE_BUTTON_SIZE);
                 Integer amountOfProduct = new Integer(prodInOrder.getAmount());
-               // Double priceOfProduct = new Double((double) (amountOfProduct * prodInOrder.getProduct().getPrice()));
                 Double priceOfProduct = new Double((double) (calculatePriceAfterDiscount(amountOfProduct,prodInOrder.getProduct().getPrice())));
-
-                hboxTop.getChildren().addAll(productImage, new Label("       x" + amountOfProduct.toString() + "   " + prodInOrder.getProduct().getName() + " - " + String.format("%.2f", priceOfProduct) + "₪"), pane, xmarkImage);
-
-
+                hboxTop.getChildren().addAll(productImage, new Label("       x" + amountOfProduct.toString() + "   " + prodInOrder.getProduct().getName() + " - " + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, priceOfProduct) + StyleConstants.CURRENCY_SYMBOL), pane, xmarkImage);
                 CartListShop.getItems().addAll(hboxTop);
-
                 for (ProductInMachineMonitor monitor : allProductsMonitors) {
                     if (monitor.getMonitorMainProductID().equals(prodInOrder.getProduct().getProductId())) {
                         xmarkImage.setOnMouseClicked(event -> monitor.removeItem());
                     }
-
                 }
-
-
                 HBox.setHgrow(pane, Priority.ALWAYS);
-
-
             } catch (Exception e) {
                 System.out.println(e);
             }
-
         }
     }
 
     private void ClearCartClicked() {
         for (ProductInMachineMonitor monitor : allProductsMonitors) {
-
             monitor.removeItem();
         }
     }
@@ -468,62 +390,63 @@ public class NewOrderController implements Initializable {
         AnchorPane pane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/assets/BillWindow.fxml"));
+            loader.setLocation(getClass().getResource(StylePaths.BILLWINDOW_CSS));
             pane = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
         Stage stage = StageSingleton.getInstance().getStage();
-        stage.setTitle("Order confirmation");
+        stage.setTitle(StyleConstants.STAGE_LABEL);
         stage.setScene(new Scene(pane));
         stage.centerOnScreen();
         stage.setResizable(false);
     }
-    private Image recieveImageForProduct(String productName)
+    private Image recieveImageForProduct(Product product)
     {
-        Image prodImage = new Image("styles/" +productName+ ".png");
-        return prodImage;
+        Image image = new Image(new ByteArrayInputStream(product.getImage()));
+        return image;
     }
     private void putProductsInMachine() {
-        int buttonPlusMinus = 25;
-        Image prodImage = null;
+        int buttonPlusMinus = StyleConstants.PLUS_MINUS_SIZE;
         Order order = recieveCurrentOrder();
         ObservableList<Product> products = (ObservableList<Product>) getAllProductsFromDB(order);
+        Image prodImage = null;
         ContinueButton.setOnMouseClicked(event -> ContinueOrder(order));
         ClearCart.setOnMouseClicked(event -> ClearCartClicked());
         ClearCart.setVisible(false);
-
-
         for (Product prod : products) {
             try {
                 HBox hboxTop = new HBox();
                 HBox hboxButtom = new HBox();
                 VBox ProductSection = new VBox();
                 Label ProdName = new Label("  " + prod.getName());
-                Label counter = new Label("  1  ");
+                Label counter = new Label(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ONE);
                 Pane pane = new Pane();
-                Button AddToCartButton = new Button("Add To Cart - " + prod.getPrice() + "₪");
-                AddToCartButton.setStyle("styles/GoodButton.css");
-                Image min = new Image("styles/minus.png");
+                Button AddToCartButton = new Button(StyleConstants.ADD_TO_CART_LABEL + prod.getPrice() + StyleConstants.CURRENCY_SYMBOL);
+                AddToCartButton.setStyle(StylePaths.POSITIVE_BUTTON_CSS);
+                Image min = new Image(StylePaths.MINUS_IMAGE);
                 ImageView minusImage = new ImageView(min);
                 minusImage.setFitWidth(buttonPlusMinus);
                 minusImage.setFitHeight(buttonPlusMinus);
-                minusImage.setOpacity(0.3);
-                Image plus = new Image("styles/plus.png");
+                minusImage.setOpacity(StyleConstants.LOW_OPACITY);
+                Image plus = new Image(StylePaths.PLUS_IMAGE);
                 ImageView plusImage = new ImageView(plus); //defultProductImage
                 String productId;
+                if(getMaxAmountOfProductInMachineFromDB(order,prod.getProductId())==0)
+                {
+                    continue;
+                }
                 for (ProductInOrder prod1 : order.getProductsInOrder()) {
                     productId = prod1.getProduct().getProductId();
                     if (productId.equals(prod.getProductId())) {
                         if (prod1.getAmount() == getMaxAmountOfProductInMachineFromDB(order,productId)) {
-                            counter.setText("  0  ");
-                            AddToCartButton.setText("Out Of Stock");
-                            plusImage.setOpacity(0.3);
-                            AddToCartButton.setOpacity(0.3);
+                            counter.setText(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ZERO);
+                            AddToCartButton.setText(StyleConstants.OUT_OF_STOCK_LABEL);
+                            plusImage.setOpacity(StyleConstants.LOW_OPACITY);
+                            AddToCartButton.setOpacity(StyleConstants.LOW_OPACITY);
                             AddToCartButton.disabledProperty();
                         }
-                        break;
                     }
                 }
                 plusImage.setFitWidth(buttonPlusMinus);
@@ -534,18 +457,17 @@ public class NewOrderController implements Initializable {
                 minusImage.setOnMouseClicked(event -> productMonitor.decreaseAmount());
                 AddToCartButton.setOnMouseClicked(event -> productMonitor.AddToCart());
                 UpdateCart(order);
-                TotalOrderPrice.setText("Total Price: " + String.format("%.2f", order.getPrice()));
+                TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
                 try {
-                        prodImage = recieveImageForProduct(prod.getName());
+                        prodImage = recieveImageForProduct(prod);
 //
                 } catch (Exception e) {
-                    prodImage = new Image("styles/defultProductImage.png");
+                    System.out.println(e);
+                    prodImage = new Image(StylePaths.DEFAULT_PRODUCT_IMAGE);
                 }
                 ImageView productImage = new ImageView(prodImage);
-//                productImage.setFitWidth(25);
-//                productImage.setFitHeight(30);
-                productImage.setFitWidth(40);
-                productImage.setFitHeight(47);
+                productImage.setFitWidth(StyleConstants.PRODUCT_IMAGE_WIDTH);
+                productImage.setFitHeight(StyleConstants.PRODUCT_IMAGE_HEIGHT);
                 hboxTop.getChildren().addAll(productImage, ProdName, new Label("  |  " + prod.getInformation()), pane, minusImage, counter, plusImage);
                 hboxButtom.getChildren().addAll(new Label("  			    "), AddToCartButton);
                 ProductSection.getChildren().addAll(hboxTop, hboxButtom);

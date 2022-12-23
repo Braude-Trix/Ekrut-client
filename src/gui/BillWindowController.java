@@ -107,7 +107,7 @@ public class BillWindowController implements Initializable {
         AnchorPane pane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("OrderConfirmationPopUpWindow.fxml"));
+            loader.setLocation(getClass().getResource("/assets/OrderConfirmationPopUpWindow.fxml"));
             pane = loader.load();
         } catch (IOException e) {
             e.printStackTrace();

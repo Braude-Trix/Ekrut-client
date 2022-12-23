@@ -69,7 +69,7 @@ public class ConnectToServerController {
         }
 
         Stage stage = StageSingleton.getInstance().getStage();
-        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/RegionalDeliveryWindow.fxml"));
+        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/NewOrder.fxml"));
         stage.setTitle("Subscribers Panel");
         stage.setScene(new Scene(root));
         stage.centerOnScreen();

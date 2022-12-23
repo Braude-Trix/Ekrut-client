@@ -13,7 +13,6 @@ public class DeliveryOrder {
         this.deliveryDate = deliveryDate;
     }
 
-
     public String getOrderId() {
         return orderId;
     }
