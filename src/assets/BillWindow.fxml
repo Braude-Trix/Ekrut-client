@@ -15,12 +15,12 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@../styles/billBackground.jpg" />
+            <Image url="@billBackground.jpg" />
          </image>
       </ImageView>
       <ImageView fx:id="backBtn" accessibleText="Back" fitHeight="50.0" fitWidth="66.0" layoutX="23.0" layoutY="439.0" onMouseClicked="#backBtnClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="23.0">
          <image>
-            <Image url="@../styles/backBtn.png" />
+            <Image url="@backBtn.png" />
          </image>
       </ImageView>
       <TableView fx:id="billTable" layoutX="65.0" layoutY="119.0" prefHeight="345.0" prefWidth="410.0" stylesheets="@../styles/BillTable.css" AnchorPane.leftAnchor="65.0">
@@ -46,7 +46,7 @@
                      <graphic>
                         <ImageView fitHeight="33.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../styles/paymentImg.png" />
+                              <Image url="@paymentImg.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -58,14 +58,14 @@
       </VBox>
       <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="80.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="80.0">
          <image>
-            <Image url="@../styles/Bill_Icon.png" />
+            <Image url="@Bill_Icon.png" />
          </image>
       </ImageView>
       <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" stylesheets="@../styles/BadButton.css" text="Log Out" AnchorPane.bottomAnchor="461.0" AnchorPane.leftAnchor="816.0" />
       <Label layoutX="746.0" layoutY="23.0" text="Yosi Sabag" />
       <ImageView fitHeight="29.0" fitWidth="29.0" layoutX="707.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../styles/avatar.png" />
+            <Image url="@avatar.png" />
          </image>
       </ImageView>
    </children>

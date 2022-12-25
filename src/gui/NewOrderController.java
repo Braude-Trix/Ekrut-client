@@ -107,10 +107,10 @@ public class NewOrderController implements Initializable {
                     }
                 }
              return 0;
-            }
+    }
 
     private Order receiveOrderFromPreviousPage() {
-        Order order = new Order(null, "25", 0.0, "1", "asdf", PickUpMethod.latePickUp);
+        Order order = new Order(null, "25", 0.0, "1", "asdf", PickUpMethod.latePickUp, 2);
         return order;
     }
 

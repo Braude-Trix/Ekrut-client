@@ -16,14 +16,14 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="956.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../styles/NewOrderBG.jpg" />
+            <Image url="@NewOrderBG.jpg" />
          </image>
       </ImageView>
       <HBox layoutX="589.0" layoutY="-36.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="11.0">
          <children>
             <ImageView fx:id="avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../styles/avaaarrrr.png" />
+                  <Image url="@avaaarrrr.png" />
                </image>
             </ImageView>
             <Label text="Yosi Sabbag">
@@ -62,7 +62,7 @@
       <ListView fx:id="ProductsList" layoutX="94.0" layoutY="83.0" prefHeight="319.0" prefWidth="341.0" stylesheets="@../styles/GoodButton.css" />
       <ImageView fitHeight="30.0" fitWidth="43.0" layoutX="637.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../styles/shopping-cart.png" />
+            <Image url="@shopping-cart.png" />
          </image>
       </ImageView>
       <Label fx:id="ClearCart" layoutX="833.0" layoutY="110.0" prefHeight="17.0" prefWidth="55.0" text="Clear Cart" underline="true">

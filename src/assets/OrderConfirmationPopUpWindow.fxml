@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ConfirmationOrderPopUpWindowController">
    <children>
       <ImageView fitHeight="361.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@/styles/popUpImage.jpg" />
+            <Image url="@/assets/popUpImage.jpg" />
          </image>
       </ImageView>
       <Label layoutX="167.0" prefHeight="50.0" prefWidth="293.0" text="Order confirmation">
@@ -43,7 +46,7 @@
             </Label>
             <Label fx:id="pickUpCodeLabel" prefHeight="27.0" prefWidth="293.0" text="Pick-up code: ">
                <font>
-                  <Font size="18.0" />
+                  <Font name="System Bold" size="18.0" />
                </font>
             </Label>
             <Label fx:id="monthlyBillLabel" prefHeight="27.0" prefWidth="293.0" text="Currently monthly bill : ">

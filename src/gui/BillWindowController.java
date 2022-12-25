@@ -15,16 +15,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.*;
+
+import javax.swing.text.Style;
 
 
 public class BillWindowController implements Initializable {
@@ -58,7 +57,7 @@ public class BillWindowController implements Initializable {
     int customerId = 100;
 
     public void initBillWindow() {
-        totalPriceLabel.setText("Total price:" + Double.toString(NewOrderController.previousOrder.getPrice()) + " ₪");
+        totalPriceLabel.setText(StyleConstants.TOTAL_PRICE_STRING + Double.toString(NewOrderController.previousOrder.getPrice()) + StyleConstants.CURRENCY_INS);
         initBillTable(NewOrderController.previousOrder);
         restoreOrder = NewOrderController.previousOrder;
 
@@ -78,9 +77,33 @@ public class BillWindowController implements Initializable {
         billTable.setItems(productsInBill);
     }
 
+    public boolean validateProductsInInventory(){
+        List<ProductInMachine> machineProducts = requestMachineProducts(machineId);
+        for(ProductInOrder productInOrder: restoreOrder.getProductsInOrder()){
+            for(ProductInMachine productInMachine: machineProducts){
+                if(productInOrder.getProduct().getProductId().equals(productInMachine.getProductId()) && productInOrder.getAmount() > productInMachine.getAmount())
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
+        Alert alert = new Alert(alertType); //Information, Error
+        alert.setContentText(alertTitle); // Information, Error
+        alert.setContentText(alertMessage);
+        alert.show();
+    }
 
     @FXML
     void proceedPaymentClicked(ActionEvent event) {
+        if(!validateProductsInInventory()){
+            restoreOrder = null;
+
+            replaceWindowToNewOrder();
+            createAnAlert(Alert.AlertType.ERROR, StyleConstants.OUT_OF_STOCK_LABEL, StyleConstants.INVENTORY_UPDATE_ALERT_MSG);
+            return;
+        }
         requestSaveOrder();
         requestSaveProductsInOrder();
         updateInventoryInDB();
@@ -219,14 +242,14 @@ public class BillWindowController implements Initializable {
         AnchorPane pane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/assets/OrderConfirmationPopUpWindow.fxml"));
+            loader.setLocation(getClass().getResource(StylePaths.CONFIRM_ORDER_POPUP_PATH));
             pane = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
         Stage stage = StageSingleton.getInstance().getStage();
-        stage.setTitle("Order confirmation");
+        stage.setTitle(StyleConstants.ORDER_CONFIRMATION_TITLE_LABEL);
         stage.setScene(new Scene(pane));
         stage.centerOnScreen();
         stage.setResizable(false);
@@ -238,21 +261,23 @@ public class BillWindowController implements Initializable {
 
     @FXML
     void backBtnClicked(MouseEvent event) {
+        replaceWindowToNewOrder();
+    }
+
+    void replaceWindowToNewOrder(){
         AnchorPane pane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/assets/NewOrder.fxml"));
+            loader.setLocation(getClass().getResource(StylePaths.NEW_ORDER_WINDOW_PATH));
             pane = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
         Stage stage = StageSingleton.getInstance().getStage();
-        stage.setTitle("Order confirmation");
+        stage.setTitle(StyleConstants.NEW_ORDER_WINDOW_LABEL);
         stage.setScene(new Scene(pane));
         stage.centerOnScreen();
         stage.setResizable(false);
     }
-
-
 }
