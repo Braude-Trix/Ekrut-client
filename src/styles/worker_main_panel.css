@@ -1,0 +1,24 @@
+.button {
+    -fx-background-color: #2f69fe;
+    -fx-backgroup-radius: 60 60 60 60;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #e0e4e7;
+}
+
+.button:hover {
+    -fx-background-color: #6993ff;
+    -fx-backgroup-radius: 30 30 30 30;
+}
+
+.combo-box {
+    -fx-background-color: #d4d8db;
+    -fx-backgroup-radius: 60 60 60 60;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #000000;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 4, 0, 0, 1);
+}
+
+.combo-box:hover {
+    -fx-background-color: #6993ff;
+    -fx-backgroup-radius: 30 30 30 30;
+}

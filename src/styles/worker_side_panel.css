@@ -1,0 +1,22 @@
+.button {
+    -fx-background-color: #e0e4e7;
+    -fx-backgroup-radius: 60 60 60 60;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #000000;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 7, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: #6993ff;
+    -fx-backgroup-radius: 30 30 30 30;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #e0e4e7;
+    -fx-border-color: #e0e4e7;
+}
+
+.image-view {
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}
