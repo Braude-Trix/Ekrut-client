@@ -1,8 +1,17 @@
 package gui;
 
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import client.Client;
+import client.ClientUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -10,14 +19,22 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Method;
+import models.Order;
+import models.Request;
+import models.Subscriber;
+import models.User;
+import models.UserType;
 import utils.Util;
 
 /**
  * @author gal
  * This class describes the functionality of the login page
  */
-public class loginController {
-	
+public class loginController  implements Initializable{
+	public static User user = null;
+	public static Order order;
+//	public static Subscriber subscriber;
 	public OLController OLcon;
 	public EKController EKcon;
 //	public MarketingManagerController MarketingManagerCon;
@@ -40,6 +57,12 @@ public class loginController {
     @FXML
     private Label errorTouch;
     
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		user = null;
+		order = null;
+//		subscriber = null;
+	}
 
 	/**
 	 * This method describes setting up a new scene.
@@ -125,6 +148,14 @@ public class loginController {
      * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
      */
     private void SelectHomePageToOpen() throws Exception {
+    	//request to user from db
+    	requestUser();
+    	
+    	//user = new User(null, null, 422222222, null, null, null, null, UserType.Client, null);
+    	//CheckAndGetSubscriberDetails();
+    	if (user == null) {
+    		return;
+    	}
 		Stage stage = StageSingleton.getInstance().getStage();
 		OLcon = new OLController();	
 		OLcon.start(stage);
@@ -133,6 +164,42 @@ public class loginController {
 //		MarketingManagerCon = new MarketingManagerController();
 //		MarketingManagerCon.start(stage);
     }
+    
+    private void requestUser() {
+    	List<Object> usernameAndPassword = new ArrayList<>();
+    	usernameAndPassword.add(txtUsername.getText());
+    	usernameAndPassword.add(txtPassword.getText());
+
+    	Request request = new Request();
+        request.setPath("/login/getUser");
+        request.setMethod(Method.GET);
+        request.setBody(usernameAndPassword);
+        ClientUI.chat.accept(request);// sending the request to the server.
+
+        handleRsponseGetUser();
+    }
+    
+    private void handleRsponseGetUser() {
+//		handle response info:
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+            	user = (User) Client.resFromServer.getBody().get(0);
+                break;
+            case INVALID_DATA:
+        		errorLabel.setText("The username or password are incorrect");
+            	break;
+            default:
+        		errorLabel.setText(Client.resFromServer.getDescription());
+                break;
+        }
+    }
+    
+    
+//    private void CheckAndGetSubscriberDetails() {
+//    	if (user.getType() == UserType.Subscriber) {
+//    		subscriber = new Subscriber(11, 0);
+//    	}
+//    }
     
     /**
      * This method responds to the event of interfacing with EKT (pressing a button).

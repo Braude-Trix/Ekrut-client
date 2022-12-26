@@ -1,24 +1,34 @@
 package gui;
 
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import utils.Util;
+import models.DeliveryOrder;
+import models.PickUpMethod;
+import models.Regions;
 
-public class DeliveryFormController {
+public class DeliveryFormController implements Initializable { 
 	public static Scene scene;
     private static final int NUMBER_DIGIT_IN_PHONE_NUMBER = 10;
 
     @FXML
-    private TextField txtCity;
+    private ComboBox<Regions> regionList;
 
     @FXML
     private TextField txtFirstName;
@@ -36,7 +46,7 @@ public class DeliveryFormController {
     private TextField txtPinCode;
     
     @FXML
-    private Label errorLabelCity;
+    private Label errorLabelRegion;
 
     @FXML
     private Label errorLabelFirstName;
@@ -56,6 +66,11 @@ public class DeliveryFormController {
     @FXML
     private AnchorPane anchorPane;
 	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+        setRegionComboBox();
+	}
+    
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/DeliveryForm.fxml"));
 				
@@ -75,16 +90,19 @@ public class DeliveryFormController {
     void ContinueToOrder(ActionEvent event) {
     	anchorPane.requestFocus();
     	removeErrorStyle();
-    	boolean isValidFirstName = isBlankTextField(txtFirstName, errorLabelFirstName);
-    	boolean isValidLastName = isBlankTextField(txtLastName, errorLabelLastName);
-    	boolean isValidCity = isBlankTextField(txtCity, errorLabelCity);
-    	boolean isValidFullAddress = isBlankTextField(txtFullAddress, errorLabelFullAddress);
+    	boolean isValidFirstName = !isBlankTextField(txtFirstName, errorLabelFirstName);
+    	boolean isValidLastName = !isBlankTextField(txtLastName, errorLabelLastName);
+    	boolean isValidCity = isValidFillComboBoxes();
+    	boolean isValidFullAddress = !isBlankTextField(txtFullAddress, errorLabelFullAddress);
     	boolean isValidPhoneNumber = isValidatePhone(txtPhoneNumber, errorLabelPhone);
     	boolean isValidPinCode = isValidatePincode(txtPinCode, errorLabelPinCode);
     	
     	if (!isValidCity || !isValidFirstName || !isValidLastName || !isValidPhoneNumber || !isValidFullAddress || !isValidPinCode) {
     		return;
     	}
+
+    	loginController.order = new DeliveryOrder(null, null, 0, null, null,  PickUpMethod.delivery, loginController.user.getIdNumber(), null, null, txtFirstName.getText(),
+    			txtLastName.getText(), txtPhoneNumber.getText(), txtFullAddress.getText(), regionList.getValue(), null, txtPinCode.getText(), null, null);
     }
 	
     @FXML
@@ -96,18 +114,7 @@ public class DeliveryFormController {
 	
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Stage stage = StageSingleton.getInstance().getStage();
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
-		
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
-		stage.setTitle("Login");
-		stage.setScene(scene);
-		stage.centerOnScreen();
-		stage.setResizable(false);
-		stage.show();
-		stage.setMinHeight(stage.getHeight());
-		stage.setMinWidth(stage.getWidth());
+		Util.genricLogOut(getClass());
     }
     
     @FXML
@@ -176,18 +183,34 @@ public class DeliveryFormController {
     
     
     private void removeErrorStyle() {
-    	txtCity.getStyleClass().remove("validation-error");
+    	regionList.getStyleClass().remove("validation-error");
     	txtFirstName.getStyleClass().remove("validation-error");
     	txtFullAddress.getStyleClass().remove("validation-error");
     	txtLastName.getStyleClass().remove("validation-error");
     	txtPhoneNumber.getStyleClass().remove("validation-error");
     	txtPinCode.getStyleClass().remove("validation-error");
-    	errorLabelCity.setText("");
+    	errorLabelRegion.setText("");
     	errorLabelFirstName.setText("");
     	errorLabelFullAddress.setText("");
     	errorLabelLastName.setText("");
     	errorLabelPhone.setText("");
     	errorLabelPinCode.setText("");
+    }
+    
+    private void setRegionComboBox() {
+        ObservableList<Regions> options = FXCollections.observableArrayList(Regions.class.getEnumConstants());
+        options.remove(Regions.All);
+        regionList.getItems().addAll(options); 
+    }
+    
+    
+    private boolean isValidFillComboBoxes() {
+    	if(regionList.getValue() == null) {
+    		regionList.getStyleClass().add("validation-error");
+    		errorLabelRegion.setText("Required field");
+    		return false;
+    	}
+    	return true;
     }
     
 }

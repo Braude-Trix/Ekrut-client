@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import client.Client;
+import client.ClientUI;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,8 +29,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import models.Method;
 import models.MyOrders;
 import models.PickUpMethod;
+import models.Request;
+import models.User;
 import utils.Util;
 
 
@@ -153,18 +158,7 @@ public class MyOrdersController implements Initializable {
 
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Stage stage = StageSingleton.getInstance().getStage();
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
-		
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
-		stage.setTitle("Login");
-		stage.setScene(scene);
-		stage.centerOnScreen();
-		stage.setResizable(false);
-		stage.show();
-		stage.setMinHeight(stage.getHeight());
-		stage.setMinWidth(stage.getWidth());
+		Util.genricLogOut(getClass());
     }
 
     @FXML
@@ -187,22 +181,94 @@ public class MyOrdersController implements Initializable {
     
     private void getAllOrdersForSpecificUser()
     {
-		MyOrders order1 = (new MyOrders("12345","7:00 27/10/22","---", 22, "ss", "Not Collected", PickUpMethod.delivery));
-		MyOrders order2 = (new MyOrders("12345","7:00 27/10/22","---", 22, "ss", "approve", PickUpMethod.latePickUp));
-		MyOrders order3 = (new MyOrders("54321","7:00 27/10/22","---", 22, "ss", "Not Collected", PickUpMethod.latePickUp));
-
-		listMyOrders.add(order1);
-		listMyOrders.add(order2);
-		listMyOrders.add(order3);
-
+    	//request orders
+    	//request date recived from pickup and delivery
+    	List<Object> userId = new ArrayList<>();
+    	userId.add(loginController.user.getIdNumber());
+    	Request request = new Request();
+        request.setPath("/user/myOrders");
+        request.setMethod(Method.GET);
+        request.setBody(userId);
+        ClientUI.chat.accept(request);// sending the request to the server.
+    	
+        handleRsponseGetMyOrders();
+    	 
+//		MyOrders order1 = (new MyOrders("12345","7:00 27/10/22","---", 22, "ss", "Not Collected", PickUpMethod.delivery, 222));
+//		MyOrders order2 = (new MyOrders("12345","7:00 27/10/22","---", 22, "ss", "approve", PickUpMethod.latePickUp,333));
+//		MyOrders order3 = (new MyOrders("54321","7:00 27/10/22","---", 22, "ss", "Not Collected", PickUpMethod.latePickUp,777));
+//
+//		listMyOrders.add(order1);
+//		listMyOrders.add(order2);
+//		listMyOrders.add(order3);
+//
 		ObservableList<MyOrders> orders = FXCollections.observableArrayList();
 		orders.addAll(listMyOrders);
 		tableViewOrders.setItems(orders);
-		
-		//need to approve
-		ObservableList<MyOrders> waitForApprove = FXCollections.observableArrayList();
-		waitForApprove.add(order1);
-		tableViewApproveDel.setItems(waitForApprove);
+//		
+//		//need to approve
+//		ObservableList<MyOrders> waitForApprove = FXCollections.observableArrayList();
+//		waitForApprove.add(order1);
+//		tableViewApproveDel.setItems(waitForApprove);
+    }
+    
+    private void handleRsponseGetMyOrders() {
+    	if (Client.resFromServer.getPath().equals("/user/myOrders")) {
+        	switch (Client.resFromServer.getCode()) {
+            case OK:
+            	updateMyOrders(Client.resFromServer.getBody());
+                break;
+            default:
+                break;
+        	}
+    	}
+    }
+    
+    private void updateMyOrders(List<Object> listOrders){
+    	listMyOrders.clear();
+    	for (Object order:listOrders) {
+    		if (order instanceof MyOrders) {
+    			MyOrders tempOrder = (MyOrders)order;
+    			if (tempOrder.getPickUpMethod() == PickUpMethod.delivery || tempOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
+    				String tempReceivedDate = getRecivedDate(tempOrder.getOrderId(), tempOrder.getPickUpMethod());
+    				if (tempReceivedDate == null)
+    				{
+    					tempReceivedDate = "-----";
+    				}
+    				tempOrder.setReceivedDate(tempReceivedDate);
+    			}
+    			listMyOrders.add((MyOrders)order);
+    		}
+    	}
+    }
+    
+    private String getRecivedDate(String orderID, PickUpMethod method) {
+       	List<Object> orderDelivery = new ArrayList<>();
+       	orderDelivery.add(orderID);
+    	Request request = new Request();
+    	if (method == PickUpMethod.delivery) {
+            request.setPath("/order/RecivedDateDelivery");
+    	}
+    	else {
+            request.setPath("/order/RecivedDatePickup");
+    	}
+        request.setMethod(Method.GET);
+        request.setBody(orderDelivery);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        return handleRecivedDateFromServer(method);
+    }
+    
+    private String handleRecivedDateFromServer(PickUpMethod method) {
+    	if (method == PickUpMethod.delivery && Client.resFromServer.getPath().equals("/order/RecivedDateDelivery") ||
+    			method == PickUpMethod.latePickUp && Client.resFromServer.getPath().equals("/order/RecivedDatePickup")) {
+    		
+          	switch (Client.resFromServer.getCode()) {
+            case OK:
+            	return (String) (Client.resFromServer.getBody().get(0));
+            default:
+                break;
+        	}
+    	}
+    	return null;
     }
     
     private void setStyleForEmptyTable() {
@@ -224,14 +290,35 @@ public class MyOrdersController implements Initializable {
     		return;
     	}
     	
+    	setPickupCode(txtOrderID.getText());
     	ShowEnterOrderID.setVisible(false);
     	ShowPickupCode.setVisible(true);
     	txtOrderID.clear();
-    	setPickupCode(txtOrderID.getText());
     }
     
     private void setPickupCode(String OrderID) {
-    	pickupCode.setText("11111");
+    	List<Object> orderId = new ArrayList<>();
+    	orderId.add(OrderID);
+    	Request request = new Request();
+        request.setPath("/order/pickupOrder/getPickupCode");
+        request.setMethod(Method.GET);
+        request.setBody(orderId);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        
+        handleGetPickupCodeFromServer();
+    }
+    
+    private void handleGetPickupCodeFromServer()
+    {
+    	if (Client.resFromServer.getPath().equals("/order/pickupOrder/getPickupCode")) {
+          	switch (Client.resFromServer.getCode()) {
+            case OK:
+            	pickupCode.setText( (String) (Client.resFromServer.getBody().get(0)));
+            	break;
+            default:
+                break;
+        	}
+    	}
     }
     
     private void removeErrorStyle() {

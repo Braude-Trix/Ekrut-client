@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextField?>
@@ -97,9 +98,9 @@
                   <Insets top="5.0" />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <HBox prefHeight="100.0" prefWidth="900.0">
                <children>
-                  <VBox prefHeight="100.0" prefWidth="545.0">
+                  <VBox prefHeight="194.0" prefWidth="546.0">
                      <children>
                         <Line endX="732.908203125" endY="1.8296349048614502" startX="323.21533203125" startY="1.8283952474594116" stroke="#dccece">
                            <VBox.margin>
@@ -136,12 +137,12 @@
                                  <children>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <Label fx:id="cityLabel1" text="City" />
+                                          <Label fx:id="cityLabel1" text="Region" />
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtCity" focusTraversable="false" promptText="Enter Full Name Here" />
-                                    <Label fx:id="errorLabelCity" textFill="RED" />
+                                    <ComboBox fx:id="regionList" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Region" />
+                                    <Label fx:id="errorLabelRegion" textFill="RED" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -171,7 +172,7 @@
                   </VBox>
                </children>
                <VBox.margin>
-                  <Insets top="5.0" />
+                  <Insets />
                </VBox.margin>
             </HBox>
             <HBox prefHeight="46.0" prefWidth="523.0">

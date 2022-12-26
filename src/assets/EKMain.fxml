@@ -29,7 +29,7 @@
                   <Insets bottom="100.0" />
                </VBox.margin>
             </Label>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="310.0" text="Create New Order">
+            <Button mnemonicParsing="false" onAction="#createNewOrder" prefHeight="60.0" prefWidth="310.0" text="Create New Order">
                <font>
                   <Font size="15.0" />
                </font>

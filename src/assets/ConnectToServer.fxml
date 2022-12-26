@@ -69,16 +69,16 @@
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </VBox.margin>
                         </HBox>
+                        <Button fx:id="connectBtn" focusTraversable="false" mnemonicParsing="false" onAction="#connectToServer" prefHeight="26.0" prefWidth="227.0" text="Connect">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Button>
                         <Label fx:id="ErrorLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="263.0" textFill="#f80303">
                            <VBox.margin>
                               <Insets bottom="10.0" />
                            </VBox.margin>
                         </Label>
-                        <Button fx:id="connectBtn" focusTraversable="false" mnemonicParsing="false" onAction="#connectToServer" prefHeight="25.0" prefWidth="150.0" text="Connect">
-                           <VBox.margin>
-                              <Insets left="75.0" />
-                           </VBox.margin>
-                        </Button>
                         <Label fx:id="ErrorHelpLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="263.0" textFill="#fc0000">
                            <VBox.margin>
                               <Insets bottom="10.0" />

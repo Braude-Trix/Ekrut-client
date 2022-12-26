@@ -12,6 +12,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Order;
+import models.PickUpMethod;
 import utils.Util;
 
 /**
@@ -67,18 +69,7 @@ public class EKController {
      */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Stage stage = StageSingleton.getInstance().getStage();
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
-		
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
-		stage.setTitle("Login");
-		stage.setScene(scene);
-		stage.centerOnScreen();
-		stage.setResizable(false);
-		stage.show();
-		stage.setMinHeight(stage.getHeight());
-		stage.setMinWidth(stage.getWidth());
+		Util.genricLogOut(getClass());
     }
     
     /**
@@ -98,6 +89,11 @@ public class EKController {
     	VBoxEnterPickUp.setVisible(false);
     	VboxSuccessfulPickUpCode.setVisible(true);
     	txtPickupCode.setText("");
+    }
+    
+    @FXML
+    void createNewOrder(ActionEvent event) {
+    	loginController.order = new Order(null, null, 0, null, null, PickUpMethod.selfPickUp, loginController.user.getIdNumber());
     }
     
     /**

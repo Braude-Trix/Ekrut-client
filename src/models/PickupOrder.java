@@ -4,13 +4,21 @@ import java.io.Serializable;
 
 public class PickupOrder extends Order implements Serializable {
 	private String pickupCode;
-	private Machine selectedMachine;
+	private String dateReceived;
 	
 	public PickupOrder(String orderId, String date, double price, String machineId, String status,
-			PickUpMethod pickUpMethod, String pickupCode, Machine selectedMachine) {
-		super(orderId, date, price, machineId, status, pickUpMethod);
+			PickUpMethod pickUpMethod, String pickupCode, Integer customerId ,String dateReceived) {
+		super(orderId, date, price, machineId, status, pickUpMethod, customerId);  
 		this.pickupCode = pickupCode;
-		this.selectedMachine = selectedMachine;
+		this.dateReceived = dateReceived;
+	}
+
+	public String getDateReceived() {
+		return dateReceived;
+	}
+
+	public void setDateReceived(String dateReceived) {
+		this.dateReceived = dateReceived;
 	}
 
 	public String getPickupCode() {
@@ -19,14 +27,6 @@ public class PickupOrder extends Order implements Serializable {
 
 	public void setPickupCode(String pickupCode) {
 		this.pickupCode = pickupCode;
-	}
-
-	public Machine getSelectedMachine() {
-		return selectedMachine;
-	}
-
-	public void setSelectedMachine(Machine selectedMachine) {
-		this.selectedMachine = selectedMachine;
 	}
 
 }

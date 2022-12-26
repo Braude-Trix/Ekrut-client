@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import javafx.stage.Stage;
+import utils.Util;
 
 /**
  * @author gal
@@ -133,18 +134,7 @@ public class OLController implements Initializable {
      */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Stage stage = StageSingleton.getInstance().getStage();
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
-		
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
-		stage.setTitle("Login");
-		stage.setScene(scene);
-		stage.centerOnScreen();
-		stage.setResizable(false);
-		stage.show();
-		stage.setMinHeight(stage.getHeight());
-		stage.setMinWidth(stage.getWidth());
+		Util.genricLogOut(getClass());
     }
 
 	

@@ -1,8 +1,5 @@
-/client/
-/clientModels/
 /gui/
 /models/
-/ocsf/
-/assets/
-/styles/
 /utils/
+/client/
+/assets/

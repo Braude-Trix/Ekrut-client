@@ -27,36 +27,9 @@
     }
 
 .combo-box {
-    -fx-background-color: #ffc39c;
+     -fx-background-color: #ffc39c;
+
 }
-/*.text-field {
-    -fx-border-radius: 20px;
-    -fx-border-color: grey;
-    -fx-padding: 0.333333em 1em 0.333333em 1em;
-    -fx-background-color: transparent;
-    -fx-pref-height: 0px;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-}
-
-    .text-field:focused {
-        -fx-background-color: transparent;
-        -fx-pref-height: 0px;
-        -fx-translate-y: 0px;
-        -fx-background-color: transparent;
-        -fx-pref-height: 0px;
-    }*/
-
-
-.text-field {
-    -fx-accent: #ffc39c;
-    -fx-background-insets: -1, 0 0 1 0;
-    -fx-background-radius: 0;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-}
-
-    .text-field:focused {
-        -fx-background-color: #ffc39c, white;
-    }
 
 .validation-error {
     -fx-background-color: #FFF0F0;
