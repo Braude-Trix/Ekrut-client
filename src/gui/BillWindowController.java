@@ -2,12 +2,10 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.*;
 
-import client.Client;
-import client.ClientUI;
-import gui.StageSingleton;
+import gui.client.Client;
+import gui.client.ClientUI;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,8 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.*;
-
-import javax.swing.text.Style;
 
 
 public class BillWindowController implements Initializable {
@@ -107,6 +103,9 @@ public class BillWindowController implements Initializable {
         requestSaveOrder();
         requestSaveProductsInOrder();
         updateInventoryInDB();
+        requestSaveDeliveryOrder();
+        requestSaveLatePickUpOrder();
+
         changeToConfirmationOrderPopUpWindow();
     }
 
@@ -126,6 +125,44 @@ public class BillWindowController implements Initializable {
                 break;
             default:
                 System.out.println("Some error occurred");
+        }
+    }
+
+    void requestSaveDeliveryOrder(){
+        if(NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.delivery){
+            DeliveryOrder deliveryOrder = (DeliveryOrder)NewOrderController.previousOrder;
+            List<Object> paramList = new ArrayList<>();
+            Request request = new Request();
+            request.setPath("/saveDeliveryOrder");
+            request.setMethod(Method.POST);
+            paramList.add(deliveryOrder);
+            request.setBody(paramList);
+            ClientUI.chat.accept(request);// sending the request to the server.
+            switch (Client.resFromServer.getCode()) {
+                case OK:
+                    break;
+                default:
+                    System.out.println("Some error occurred");
+            }
+        }
+    }
+
+    void requestSaveLatePickUpOrder(){
+        if(NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.latePickUp){
+            PickupOrder latePickUpOrder = (PickupOrder)NewOrderController.previousOrder;
+            List<Object> paramList = new ArrayList<>();
+            Request request = new Request();
+            request.setPath("/saveLatePickUpOrder");
+            request.setMethod(Method.POST);
+            paramList.add(latePickUpOrder);
+            request.setBody(paramList);
+            ClientUI.chat.accept(request);// sending the request to the server.
+            switch (Client.resFromServer.getCode()) {
+                case OK:
+                    break;
+                default:
+                    System.out.println("Some error occurred");
+            }
         }
     }
 

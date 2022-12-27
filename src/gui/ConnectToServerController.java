@@ -1,9 +1,9 @@
 package gui;
 
-import client.Client;
+import gui.client.Client;
 import clientModels.ClientConfiguration;
-import client.ClientController;
-import client.ClientUI;
+import gui.client.ClientController;
+import gui.client.ClientUI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +17,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.Method;
-import models.ProductInMachine;
 import models.Request;
 
 import java.io.IOException;

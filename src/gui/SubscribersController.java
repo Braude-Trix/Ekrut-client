@@ -1,7 +1,7 @@
 package gui;
 
-import client.Client;
-import client.ClientUI;
+import gui.client.Client;
+import gui.client.ClientUI;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

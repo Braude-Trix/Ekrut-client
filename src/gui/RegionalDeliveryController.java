@@ -1,7 +1,7 @@
 package gui;
 
-import client.Client;
-import client.ClientUI;
+import gui.client.Client;
+import gui.client.ClientUI;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -218,7 +218,7 @@ public class RegionalDeliveryController implements Initializable {
 
     public void addItemsToPendingTable(String region) {
         //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder("1234", "Nesher", "Haifa", "2734563");
+        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", "WAITING_FOR_DELIVERY", PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
         List<DeliveryOrder> deliveryOrders = new ArrayList<>();
         deliveryOrders.add(deliv);
 
@@ -226,7 +226,7 @@ public class RegionalDeliveryController implements Initializable {
         ObservableList<PendingDeliveryTable> regionalDeliveriesList = FXCollections.observableArrayList();
         for (DeliveryOrder deliveryOrder : deliveryOrders) {
             CheckBox approveCheckBox = new CheckBox();
-            PendingDeliveryTable PendingDeliveryTable = new PendingDeliveryTable(deliveryOrder.getOrderId(), deliveryOrder.getDeliveryDate(), deliveryOrder.getDeliveryAddress(), approveCheckBox);
+            PendingDeliveryTable PendingDeliveryTable = new PendingDeliveryTable(deliveryOrder.getOrderId(), deliveryOrder.getDate(), deliveryOrder.getFullAddress(), approveCheckBox);
             regionalDeliveriesList.add(PendingDeliveryTable);
         }
         ordersTable.setItems(regionalDeliveriesList);
@@ -242,11 +242,9 @@ public class RegionalDeliveryController implements Initializable {
 
     public void addItemsToConfirmTable(String region) {
         //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder("123456", "Nesher", "Haifa", "2734563");
-        DeliveryOrder deliv2 = new DeliveryOrder("1231456", "Nes1her", "Hai1fa", "27341563");
+        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", "WAITING_FOR_DELIVERY", PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
         List<DeliveryOrder> deliveryOrders = new ArrayList<>();
         deliveryOrders.add(deliv);
-        deliveryOrders.add(deliv2);
 
 
         ObservableList<ConfirmDeliveryTable> confirmDeliveriesList = FXCollections.observableArrayList();
@@ -258,7 +256,7 @@ public class RegionalDeliveryController implements Initializable {
             imageViewV.setFitWidth(20);
             imageViewV.setFitHeight(20);
             confirmBtn.setGraphic(imageViewV);
-            ConfirmDeliveryTable confirmDeliveryTable = new ConfirmDeliveryTable(deliveryOrder.getOrderId(), deliveryOrder.getDeliveryDate(), "2/2/2022", confirmBtn);
+            ConfirmDeliveryTable confirmDeliveryTable = new ConfirmDeliveryTable(deliveryOrder.getOrderId(), deliveryOrder.getDate(), deliveryOrder.getDateReceived(), confirmBtn);
             VImageClicked(confirmBtn, confirmDeliveriesList, confirmDeliveryTable);
             confirmDeliveriesList.add(confirmDeliveryTable);
         }
