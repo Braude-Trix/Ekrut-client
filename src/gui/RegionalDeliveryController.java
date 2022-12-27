@@ -218,7 +218,7 @@ public class RegionalDeliveryController implements Initializable {
 
     public void addItemsToPendingTable(String region) {
         //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", "WAITING_FOR_DELIVERY", PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
+        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
         List<DeliveryOrder> deliveryOrders = new ArrayList<>();
         deliveryOrders.add(deliv);
 
@@ -242,7 +242,7 @@ public class RegionalDeliveryController implements Initializable {
 
     public void addItemsToConfirmTable(String region) {
         //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", "WAITING_FOR_DELIVERY", PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
+        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
         List<DeliveryOrder> deliveryOrders = new ArrayList<>();
         deliveryOrders.add(deliv);
 

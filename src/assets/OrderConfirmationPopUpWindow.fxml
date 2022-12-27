@@ -15,25 +15,23 @@
             <Image url="@/assets/popUpImage.jpg" />
          </image>
       </ImageView>
-      <Label layoutX="167.0" prefHeight="50.0" prefWidth="293.0" text="Order confirmation">
+      <Label layoutX="147.0" prefHeight="50.0" prefWidth="293.0" text="Order confirmation">
          <font>
             <Font size="34.0" />
          </font>
       </Label>
-      <VBox fx:id="vboxContainer" layoutX="23.0" layoutY="44.0" prefHeight="273.0" prefWidth="580.0">
+      <VBox fx:id="vboxContainer" layoutX="10.0" layoutY="33.0" prefHeight="295.0" prefWidth="580.0">
          <children>
             <Label fx:id="totalPriceLabel" text="Total price: ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Region prefHeight="12.0" prefWidth="530.0" />
             <Label fx:id="pickUpMethodLabel" prefHeight="31.0" prefWidth="275.0" text="Pick-up method: ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Region fx:id="regionId" prefHeight="12.0" prefWidth="530.0" />
             <Label fx:id="pickUpMachineLabel" prefHeight="27.0" prefWidth="293.0" text="Pick-up machine: ">
                <font>
                   <Font size="18.0" />
@@ -54,13 +52,12 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Region prefHeight="12.0" prefWidth="530.0" />
             <Label fx:id="orderDateLabel" prefHeight="27.0" prefWidth="324.0" text="Order date: ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Region prefHeight="70.0" prefWidth="530.0" />
+            <Region prefHeight="1.0" prefWidth="580.0" />
             <Label fx:id="thankLabel" prefHeight="118.0" prefWidth="530.0" text="Dear customer, The credit card you provided was successfully charged, thank you for shopping with us" wrapText="true">
                <font>
                   <Font size="18.0" />

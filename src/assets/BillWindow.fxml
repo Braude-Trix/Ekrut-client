@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BillWindowController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BillWindowController">
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
@@ -62,7 +62,7 @@
          </image>
       </ImageView>
       <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" stylesheets="@../styles/BadButton.css" text="Log Out" AnchorPane.bottomAnchor="461.0" AnchorPane.leftAnchor="816.0" />
-      <Label layoutX="746.0" layoutY="23.0" text="Yosi Sabag" />
+      <Label fx:id="nameLabel" layoutX="746.0" layoutY="23.0" />
       <ImageView fitHeight="29.0" fitWidth="29.0" layoutX="707.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@avatar.png" />

@@ -2,6 +2,8 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import gui.client.Client;
@@ -44,24 +46,33 @@ public class BillWindowController implements Initializable {
     private Button proceedPaymentBtn;
     @FXML
     private Label totalPriceLabel;
-
+    @FXML
+    private Label nameLabel;
 
     public static Order order;
 
 
-    Integer machineId = 1;
-    int customerId = 100;
+    Integer machineId;
+    int customerId;
 
     public void initBillWindow() {
         totalPriceLabel.setText(StyleConstants.TOTAL_PRICE_STRING + Double.toString(NewOrderController.previousOrder.getPrice()) + StyleConstants.CURRENCY_INS);
         initBillTable(NewOrderController.previousOrder);
         restoreOrder = NewOrderController.previousOrder;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT);
+        restoreOrder.setDate(LocalDate.now().format(formatter));
+        if(restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
+            ((PickupOrder)restoreOrder).setPickupCode(UUID.randomUUID().toString().replace("-","").substring(0,15));
+
 
     }
 
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initBillWindow();
+        nameLabel.setText(NewOrderController.user.getFirstName() + " " + NewOrderController.user.getLastName());
+        machineId = Integer.parseInt(NewOrderController.previousOrder.getMachineId());
+        customerId = NewOrderController.user.getId();
     }
 
     public void initBillTable(Order order) {

@@ -17,7 +17,7 @@ public class DeliveryOrder extends Order implements Serializable {
 	private String dateReceived;
 
 	
-	public DeliveryOrder(String orderId, String date, double price, String machineId, String status, PickUpMethod pickUpMethod, Integer customerId,
+	public DeliveryOrder(String orderId, String date, double price, String machineId, OrderStatus status, PickUpMethod pickUpMethod, Integer customerId,
 			String timeForDelivery, String regionalManagerId, String firstNameCustomer, String lastNameCustomer, String phoneNumber, String fullAddress,
 			Regions region, String dateReceived, String pincode, String deliveryLoadingTime, Double distance) {
 		super(orderId, date, price, machineId, status, pickUpMethod, customerId); 

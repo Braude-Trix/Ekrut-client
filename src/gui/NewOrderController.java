@@ -31,6 +31,9 @@ public class NewOrderController implements Initializable {
 
     static Order previousOrder;
 
+    static User user = new Customer("Yuval", "Zohar", 318128841, "asdfjj2@gmail.com", "05234822234", "asdfk", "asdf",false, "00",CustomerType.Subscriber,"3", Regions.South);
+    //static User user = new User();
+
     @FXML
     private ListView<VBox> ProductsList;
 
@@ -108,13 +111,13 @@ public class NewOrderController implements Initializable {
     }
 
     private Order receiveOrderFromPreviousPage() {
-        Order order = new PickupOrder(null, "25", 0.0, "1", "BENZONA", PickUpMethod.latePickUp, "23425523", 123124124,"293492");
-        //Order order = new DeliveryOrder(null, "25", 0.0, "1", "WAITING_FOR_DELIVERY", PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
+        //Order order = new PickupOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.latePickUp, "0000", 318128841,"293492");
+        Order order = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 318128841, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
         //Order order = new Order(null, "25", 0.0, "1", "asdf", PickUpMethod.latePickUp, 2);
         return order;
     }
 
-    private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
+    public static Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
     {
         if (amount == 2)
         {
