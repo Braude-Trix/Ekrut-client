@@ -56,6 +56,7 @@ public class NewOrderController implements Initializable {
     private Label ClearCart;
 
     List<ProductInMachineMonitor> allProductsMonitors = new ArrayList<>();
+    private double firstTimeMultiplier;
 
     List<Object> MaxAmountsList;
     public List<Object> requestMachineProducts(String machineId) {
@@ -97,6 +98,24 @@ public class NewOrderController implements Initializable {
         return null;
     }
 
+    public List<Object> requestCompletedOrders(Integer userId) {
+        List<Object> userIdList = new ArrayList<>();
+        userIdList.add(userId);
+        Request request = new Request();
+        request.setPath("/requestCompletedOrders");
+        request.setMethod(Method.GET);
+        request.setBody(userIdList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                List<Object> compOrders = Client.resFromServer.getBody();
+                return compOrders;
+            default:
+                System.out.println("Some error occurred");
+        }
+        return null;
+    }
+
     private int getMaxAmountOfProductInMachineFromDB(Order order, String productId) {
         List<Object> objectedProdInMachine = requestMachineProducts(order.getMachineId());
         for(Object prodInMachine : objectedProdInMachine) {
@@ -113,17 +132,14 @@ public class NewOrderController implements Initializable {
     private Order receiveOrderFromPreviousPage() {
         //Order order = new PickupOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.latePickUp, "0000", 318128841,"293492");
         Order order = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 318128841, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
-        //Order order = new Order(null, "25", 0.0, "1", "asdf", PickUpMethod.latePickUp, 2);
         return order;
     }
 
-    public static Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
+
+     private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
     {
-        if (amount == 2)
-        {
-            return pricePerItem;
-        }
-        return amount*pricePerItem;
+
+        return amount*pricePerItem*firstTimeMultiplier;
     }
 
     private List<Product> getAllProductsFromDB(Order order) {
@@ -271,7 +287,7 @@ public class NewOrderController implements Initializable {
                 productId = prod.getProduct().getProductId();
                 if (productId.equals(product.getProductId())) {
                     prod.setAmount(amount + prod.getAmount());
-                    prodInOrder.setTotalProductPrice(roundTo2Digit(calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice())));
+                    prod.setTotalProductPrice(roundTo2Digit(calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice())));
                     priceSetterForSmallNumbers(roundTo2Digit(order.getPrice()-calculatePriceAfterDiscount(prod.getAmount()-amount,prod.getProduct().getPrice())
                             + (calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice()))));
                     existingFlag = true;
@@ -288,7 +304,7 @@ public class NewOrderController implements Initializable {
             TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
         }
 
-        private double roundTo2Digit(double num) {
+        public double roundTo2Digit(double num) {
             BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
             return bd.doubleValue();
         }
@@ -315,10 +331,28 @@ public class NewOrderController implements Initializable {
         }
     }
 
+    private void setfirstTimeMultiplier(Integer id)
+    {
+        List<Object> OrderedIds = requestCompletedOrders(id);
+        Boolean isExist = (Boolean)OrderedIds.get(0);
+        if(isExist)
+        {
+            firstTimeMultiplier = 1.0;
+        }
+        else
+        {
+            firstTimeMultiplier = 0.8;
+        }
+
+    }
+
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle)
+    {
+        setfirstTimeMultiplier(1234);
         putProductsInMachine();
     }
+
 
     private Order recieveCurrentOrder() {
         Order order;
@@ -426,7 +460,7 @@ public class NewOrderController implements Initializable {
                 Label ProdName = new Label("  " + prod.getName());
                 Label counter = new Label(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ONE);
                 Pane pane = new Pane();
-                Button AddToCartButton = new Button(StyleConstants.ADD_TO_CART_LABEL + prod.getPrice() + StyleConstants.CURRENCY_SYMBOL);
+                Button AddToCartButton = new Button(StyleConstants.ADD_TO_CART_LABEL +String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, calculatePriceAfterDiscount(1,prod.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                 AddToCartButton.setStyle(StylePaths.POSITIVE_BUTTON_CSS);
                 Image min = new Image(StylePaths.MINUS_IMAGE);
                 ImageView minusImage = new ImageView(min);
