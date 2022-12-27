@@ -101,8 +101,8 @@ public class DeliveryFormController implements Initializable {
     		return;
     	}
 
-    	loginController.order = new DeliveryOrder(null, null, 0, null, null,  PickUpMethod.delivery, loginController.user.getIdNumber(), null, null, txtFirstName.getText(),
-    			txtLastName.getText(), txtPhoneNumber.getText(), txtFullAddress.getText(), regionList.getValue(), null, txtPinCode.getText(), null, null);
+    	loginController.order = new DeliveryOrder(null, null, 0, null, null,  PickUpMethod.delivery, loginController.user.getId(), txtFirstName.getText(),
+    			txtLastName.getText(), txtPhoneNumber.getText(), txtFullAddress.getText(), regionList.getValue(), null, txtPinCode.getText());
     }
 	
     @FXML

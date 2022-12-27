@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.FailUpdateSubscriberController">
+   <children>
+      <Label layoutX="34.0" layoutY="61.0" text="Error: Can't update the subscriber" textFill="#fa0606">
+         <font>
+            <Font name="Calibri" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="71.0" layoutY="125.0" text="Please check the server connection and try again" textFill="RED" />
+      <Button fx:id="backBtn" layoutX="100.0" layoutY="182.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleBackBtnClicked" prefHeight="25.0" prefWidth="200.0" text="Take me back" />
+   </children>
+</AnchorPane>

@@ -93,7 +93,7 @@ public class EKController {
     
     @FXML
     void createNewOrder(ActionEvent event) {
-    	loginController.order = new Order(null, null, 0, null, null, PickUpMethod.selfPickUp, loginController.user.getIdNumber());
+    	loginController.order = new Order(null, null, 0, null, null, PickUpMethod.selfPickUp, loginController.user.getId());
     }
     
     /**

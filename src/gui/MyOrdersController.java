@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -31,9 +32,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import models.Method;
 import models.MyOrders;
+import models.OrderStatus;
 import models.PickUpMethod;
 import models.Request;
-import models.User;
 import utils.Util;
 
 
@@ -43,7 +44,7 @@ public class MyOrdersController implements Initializable {
     private TableColumn<MyOrders, String> IdOrder;
 
     @FXML
-    private TableColumn<MyOrders, String> Status;
+    private TableColumn<MyOrders, OrderStatus> Status;
 
     @FXML
     private TableColumn<MyOrders, String> execDate;
@@ -85,12 +86,17 @@ public class MyOrdersController implements Initializable {
     private VBox ShowPickupCode;
     
     @FXML
+    private Label errorUpdateStatusDB;
+    
+    @FXML
     private TextField txtOrderID;
     
     @FXML
     private Label errorLabel;
     
     private List<MyOrders> listMyOrders;
+    private List<MyOrders> listDeliveryNotCollected;
+    ObservableList<MyOrders> orderObser;
     
     @FXML
     private AnchorPane anchorPane;
@@ -98,6 +104,7 @@ public class MyOrdersController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		listMyOrders = new ArrayList<>();
+		listDeliveryNotCollected = new ArrayList<>();
 		setCellFactoryOfTables();
 		getAllOrdersForSpecificUser();
 		setStyleForEmptyTable();
@@ -119,6 +126,14 @@ public class MyOrdersController implements Initializable {
 	}
 
 
+    @FXML
+    void refreshAllBtn(ActionEvent event) {
+    	orderObser.clear();
+		getAllOrdersForSpecificUser();
+		setStyleForEmptyTable();
+		addButtonToTable();
+    }
+
 	private void addButtonToTable() {
         TableColumn<MyOrders, Void> colBtn = new TableColumn<>("Action");
 
@@ -132,7 +147,12 @@ public class MyOrdersController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	//need to change status in db and in table
-                        	getTableView().getItems().remove(getIndex());
+                        	errorUpdateStatusDB.setVisible(false);
+                        	String time = LocalDate.now().toString();
+                        	if (isChangeStatusDeliveryOrderInDB(getTableView().getItems().get(getIndex()).getOrderId(),time)) {
+                            	updateStatusDeliveryInLocallyListMyOrders(getTableView().getItems().get(getIndex()),time);
+                            	getTableView().getItems().remove(getIndex());
+                        	}                       	
                         });
                     }
 
@@ -170,7 +190,7 @@ public class MyOrdersController implements Initializable {
     
     private void setCellFactoryOfTables() {
 		IdOrder.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("orderId"));
-		Status.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("Status"));
+		Status.setCellValueFactory(new PropertyValueFactory<MyOrders, OrderStatus>("Status"));
 		execDate.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("date"));
 		recieveDate.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("receivedDate"));
 		typeOrder.setCellValueFactory(new PropertyValueFactory<MyOrders, PickUpMethod>("pickUpMethod"));
@@ -178,13 +198,44 @@ public class MyOrdersController implements Initializable {
 		idOrderConfirm.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("orderId"));
 		execDateConfirm.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("date"));
     }
+    private void updateStatusDeliveryInLocallyListMyOrders(MyOrders order, String time) {
+    	int index = orderObser.indexOf(order);
+    	order.setStatus(OrderStatus.Collected);
+    	order.setReceivedDate(time);
+    	orderObser.set(index, order);
+    }
+    
+    private boolean isChangeStatusDeliveryOrderInDB(String orderId, String time) {
+    	List<Object> objects = new ArrayList<>();
+    	objects.add(orderId);
+    	objects.add(OrderStatus.Collected);
+    	objects.add(time);
+    	Request request = new Request();
+        request.setPath("/order/deliveryOrder/changeStatusAndDateReceived");
+        request.setMethod(Method.PUT);
+        request.setBody(objects);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        return isSetStatusDelivery();
+    }
+    
+    private boolean isSetStatusDelivery() {
+    	if (Client.resFromServer.getPath().equals("/order/deliveryOrder/changeStatusAndDateReceived")) {
+        	switch (Client.resFromServer.getCode()) {
+            case OK:
+                return true;
+            default:
+            	errorUpdateStatusDB.setVisible(true);
+            	errorUpdateStatusDB.setText(Client.resFromServer.getDescription());
+                break;
+        	}
+    	}
+    	return false;
+    }
     
     private void getAllOrdersForSpecificUser()
     {
-    	//request orders
-    	//request date recived from pickup and delivery
     	List<Object> userId = new ArrayList<>();
-    	userId.add(loginController.user.getIdNumber());
+    	userId.add(loginController.user.getId());
     	Request request = new Request();
         request.setPath("/user/myOrders");
         request.setMethod(Method.GET);
@@ -193,22 +244,13 @@ public class MyOrdersController implements Initializable {
     	
         handleRsponseGetMyOrders();
     	 
-//		MyOrders order1 = (new MyOrders("12345","7:00 27/10/22","---", 22, "ss", "Not Collected", PickUpMethod.delivery, 222));
-//		MyOrders order2 = (new MyOrders("12345","7:00 27/10/22","---", 22, "ss", "approve", PickUpMethod.latePickUp,333));
-//		MyOrders order3 = (new MyOrders("54321","7:00 27/10/22","---", 22, "ss", "Not Collected", PickUpMethod.latePickUp,777));
-//
-//		listMyOrders.add(order1);
-//		listMyOrders.add(order2);
-//		listMyOrders.add(order3);
-//
-		ObservableList<MyOrders> orders = FXCollections.observableArrayList();
-		orders.addAll(listMyOrders);
-		tableViewOrders.setItems(orders);
-//		
-//		//need to approve
-//		ObservableList<MyOrders> waitForApprove = FXCollections.observableArrayList();
-//		waitForApprove.add(order1);
-//		tableViewApproveDel.setItems(waitForApprove);
+        orderObser = FXCollections.observableArrayList();
+        orderObser.addAll(listMyOrders);
+		tableViewOrders.setItems(orderObser);
+
+		ObservableList<MyOrders> DeliveriesNotCollected = FXCollections.observableArrayList();
+		DeliveriesNotCollected.addAll(listDeliveryNotCollected);
+		tableViewApproveDel.setItems(DeliveriesNotCollected);
     }
     
     private void handleRsponseGetMyOrders() {
@@ -225,10 +267,12 @@ public class MyOrdersController implements Initializable {
     
     private void updateMyOrders(List<Object> listOrders){
     	listMyOrders.clear();
+    	listDeliveryNotCollected.clear();
     	for (Object order:listOrders) {
     		if (order instanceof MyOrders) {
     			MyOrders tempOrder = (MyOrders)order;
     			if (tempOrder.getPickUpMethod() == PickUpMethod.delivery || tempOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
+        			checkAndAddDeliveryOrderNotCollected(tempOrder);
     				String tempReceivedDate = getRecivedDate(tempOrder.getOrderId(), tempOrder.getPickUpMethod());
     				if (tempReceivedDate == null)
     				{
@@ -255,6 +299,12 @@ public class MyOrdersController implements Initializable {
         request.setBody(orderDelivery);
         ClientUI.chat.accept(request);// sending the request to the server.
         return handleRecivedDateFromServer(method);
+    }
+    
+    private void checkAndAddDeliveryOrderNotCollected(MyOrders order) {
+		if (order.getPickUpMethod() == PickUpMethod.delivery && order.getStatus() == OrderStatus.NotCollected ) {
+			listDeliveryNotCollected.add(order);
+		}
     }
     
     private String handleRecivedDateFromServer(PickUpMethod method) {
@@ -342,13 +392,25 @@ public class MyOrdersController implements Initializable {
     	String orderID = textField.getText();
     	for (MyOrders order : listMyOrders) {
     		//status need change 
-    		if (orderID.equals(order.getOrderId()) && (order.getPickUpMethod() == PickUpMethod.latePickUp) && order.getStatus().equals("Not Collected")) {
-    			return true;
+    		if (orderID.equals(order.getOrderId())){
+    			if (order.getPickUpMethod() == PickUpMethod.latePickUp) {
+    				if ( order.getStatus() == OrderStatus.NotCollected) {
+    	    			return true;
+    				}
+    				setErrorLabel("The order was taken");
+    				return false;
+    			}
+    			setErrorLabel("The selected order is not of the pickup type");
+    			return false;
     		}
     	}
-		errorLabel.setText("Invalid Order ID");
-		textField.getStyleClass().add("validation-error");
+    	setErrorLabel("Invalid Order ID");
     	return false;
+    }
+    
+    private void setErrorLabel(String msg) {
+    	errorLabel.setText(msg);
+    	txtOrderID.getStyleClass().add("validation-error");
     }
     
     @FXML

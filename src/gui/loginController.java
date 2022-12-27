@@ -24,7 +24,6 @@ import models.Order;
 import models.Request;
 import models.Subscriber;
 import models.User;
-import models.UserType;
 import utils.Util;
 
 /**

@@ -142,7 +142,7 @@ public class PickupController implements Initializable {
 			return;
 		}
 		
-		loginController.order = new PickupOrder(null, null, 0, machineList.getId(), null, PickUpMethod.latePickUp, null, loginController.user.getIdNumber(), null);
+		loginController.order = new PickupOrder(null, null, 0, machineList.getId(), null, PickUpMethod.latePickUp, null, loginController.user.getId(), null);
 	}
 
 	/**
