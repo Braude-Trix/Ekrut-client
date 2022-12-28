@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.OLController">
+   <children>
+      <ImageView pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@PickUpOrDel.jpg" />
+         </image>
+      </ImageView>
+      <VBox alignment="CENTER" layoutX="323.0" layoutY="14.0" />
+      <Button fx:id="MyOrdersBtn" layoutX="159.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#MoveMyOrdersWindow" prefHeight="32.0" prefWidth="100.0" text="My Orders" AnchorPane.bottomAnchor="460.0" AnchorPane.leftAnchor="159.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <VBox alignment="CENTER" layoutX="192.0" layoutY="220.0">
+         <children>
+            <HBox>
+               <VBox.margin>
+                  <Insets top="50.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <Label layoutX="303.0" layoutY="168.0" prefHeight="82.0" prefWidth="320.0" text="Want to place an order?&#10;Please choose Delivery or PickUp firstly" textAlignment="CENTER" AnchorPane.bottomAnchor="273.0" AnchorPane.leftAnchor="303.0" AnchorPane.rightAnchor="277.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="DeliveryBtn" layoutX="465.0" layoutY="270.0" mnemonicParsing="false" onAction="#MoveDeliveryForm" prefHeight="40.0" prefWidth="170.0" text="Delivery">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="PickupBtn" layoutX="279.0" layoutY="270.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#MovePickupForm" prefHeight="40.0" prefWidth="170.0" text="PickUp">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <HBox alignment="CENTER" layoutX="578.0" layoutY="13.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="11.0">
+         <children>
+            <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@avaaarrrr.png" />
+               </image>
+            </ImageView>
+            <Label contentDisplay="CENTER" text="Yosi Sabbag">
+               <HBox.margin>
+                  <Insets left="15.0" right="15.0" />
+               </HBox.margin>
+            </Label>
+            <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#LogOut" prefHeight="32.0" prefWidth="65.0" text="Log Out" />
+         </children>
+      </HBox>
+      <Label fx:id="newNotification" layoutX="249.0" layoutY="8.0" text=" 1 shipping confirmation" textFill="#cc8c1d">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
