@@ -2,8 +2,12 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import client.Client;
+import client.ClientUI;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -34,7 +38,9 @@ public class PickupController implements Initializable {
 	private ComboBox<Regions> regionList;
 
 	@FXML
-	private ComboBox<Machine> machineList;
+	private ComboBox<String> machineList;
+
+	private List<Machine> machinesSet;
 
 	/**
 	 * This method describes the initialization of information that will be
@@ -43,6 +49,7 @@ public class PickupController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		setRegionComboBox();
+		machinesSet = new ArrayList<>();
 	}
 
 	/**
@@ -98,6 +105,7 @@ public class PickupController implements Initializable {
 	private void setRegionComboBox() {
 		ObservableList<Regions> options = FXCollections.observableArrayList(Regions.class.getEnumConstants());
 		regionList.getItems().addAll(options);
+		regionList.getItems().remove(Regions.All);
 	}
 
 	/**
@@ -119,10 +127,37 @@ public class PickupController implements Initializable {
 	 * @param region, Describes the selected parameter in the combo box
 	 */
 	private void setMachinesNameComboBox(Regions region) {
-		Machine machine1 = new Machine("11", "dd", "North", "22");
-		Machine machine2 = new Machine("1111", "33", "North", "22");
+		List<Object> regionReq = new ArrayList<>();
+		regionReq.add(region);
+		Request request = new Request();
+		request.setPath("/machines/getMachine");
+		request.setMethod(Method.GET);
+		request.setBody(regionReq);
+		ClientUI.chat.accept(request);// sending the request to the server.
 
-		ObservableList<Machine> options = FXCollections.observableArrayList(machine1, machine2);
+		handleRsponseGetMachines();
+	}
+
+	private void handleRsponseGetMachines() {
+		switch (Client.resFromServer.getCode()) {
+		case OK:
+			updateMachines((Client.resFromServer.getBody()));
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void updateMachines(List<Object> listMachine) {
+		machinesSet.clear();
+		ObservableList<String> options = FXCollections.observableArrayList();
+		for (Object machine : listMachine) {
+			if (machine instanceof Machine) {
+				Machine tempMachine = (Machine) machine;
+				machinesSet.add(tempMachine);
+				options.add(tempMachine.getName());
+			}
+		}
 		machineList.getItems().addAll(options);
 		machineList.setDisable(false);
 	}
@@ -140,9 +175,19 @@ public class PickupController implements Initializable {
 		if (!isValidFillComboBoxes()) {
 			return;
 		}
-		
-		loginController.order = new PickupOrder(null, null, 0, "1", null, PickUpMethod.latePickUp, null, loginController.user.getId(), null);
+
+		loginController.order = new PickupOrder(null, null, 0, getMachineId(), null, PickUpMethod.latePickUp, null,
+				loginController.user.getId(), null);
 		continueNewOrder();
+	}
+
+	private String getMachineId() {
+		for (int i = 0; i < machinesSet.size(); i++) {
+			if (machineList.getValue().equals(machinesSet.get(i).getName())) {
+				return machinesSet.get(i).getId();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -174,8 +219,6 @@ public class PickupController implements Initializable {
 		}
 		return true;
 	}
-
-
 
 	private void continueNewOrder() {
 		AnchorPane pane;

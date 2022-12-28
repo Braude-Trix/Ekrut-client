@@ -22,6 +22,7 @@ import utils.Util;
 import models.DeliveryOrder;
 import models.PickUpMethod;
 import models.Regions;
+import models.User;
 
 public class DeliveryFormController implements Initializable { 
 	public static Scene scene;
@@ -66,9 +67,13 @@ public class DeliveryFormController implements Initializable {
     @FXML
     private AnchorPane anchorPane;
 	
+    private User user;
+    
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         setRegionComboBox();
+        user = loginController.user;
+        setValuesInTextFields();
 	}
     
 	public void start(Stage primaryStage) throws Exception {
@@ -84,6 +89,12 @@ public class DeliveryFormController implements Initializable {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+	}
+	
+	private void setValuesInTextFields() {
+		txtFirstName.setText(user.getFirstName());
+		txtLastName.setText(user.getLastName());
+		txtPhoneNumber.setText(user.getPhoneNumber());
 	}
 	
     @FXML
