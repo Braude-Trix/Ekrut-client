@@ -1,7 +1,8 @@
-package gui;
+package gui.workers;
 
-import gui.client.Client;
-import gui.client.ClientUI;
+
+import client.Client;
+import client.ClientUI;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -218,7 +219,7 @@ public class RegionalDeliveryController implements Initializable {
 
     public void addItemsToPendingTable(String region) {
         //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
+        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1",OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "5234523453", "zohar", Regions.South, "15","asdf");
         List<DeliveryOrder> deliveryOrders = new ArrayList<>();
         deliveryOrders.add(deliv);
 
@@ -242,7 +243,7 @@ public class RegionalDeliveryController implements Initializable {
 
     public void addItemsToConfirmTable(String region) {
         //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
+        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1",OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "5234523453", "zohar", Regions.South, "15","asdf");
         List<DeliveryOrder> deliveryOrders = new ArrayList<>();
         deliveryOrders.add(deliv);
 

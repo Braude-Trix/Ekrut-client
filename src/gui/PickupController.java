@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -14,11 +15,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import models.Machine;
-import models.PickUpMethod;
-import models.PickupOrder;
-import models.Regions;
+import models.*;
 import utils.Util;
 
 /**
@@ -142,7 +141,8 @@ public class PickupController implements Initializable {
 			return;
 		}
 		
-		loginController.order = new PickupOrder(null, null, 0, machineList.getId(), null, PickUpMethod.latePickUp, null, loginController.user.getId(), null);
+		loginController.order = new PickupOrder(null, null, 0, "1", null, PickUpMethod.latePickUp, null, loginController.user.getId(), null);
+		continueNewOrder();
 	}
 
 	/**
@@ -173,5 +173,24 @@ public class PickupController implements Initializable {
 			return false;
 		}
 		return true;
+	}
+
+
+
+	private void continueNewOrder() {
+		AnchorPane pane;
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource(StylePaths.NEW_ORDER_WINDOW_PATH));
+			pane = loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		Stage stage = StageSingleton.getInstance().getStage();
+		stage.setTitle(StyleConstants.STAGE_LABEL);
+		stage.setScene(new Scene(pane));
+		stage.centerOnScreen();
+		stage.setResizable(false);
 	}
 }

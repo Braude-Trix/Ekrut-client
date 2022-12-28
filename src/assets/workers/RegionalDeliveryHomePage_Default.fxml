@@ -13,16 +13,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" stylesheets="@../styles/SideButtons.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.RegionalDeliveryController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" stylesheets="@../../styles/SideButtons.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.RegionalDeliveryController">
    <children>
       <ImageView fx:id="bgImage" fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@mainPage.jpg" />
+            <Image url="@../mainPage.jpg" />
          </image>
       </ImageView>
       <HBox alignment="TOP_CENTER">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="505.0" prefWidth="270.0" spacing="10.0" stylesheets="@../styles/SideButtons.css">
+            <VBox alignment="TOP_CENTER" prefHeight="505.0" prefWidth="270.0" spacing="10.0" stylesheets="@../../styles/SideButtons.css">
                <children>
                   <HBox spacing="5.0">
                      <children>
@@ -30,7 +30,7 @@
                            <children>
                               <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@avatar.jpg" />
+                                    <Image url="@../avatar.jpg" />
                                  </image>
                               </ImageView>
                            </children>
@@ -130,8 +130,8 @@
                   <VBox fx:id="bottomBroderVbox" alignment="TOP_CENTER" prefHeight="70.0" prefWidth="70.0" spacing="5.0" BorderPane.alignment="CENTER" />
                </bottom>
                <stylesheets>
-                  <URL value="@../styles/MainButtons.css" />
-                  <URL value="@../styles/table_style.css" />
+                  <URL value="@../../styles/MainButtons.css" />
+                  <URL value="@../../styles/table_style.css" />
                </stylesheets>
             </BorderPane>
          </children>

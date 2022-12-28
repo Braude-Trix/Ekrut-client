@@ -1,9 +1,10 @@
 package gui;
 
-import gui.client.Client;
+import client.Client;
+import client.ClientController;
+import client.ClientUI;
 import clientModels.ClientConfiguration;
-import gui.client.ClientController;
-import gui.client.ClientUI;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -77,15 +78,15 @@ public class ConnectToServerController {
             return;
         }
 
-//        Stage stage = StageSingleton.getInstance().getStage();
-//        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/NewOrder.fxml"));
-//        stage.setTitle("Subscribers Panel");
-//        stage.setScene(new Scene(root));
-//        stage.centerOnScreen();
-//        stage.setResizable(false);
-//        stage.show();
-//        stage.setMinHeight(stage.getHeight());
-//        stage.setMinWidth(stage.getWidth());
+/*        Stage stage = StageSingleton.getInstance().getStage();
+        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/NewOrder.fxml"));
+        stage.setTitle("Subscribers Panel");
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+        stage.setResizable(false);
+        stage.show();
+        stage.setMinHeight(stage.getHeight());
+        stage.setMinWidth(stage.getWidth());*/
 
         Thread thread = new Thread(new getMessages());
         thread.start();

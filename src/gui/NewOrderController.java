@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.math.RoundingMode;
-import gui.client.Client;
-import gui.client.ClientUI;
+
+import client.Client;
+import client.ClientUI;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -31,7 +32,7 @@ public class NewOrderController implements Initializable {
 
     static Order previousOrder;
 
-    static User user = new Customer("Yuval", "Zohar", 318128841, "asdfjj2@gmail.com", "05234822234", "asdfk", "asdf",false, "00",CustomerType.Client,"3", Regions.South);
+    static User user = loginController.user;//new Customer("Yuval", "Zohar", 318128841, "asdfjj2@gmail.com", "05234822234", "asdfk", "asdf",false, "00",CustomerType.Client,"3", Regions.South);
     //static User user = new User();
 
     @FXML
@@ -131,7 +132,7 @@ public class NewOrderController implements Initializable {
 
     private Order receiveOrderFromPreviousPage() {
         //Order order = new PickupOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.latePickUp, "0000", 318128841,"293492");
-        Order order = new Order(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.selfPickUp, 318128841);
+        Order order = loginController.order; //= new Order(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.selfPickUp, 318128841);
         //Order order = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 318128841, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
         return order;
     }
