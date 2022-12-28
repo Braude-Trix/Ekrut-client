@@ -52,6 +52,3 @@ public class ProductInOrder implements Serializable {
         this.productName = productName;
     }
 }
-
-
-

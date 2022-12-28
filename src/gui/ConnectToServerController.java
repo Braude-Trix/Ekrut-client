@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectToServerController {
+	public static loginController LoginCon;
+
     @FXML
     private TextField txtHost;
 
@@ -75,20 +77,21 @@ public class ConnectToServerController {
             return;
         }
 
-        Stage stage = StageSingleton.getInstance().getStage();
-        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/NewOrder.fxml"));
-        stage.setTitle("Subscribers Panel");
-        stage.setScene(new Scene(root));
-        stage.centerOnScreen();
-        stage.setResizable(false);
-        stage.show();
-        stage.setMinHeight(stage.getHeight());
-        stage.setMinWidth(stage.getWidth());
+//        Stage stage = StageSingleton.getInstance().getStage();
+//        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/NewOrder.fxml"));
+//        stage.setTitle("Subscribers Panel");
+//        stage.setScene(new Scene(root));
+//        stage.centerOnScreen();
+//        stage.setResizable(false);
+//        stage.show();
+//        stage.setMinHeight(stage.getHeight());
+//        stage.setMinWidth(stage.getWidth());
 
-
-        /////////
         Thread thread = new Thread(new getMessages());
         thread.start();
+		LoginCon = new loginController();
+		Stage stage = StageSingleton.getInstance().getStage();
+		LoginCon.start(stage);
     }
 
     //	HandleConnectionError method - deals with invalid connection errors.

@@ -1,4 +1,4 @@
-package gui;
+/*package gui;
 
 import gui.client.Client;
 import gui.client.ClientUI;
@@ -113,7 +113,7 @@ public class SubscribersController implements Initializable {
         refreshBtn.setGraphic(imgView);
         refreshBtn.setTooltip(new Tooltip("Refresh to reload table"));
     }
-
+/*
     // submit function, handles click on 'submit' update subscriber form.
     @FXML
     void submit(ActionEvent event) {
@@ -429,4 +429,4 @@ public class SubscribersController implements Initializable {
         StageSingleton.getInstance().getStage().close();
         System.exit(0);
     }
-}
+}*/

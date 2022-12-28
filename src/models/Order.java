@@ -16,6 +16,7 @@ public class Order implements Serializable {
     private OrderStatus status;
     private List<ProductInOrder> productsInOrder;
 
+
     public Order(String orderId, String date, double price, String machineId, OrderStatus status, PickUpMethod pickUpMethod, Integer customerId) {
         this.orderId = orderId;
         this.date = date;

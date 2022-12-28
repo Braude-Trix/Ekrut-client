@@ -1,6 +1,5 @@
 package client;
 
-import gui.SubscribersController;
 import models.Response;
 import ocsf.client.AbstractClient;
 
@@ -94,7 +93,7 @@ public class Client extends AbstractClient {
 	 */
 	protected void connectionException(Exception exception) {
 		System.out.println("connectionException, server could be disconnected");
-		SubscribersController.moveToConnectToServer();
+		//SubscribersController.moveToConnectToServer();
 	}
 
 	/**

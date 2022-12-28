@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MyOrdersController">
+   <children>
+      <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Tavlaot.jpg" />
+         </image>
+      </ImageView>
+      <HBox layoutX="23.0" layoutY="96.0" prefHeight="358.0" prefWidth="854.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="23.0">
+         <children>
+            <VBox prefHeight="228.0" prefWidth="304.0">
+               <children>
+                  <Label prefHeight="60.0" prefWidth="262.0" text="Did you receive the order ?&#10;Please confirm">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="40.0" fitWidth="40.0">
+                           <image>
+                              <Image url="@delivery-status.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <TableView fx:id="tableViewApproveDel" focusTraversable="false" prefHeight="159.0" prefWidth="304.0">
+                    <columns>
+                      <TableColumn fx:id="idOrderConfirm" prefWidth="75.0" text="Order ID" />
+                      <TableColumn fx:id="execDateConfirm" prefWidth="108.0000228881836" text="Order Date" />
+                    </columns>
+                  </TableView>
+                  <Label fx:id="errorUpdateStatusDB" textFill="RED" visible="false" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="345.0" prefWidth="592.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="32.0" prefWidth="582.0" text="My Orders">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="35.0" left="40.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@shopping.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <TableView fx:id="tableViewOrders" prefHeight="221.0" prefWidth="557.0">
+                     <columns>
+                        <TableColumn fx:id="IdOrder" editable="false" prefWidth="83.99999845027924" text="Order ID" />
+                        <TableColumn fx:id="typeOrder" editable="false" prefWidth="79.20005798339844" text="Type Order" />
+                        <TableColumn fx:id="execDate" editable="false" prefWidth="115.20001220703125" text="Order Date" />
+                        <TableColumn fx:id="recieveDate" editable="false" prefWidth="110.4000244140625" text="Date Received" />
+                        <TableColumn fx:id="Status" editable="false" prefWidth="139.1999389648438" text="Status" />
+                     </columns>
+                     <VBox.margin>
+                        <Insets left="40.0" />
+                     </VBox.margin>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </TableView>
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="66.0" prefWidth="550.0">
+                     <children>
+                        <VBox fx:id="ShowPickupCode" alignment="CENTER_LEFT" layoutX="18.0" prefHeight="66.0" prefWidth="542.0" visible="false">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="19.0" prefWidth="542.0">
+                                 <children>
+                                    <Label prefHeight="20.0" prefWidth="117.0" text="Your Pickup Code:">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Label fx:id="pickupCode" prefHeight="20.0" prefWidth="226.0">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <Hyperlink onMouseClicked="#returnToEnterAnotherOrderId" text="Forgot another pickup code? Click here" textFill="#009dff" underline="true">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="7.0" top="5.0" />
+                                 </VBox.margin>
+                              </Hyperlink>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="ShowEnterOrderID" layoutX="29.0" layoutY="-1.0" prefHeight="66.0" prefWidth="522.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="522.0">
+                                 <children>
+                                    <Label text="Forgot the code for pick up? Enter OrderID:">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtOrderID" focusTraversable="false" promptText="Order ID">
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button focusTraversable="false" mnemonicParsing="false" onAction="#GetCode" text=" Get Code">
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <Label fx:id="errorLabel" textFill="RED">
+                                 <VBox.margin>
+                                    <Insets left="269.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="405.0" layoutY="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="11.0">
+         <children>
+            <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@avaaarrrr.png" />
+               </image>
+            </ImageView>
+            <Label text="Yosi Sabbag">
+               <HBox.margin>
+                  <Insets left="15.0" right="15.0" />
+               </HBox.margin>
+            </Label>
+            <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#LogOut" prefHeight="32.0" prefWidth="65.0" text="Log Out" />
+         </children>
+      </HBox>
+      <ImageView fitHeight="45.0" fitWidth="200.0" onMouseClicked="#Back" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0">
+         <image>
+            <Image url="@Back.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="829.0" layoutY="447.0" mnemonicParsing="false" onAction="#refreshAllBtn" prefHeight="26.0" prefWidth="23.0">
+         <graphic>
+            <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@reload.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <tooltip>
+            <Tooltip text="Refresh Orders Table" />
+         </tooltip>
+      </Button>
+   </children>
+</AnchorPane>
