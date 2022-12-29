@@ -1,5 +1,10 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import client.Client;
+import client.ClientUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,8 +17,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Method;
 import models.Order;
+import models.OrderStatus;
 import models.PickUpMethod;
+import models.Request;
 import utils.Util;
 
 /**
@@ -82,10 +90,36 @@ public class EKController {
     void SubmitPickupCode(ActionEvent event) {
     	removeErrorStyle();
     	if (Util.isBlankString(txtPickupCode.getText())) {
-    		errorLabel.setText("Invalid Code");
+    		errorLabel.setText("Entered code is incorrect, please try again");
     		Util.setFieldTextErrorBorder(txtPickupCode);
     		return;
     	}
+    	
+    	requestOrderByCode();
+    }
+    
+    private void requestOrderByCode() {
+		List<Object> details = new ArrayList<>();
+		details.add(loginController.user.getId());
+		details.add(txtPickupCode.getText());
+		details.add(loginController.machine.getId());
+		Request request = new Request();
+		request.setPath("/order/checkExistPickupOrderAndChangeStatus");
+		request.setMethod(Method.PUT);
+		request.setBody(details);
+		ClientUI.chat.accept(request);// sending the request to the server.
+		switch (Client.resFromServer.getCode()) {
+		case OK:
+			replaceHboxSuccessEnterPickupCode();
+			break;
+		default:
+			errorLabel.setText((Client.resFromServer.getDescription()));
+			Util.setFieldTextErrorBorder(txtPickupCode);
+			break;
+		}
+    }
+    
+    private void replaceHboxSuccessEnterPickupCode() {
     	VBoxEnterPickUp.setVisible(false);
     	VboxSuccessfulPickUpCode.setVisible(true);
     	txtPickupCode.setText("");
@@ -93,7 +127,8 @@ public class EKController {
     
     @FXML
     void createNewOrder(ActionEvent event) {
-    	loginController.order = new Order(null, null, 0, null, null, PickUpMethod.selfPickUp, loginController.user.getId());
+    	loginController.order = new Order(null, null, 0, loginController.machine.getId(), OrderStatus.Collected,
+    			PickUpMethod.selfPickUp, loginController.user.getId());
     }
     
     /**

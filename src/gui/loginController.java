@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Machine;
 import models.Method;
 import models.Order;
 import models.Request;
@@ -32,7 +33,9 @@ import utils.Util;
  */
 public class loginController  implements Initializable{
 	public static User user = null;
-	public static Order order;
+	public static Order order = null;
+	public static Machine machine = null;
+
 //	public static Subscriber subscriber;
 	public OLController OLcon;
 	public EKController EKcon;
@@ -60,7 +63,8 @@ public class loginController  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		user = null;
 		order = null;
-//		subscriber = null;
+		machine = null;
+		machine = new Machine("111", "!!!", null, null);
 	}
 
 	/**
@@ -156,10 +160,10 @@ public class loginController  implements Initializable{
     		return;
     	}
 		Stage stage = StageSingleton.getInstance().getStage();
-		OLcon = new OLController();	
-		OLcon.start(stage);
-//		EKcon = new EKController();
-//		EKcon.start(stage);
+//		OLcon = new OLController();	
+//		OLcon.start(stage);
+		EKcon = new EKController();
+		EKcon.start(stage);
 //		MarketingManagerCon = new MarketingManagerController();
 //		MarketingManagerCon.start(stage);
     }

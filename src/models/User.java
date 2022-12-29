@@ -3,15 +3,15 @@ package models;
 import java.io.Serializable;
 
 public class User implements Serializable {
-
+	
+	private String username;
+	private String password;
 	private String firstName;
 	private String lastName;
 	private Integer id;
-	private String email;
-	private String phoneNumber;
-	private String username;
-	private String password;
 	private String creditCardNumber;
+	private String phoneNumber;
+	private String email;
 	private boolean isLoggedIn;
 	
 	public User(String firstName, String lastName, Integer id, String email, String phoneNumber, String username,

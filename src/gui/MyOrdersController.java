@@ -285,6 +285,9 @@ public class MyOrdersController implements Initializable {
     private void updateMyOrders(List<Object> listOrders){
     	listMyOrders.clear();
     	listDeliveryNotCollected.clear();
+    	if (listOrders == null) {
+    		return;
+    	}
     	for (Object order:listOrders) {
     		if (order instanceof MyOrders) {
     			MyOrders tempOrder = (MyOrders)order;
@@ -307,10 +310,10 @@ public class MyOrdersController implements Initializable {
        	orderDelivery.add(orderID);
     	Request request = new Request();
     	if (method == PickUpMethod.delivery) {
-            request.setPath("/order/RecivedDateDelivery");
+            request.setPath("/order/ReceivedDateDelivery");
     	}
     	else {
-            request.setPath("/order/RecivedDatePickup");
+            request.setPath("/order/ReceivedDatePickup");
     	}
         request.setMethod(Method.GET);
         request.setBody(orderDelivery);
