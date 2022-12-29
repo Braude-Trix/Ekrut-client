@@ -1,6 +1,7 @@
 package gui;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -20,6 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import utils.Util;
 import models.DeliveryOrder;
+import models.OrderStatus;
 import models.PickUpMethod;
 import models.Regions;
 import models.User;
@@ -112,7 +114,7 @@ public class DeliveryFormController implements Initializable {
     		return;
     	}
 
-    	loginController.order = new DeliveryOrder(null, null, 0, null, null,  PickUpMethod.delivery, loginController.user.getId(), txtFirstName.getText(),
+    	loginController.order = new DeliveryOrder(null, null, 0, "1", OrderStatus.WaitingApproveDelivery,  PickUpMethod.delivery, loginController.user.getId(), txtFirstName.getText(),
     			txtLastName.getText(), txtPhoneNumber.getText(), txtFullAddress.getText(), regionList.getValue(), null, txtPinCode.getText());
     }
 	
@@ -129,10 +131,18 @@ public class DeliveryFormController implements Initializable {
     }
     
     @FXML
-    void Back(MouseEvent event) {
-		Stage stage = StageSingleton.getInstance().getStage();
-		stage.setScene(OLController.scene);
-		stage.show();
+    void Back(MouseEvent event) throws IOException {
+		Stage primaryStage = StageSingleton.getInstance().getStage();
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+		primaryStage.setTitle("EKrut Main");
+		primaryStage.setScene(scene);
+		primaryStage.centerOnScreen();
+		primaryStage.setResizable(false);
+		primaryStage.show();
+		primaryStage.setMinHeight(primaryStage.getHeight());
+		primaryStage.setMinWidth(primaryStage.getWidth());
     }
     
     private boolean isBlankTextField(TextField textField, Label errorLabel) {

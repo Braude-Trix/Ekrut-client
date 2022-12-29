@@ -182,10 +182,18 @@ public class MyOrdersController implements Initializable {
     }
 
     @FXML
-    void Back(MouseEvent event) {
-		Stage stage = StageSingleton.getInstance().getStage();
-		stage.setScene(OLController.scene);
-		stage.show();
+    void Back(MouseEvent event) throws Exception {
+		Stage primaryStage = StageSingleton.getInstance().getStage();
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+		primaryStage.setTitle("EKrut Main");
+		primaryStage.setScene(scene);
+		primaryStage.centerOnScreen();
+		primaryStage.setResizable(false);
+		primaryStage.show();
+		primaryStage.setMinHeight(primaryStage.getHeight());
+		primaryStage.setMinWidth(primaryStage.getWidth());
     }
     
     private void setCellFactoryOfTables() {
@@ -219,15 +227,13 @@ public class MyOrdersController implements Initializable {
     }
     
     private boolean isSetStatusDelivery() {
-    	if (Client.resFromServer.getPath().equals("/order/deliveryOrder/changeStatusAndDateReceived")) {
-        	switch (Client.resFromServer.getCode()) {
-            case OK:
-                return true;
-            default:
-            	errorUpdateStatusDB.setVisible(true);
-            	errorUpdateStatusDB.setText(Client.resFromServer.getDescription());
-                break;
-        	}
+    	switch (Client.resFromServer.getCode()) {
+        case OK:
+            return true;
+        default:
+        	errorUpdateStatusDB.setVisible(true);
+        	errorUpdateStatusDB.setText(Client.resFromServer.getDescription());
+            break;
     	}
     	return false;
     }
@@ -254,16 +260,27 @@ public class MyOrdersController implements Initializable {
     }
     
     private void handleRsponseGetMyOrders() {
-    	if (Client.resFromServer.getPath().equals("/user/myOrders")) {
-        	switch (Client.resFromServer.getCode()) {
-            case OK:
-            	updateMyOrders(Client.resFromServer.getBody());
-                break;
-            default:
-                break;
-        	}
+    	switch (Client.resFromServer.getCode()) {
+        case OK:
+        	updateMyOrders(Client.resFromServer.getBody());
+            break;
+        default:
+        	setErrorPlaceHolder();
+            break;
     	}
     }
+    
+    private void setErrorPlaceHolder() {
+		Label tableViewApproveLabel = new Label ("Error: loading data");
+		tableViewApproveLabel.setStyle(
+				"-fx-text-fill : #FF3547;-fx-font-weight: bold;  -fx-font-size: 12");
+		Label tableViewOrdersLabel = new Label ("Error: loading data");
+		tableViewOrdersLabel.setStyle(
+				"-fx-text-fill : #FF3547;-fx-font-weight: bold; -fx-font-size: 17");
+		tableViewOrders.setPlaceholder(tableViewOrdersLabel);
+		tableViewApproveDel.setPlaceholder(tableViewApproveLabel);
+    }
+    
     
     private void updateMyOrders(List<Object> listOrders){
     	listMyOrders.clear();
@@ -298,7 +315,7 @@ public class MyOrdersController implements Initializable {
         request.setMethod(Method.GET);
         request.setBody(orderDelivery);
         ClientUI.chat.accept(request);// sending the request to the server.
-        return handleRecivedDateFromServer(method);
+        return handleRecivedDateFromServer();
     }
     
     private void checkAndAddDeliveryOrderNotCollected(MyOrders order) {
@@ -307,18 +324,13 @@ public class MyOrdersController implements Initializable {
 		}
     }
     
-    private String handleRecivedDateFromServer(PickUpMethod method) {
-    	if (method == PickUpMethod.delivery && Client.resFromServer.getPath().equals("/order/RecivedDateDelivery") ||
-    			method == PickUpMethod.latePickUp && Client.resFromServer.getPath().equals("/order/RecivedDatePickup")) {
-    		
+    private String handleRecivedDateFromServer() {
           	switch (Client.resFromServer.getCode()) {
             case OK:
             	return (String) (Client.resFromServer.getBody().get(0));
             default:
-                break;
+            	return "Loading problem";
         	}
-    	}
-    	return null;
     }
     
     private void setStyleForEmptyTable() {
@@ -360,14 +372,13 @@ public class MyOrdersController implements Initializable {
     
     private void handleGetPickupCodeFromServer()
     {
-    	if (Client.resFromServer.getPath().equals("/order/pickupOrder/getPickupCode")) {
-          	switch (Client.resFromServer.getCode()) {
-            case OK:
-            	pickupCode.setText( (String) (Client.resFromServer.getBody().get(0)));
-            	break;
-            default:
-                break;
-        	}
+      	switch (Client.resFromServer.getCode()) {
+        case OK:
+        	pickupCode.setText((String) (Client.resFromServer.getBody().get(0)));
+        	break;
+        default:
+        	pickupCode.setText(Client.resFromServer.getDescription());
+            break;
     	}
     }
     

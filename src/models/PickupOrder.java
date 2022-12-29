@@ -13,6 +13,12 @@ public class PickupOrder extends Order implements Serializable {
 		this.pickupCode = pickupCode;
 		this.dateReceived = dateReceived;
 	}
+	
+	public PickupOrder(Order order, String pickupCode, String dateReceived) {
+		super(order.getOrderId(), order.getDate(), order.getPrice(), order.getMachineId(), order.getStatus(), order.getPickUpMethod(), order.getCustomerId());  
+		this.pickupCode = pickupCode;
+		this.dateReceived = dateReceived;
+	}
 
 	public String getDateReceived() {
 		return dateReceived;

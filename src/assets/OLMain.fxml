@@ -66,6 +66,14 @@
          <font>
             <Font size="10.0" />
          </font>
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@ring-bell.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Label>
+      <Label fx:id="errorLabel" layoutX="278.0" layoutY="455.0" textFill="RED" />
    </children>
 </AnchorPane>

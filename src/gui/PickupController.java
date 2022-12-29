@@ -91,12 +91,21 @@ public class PickupController implements Initializable {
 	 * This method returns the client to the previous window.
 	 * 
 	 * @param event, Description: Event - clicking the Back button
+	 * @throws IOException 
 	 */
 	@FXML
-	void Back(MouseEvent event) {
-		Stage stage = StageSingleton.getInstance().getStage();
-		stage.setScene(OLController.scene);
-		stage.show();
+	void Back(MouseEvent event) throws IOException {
+		Stage primaryStage = StageSingleton.getInstance().getStage();
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+		primaryStage.setTitle("EKrut Main");
+		primaryStage.setScene(scene);
+		primaryStage.centerOnScreen();
+		primaryStage.setResizable(false);
+		primaryStage.show();
+		primaryStage.setMinHeight(primaryStage.getHeight());
+		primaryStage.setMinWidth(primaryStage.getWidth());
 	}
 
 	/**
@@ -139,17 +148,24 @@ public class PickupController implements Initializable {
 	}
 
 	private void handleRsponseGetMachines() {
+		errorLabel.setText("");
 		switch (Client.resFromServer.getCode()) {
 		case OK:
 			updateMachines((Client.resFromServer.getBody()));
 			break;
 		default:
+			errorLabel.setText((Client.resFromServer.getDescription()));
 			break;
 		}
 	}
 
 	private void updateMachines(List<Object> listMachine) {
 		machinesSet.clear();
+		if (listMachine == null) {
+			machineList.setDisable(true);
+			errorLabel.setText("There are no machines in this region at the moment");
+			return;
+		}
 		ObservableList<String> options = FXCollections.observableArrayList();
 		for (Object machine : listMachine) {
 			if (machine instanceof Machine) {
@@ -176,7 +192,7 @@ public class PickupController implements Initializable {
 			return;
 		}
 
-		loginController.order = new PickupOrder(null, null, 0, getMachineId(), null, PickUpMethod.latePickUp, null,
+		loginController.order = new PickupOrder(null, null, 0, getMachineId(), OrderStatus.NotCollected, PickUpMethod.latePickUp, null,
 				loginController.user.getId(), null);
 		continueNewOrder();
 	}

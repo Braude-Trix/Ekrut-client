@@ -3,8 +3,12 @@ package gui;
 
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import client.Client;
+import client.ClientUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +20,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import javafx.stage.Stage;
+import models.Method;
+import models.Request;
 import utils.Util;
 
 /**
@@ -31,14 +37,16 @@ public class OLController implements Initializable {
 
     @FXML
     private Label newNotification;
-    
+
+    @FXML
+    private Label errorLabel;
     
 	/**
 	 *This method describes the initialization of information that will be displayed in the window depending on the client.
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		setNotificationForApprovalDelivery();
+		checkDeliveryNotCollected();
 	}
 	
 	/**
@@ -60,7 +68,6 @@ public class OLController implements Initializable {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
-
 	}
 	
     /**
@@ -141,15 +148,36 @@ public class OLController implements Initializable {
 	/**
 	 * Defines the amount of notifications waiting for the customer if he has shipments that he has not confirmed the arrival of.
 	 */
-	private void setNotificationForApprovalDelivery()
+	private void setNotificationForApprovalDelivery(int amount)
 	{
-	      Image img = new Image("/assets/ring-bell.png");
-	      ImageView view = new ImageView(img);
-	      view.setFitHeight(25);
-	      view.setPreserveRatio(true);
-	      newNotification.setGraphic(view);
-	      newNotification.setText("2 shipping confirmation");
-	      newNotification.setVisible(true);
+		errorLabel.setText("");
+		if (amount == 0) {
+		      newNotification.setVisible(false);
+		      return;
+		}
+		newNotification.setText(amount+" shipping confirmation");
+		newNotification.setVisible(true);
+
+	}
+	
+	void checkDeliveryNotCollected() {
+    	List<Object> userDetails = new ArrayList<>();
+    	userDetails.add(loginController.user.getId());
+    	Request request = new Request();
+        request.setPath("/user/myOrders/deliveryNotCollected");
+        request.setMethod(Method.GET);
+        request.setBody(userDetails);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        
+    	switch (Client.resFromServer.getCode()) {
+        case OK:
+        	setNotificationForApprovalDelivery((Integer)Client.resFromServer.getBody().get(0));
+            break;
+        default:
+    		errorLabel.setText(Client.resFromServer.getDescription());
+            break;
+    	}
+    	
 	}
 
 }
