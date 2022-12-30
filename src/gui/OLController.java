@@ -162,7 +162,7 @@ public class OLController implements Initializable {
 	
 	void checkDeliveryNotCollected() {
     	List<Object> userDetails = new ArrayList<>();
-    	userDetails.add(loginController.user.getId());
+    	userDetails.add(LoginController.user.getId());
     	Request request = new Request();
         request.setPath("/user/myOrders/deliveryNotCollected");
         request.setMethod(Method.GET);

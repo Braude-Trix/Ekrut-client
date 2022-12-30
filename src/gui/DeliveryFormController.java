@@ -74,7 +74,7 @@ public class DeliveryFormController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         setRegionComboBox();
-        user = loginController.user;
+        user = LoginController.user;
         setValuesInTextFields();
 	}
     
@@ -114,7 +114,7 @@ public class DeliveryFormController implements Initializable {
     		return;
     	}
 
-    	loginController.order = new DeliveryOrder(null, null, 0, "1", OrderStatus.WaitingApproveDelivery,  PickUpMethod.delivery, loginController.user.getId(), txtFirstName.getText(),
+    	LoginController.order = new DeliveryOrder(null, null, 0, "1", OrderStatus.WaitingApproveDelivery,  PickUpMethod.delivery, LoginController.user.getId(), txtFirstName.getText(),
     			txtLastName.getText(), txtPhoneNumber.getText(), txtFullAddress.getText(), regionList.getValue(), null, txtPinCode.getText());
     }
 	

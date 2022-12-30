@@ -193,8 +193,8 @@ public class PickupController implements Initializable {
 			return;
 		}
 
-		loginController.order = new PickupOrder(null, null, 0, getMachineId(), OrderStatus.NotCollected, PickUpMethod.latePickUp, null,
-				loginController.user.getId(), null);
+		LoginController.order = new PickupOrder(null, null, 0, getMachineId(), OrderStatus.NotCollected, PickUpMethod.latePickUp, null,
+				LoginController.user.getId(), null);
 		continueNewOrder();
 	}
 
