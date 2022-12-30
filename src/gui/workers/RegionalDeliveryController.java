@@ -23,8 +23,11 @@ import javafx.scene.text.Font;
 import models.*;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class RegionalDeliveryController implements Initializable {
@@ -76,9 +79,9 @@ public class RegionalDeliveryController implements Initializable {
     @FXML
     private Label sideTitleLabel;
 
-    private static String staticRegion = "Haifa";
+    private static String staticRegion = "North";
 
-    private Integer customerId = 1;
+    private Integer myId = 123;
 
 
     public static class PendingDeliveryTable {
@@ -218,12 +221,16 @@ public class RegionalDeliveryController implements Initializable {
     }
 
     public void addItemsToPendingTable(String region) {
-        //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1",OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "5234523453", "zohar", Regions.South, "15","asdf");
-        List<DeliveryOrder> deliveryOrders = new ArrayList<>();
-        deliveryOrders.add(deliv);
-
-
+        List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
+        List<DeliveryOrder> deliveryOrders = requestPendingDeliveriesOrdersByRegion(region);
+        Map<String,String> resMap = requestWaitingDeliveryOrdersWithDate();
+        for(DeliveryOrder deliveryOrder: deliveryOrders){
+            if(!resMap.containsKey(deliveryOrder.getOrderId())){
+                deliveryToRemove.add(deliveryOrder);
+            }
+            deliveryOrder.setDate(resMap.get(deliveryOrder.getOrderId()));
+        }
+        deliveryOrders.removeAll(deliveryToRemove);
         ObservableList<PendingDeliveryTable> regionalDeliveriesList = FXCollections.observableArrayList();
         for (DeliveryOrder deliveryOrder : deliveryOrders) {
             CheckBox approveCheckBox = new CheckBox();
@@ -238,16 +245,21 @@ public class RegionalDeliveryController implements Initializable {
         confirmBtn.setOnMouseClicked(event -> {
             confirmDeliveriesList.remove(confirmDeliveryTable);
             ConfirmDeliveryTable.setItems(confirmDeliveriesList);
+            updateOrderStatus(confirmDeliveryTable.getOrderId(),OrderStatus.Done);
         });
     }
 
     public void addItemsToConfirmTable(String region) {
-        //List<DeliveryOrder> deliveryOrders = requestDeliveriesOrdersByRegion(region);
-        DeliveryOrder deliv = new DeliveryOrder(null, "25", 0.0, "1",OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 1, "null", "1", "5234523453", "zohar", Regions.South, "15","asdf");
-        List<DeliveryOrder> deliveryOrders = new ArrayList<>();
-        deliveryOrders.add(deliv);
-
-
+        List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
+        List<DeliveryOrder> deliveryOrders = requestPendingDeliveriesOrdersByRegion(region);
+        Map<String,String> resMap = requestCollectedDeliveryOrdersWithDate();
+        for(DeliveryOrder deliveryOrder: deliveryOrders){
+            if(!resMap.containsKey(deliveryOrder.getOrderId())){
+                deliveryToRemove.add(deliveryOrder);
+            }
+            deliveryOrder.setDate(resMap.get(deliveryOrder.getOrderId()));
+        }
+        deliveryOrders.removeAll(deliveryToRemove);
         ObservableList<ConfirmDeliveryTable> confirmDeliveriesList = FXCollections.observableArrayList();
         for (DeliveryOrder deliveryOrder : deliveryOrders) {
             Button confirmBtn = new Button();
@@ -265,24 +277,57 @@ public class RegionalDeliveryController implements Initializable {
         ConfirmDeliveryTable.fixedCellSizeProperty();
     }
 
-    public List<DeliveryOrder> requestDeliveriesOrdersByRegion(String region) {
-        List<DeliveryOrder> deliveryOrders = new ArrayList<>();
+    public List<DeliveryOrder> requestPendingDeliveriesOrdersByRegion(String region) {
+        List<DeliveryOrder> resList = new ArrayList<>();
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
-        request.setPath("/getDeliveriesOrdersByRegion");
+        request.setPath("/getPendingDeliveriesOrdersByRegion");
         request.setMethod(Method.GET);
         paramList.add(region);
         request.setBody(paramList);
         ClientUI.chat.accept(request);// sending the request to the server.
         switch (Client.resFromServer.getCode()) {
             case OK:
+                if(Client.resFromServer.getBody() == null)
+                    break;
                 for (Object deliveryOrder : Client.resFromServer.getBody())
-                    deliveryOrders.add((DeliveryOrder) deliveryOrder);
-
+                    resList.add((DeliveryOrder)deliveryOrder);
             default:
                 System.out.println("Some error occurred");
         }
-        return deliveryOrders;
+        return resList;
+    }
+
+
+
+    public Map<String,String> requestCollectedDeliveryOrdersWithDate() {
+        Request request = new Request();
+        request.setPath("/getCollectedDeliveryOrdersWithDate");
+        request.setMethod(Method.GET);
+        request.setBody(null);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                return (Map<String,String>)Client.resFromServer.getBody().get(0);
+            default:
+                System.out.println("Some error occurred");
+        }
+        return null;
+    }
+
+    public Map<String,String> requestWaitingDeliveryOrdersWithDate() {
+        Request request = new Request();
+        request.setPath("/getWaitingDeliveryOrdersWithDate");
+        request.setMethod(Method.GET);
+        request.setBody(null);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                return (Map<String,String>)Client.resFromServer.getBody().get(0);
+            default:
+                System.out.println("Some error occurred");
+        }
+        return null;
     }
 
     public Integer requestCustomerId(String orderId) {
@@ -313,6 +358,25 @@ public class RegionalDeliveryController implements Initializable {
         request.setPath("/postMsg");
         request.setMethod(Method.POST);
         paramList.add(msg);
+        paramList.add(fromCustomerId);
+        paramList.add(toCustomerId);
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                break;
+            default:
+                System.out.println("Some error occurred");
+        }
+    }
+
+    void updateOrderStatus(String orderId, OrderStatus orderStatus) {
+        List<Object> paramList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/updateOrderStatus");
+        request.setMethod(Method.PUT);
+        paramList.add(orderId);
+        paramList.add(orderStatus);
         request.setBody(paramList);
         ClientUI.chat.accept(request);// sending the request to the server.
         switch (Client.resFromServer.getCode()) {
@@ -331,12 +395,14 @@ public class RegionalDeliveryController implements Initializable {
             for (PendingDeliveryTable PendingDeliveryTable : ordersTable.getItems()) {
                 if (PendingDeliveryTable.getApproveDenyCheckBox().isSelected()) {
                     String orderId = PendingDeliveryTable.getOrderId();
+                    updateOrderStatus(orderId, OrderStatus.NotCollected);
                     String deliveryDate = PendingDeliveryTable.getDeliveryDate();
                     String deliveryAddress = PendingDeliveryTable.getDeliveryAddress();
-                    msg = StyleConstants.HEADER_MSG_TO_CLIENT + orderId + StyleConstants.AFTER_HEADER_MSG_TO_CLIENT + deliveryDate + StyleConstants.FOOTER_HEADER_MSG_TO_CLIENT + deliveryAddress;
-                    //writeNewMsgToDB(msg, customerId, requestCustomerId(orderId));
-
-                    //write to DB the result
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDate date = LocalDate.parse(deliveryDate, formatter);
+                    LocalDate newDeliveryDate = date.plusDays(7);
+                    msg = StyleConstants.HEADER_MSG_TO_CLIENT + orderId + StyleConstants.AFTER_HEADER_MSG_TO_CLIENT + newDeliveryDate.toString() + StyleConstants.FOOTER_HEADER_MSG_TO_CLIENT + deliveryAddress;
+                    writeNewMsgToDB(msg, myId, requestCustomerId(orderId));
                     PendingDeliveryTableListToRemove.add(PendingDeliveryTable);
                 }
             }

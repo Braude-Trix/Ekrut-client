@@ -8,12 +8,14 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -35,6 +37,7 @@ public class loginController  implements Initializable{
 	public static User user = null;
 	public static Order order = null;
 	public static Machine machine = null;
+	public static Thread threadListeningNewMsg;
 
 //	public static Subscriber subscriber;
 	public OLController OLcon;
@@ -159,11 +162,17 @@ public class loginController  implements Initializable{
     	if (user == null) {
     		return;
     	}
+
+
+		threadListeningNewMsg = new Thread(new getMessages());
+		threadListeningNewMsg.start();
+
+
 		Stage stage = StageSingleton.getInstance().getStage();
-//		OLcon = new OLController();	
-//		OLcon.start(stage);
-		EKcon = new EKController();
-		EKcon.start(stage);
+		OLcon = new OLController();
+		OLcon.start(stage);
+//		EKcon = new EKController();
+//		EKcon.start(stage);
 //		MarketingManagerCon = new MarketingManagerController();
 //		MarketingManagerCon.start(stage);
     }
@@ -241,5 +250,58 @@ public class loginController  implements Initializable{
     	anchorPane.requestFocus();
 
     }
+
+
+
+
+
+
+
+	public class getMessages implements Runnable {
+
+		@Override
+		public void run() {
+			while (true) {
+				List<Object> paramList = new ArrayList<>();
+				Request request = new Request();
+				request.setPath("/getMessages");
+				request.setMethod(Method.GET);
+				if(loginController.user == null)
+					return;
+				paramList.add(loginController.user.getId().toString());
+				request.setBody(paramList);
+				ClientUI.chat.accept(request);// sending the request to the server.
+				switch (Client.MsgResFromServer.getCode()) {
+					case OK:
+						StringBuilder msgToClient = new StringBuilder();
+						List<Object> result = Client.MsgResFromServer.getBody();
+						if (result.size() == 0 || result.size() == 1)
+							break;
+						for(int i = 1; i < result.size(); i++){
+							msgToClient.append("\n");
+							msgToClient.append(result.get(i).toString());
+						}
+						Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
+						break;
+
+					default:
+						System.out.println("Some error occurred");
+				}
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+				Client.MsgResFromServer = null;
+			}
+		}
+
+		public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
+			Alert alert = new Alert(alertType); //Information, Error
+			alert.setContentText(alertTitle); // Information, Error
+			alert.setContentText(alertMessage);
+			alert.show();
+		}
+	}
 
 }
