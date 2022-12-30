@@ -145,10 +145,10 @@ public class PickupController implements Initializable {
 		request.setBody(regionReq);
 		ClientUI.chat.accept(request);// sending the request to the server.
 
-		handleRsponseGetMachines();
+		handleResponseGetMachines();
 	}
 
-	private void handleRsponseGetMachines() {
+	private void handleResponseGetMachines() {
 		errorLabel.setText("");
 		switch (Client.resFromServer.getCode()) {
 		case OK:

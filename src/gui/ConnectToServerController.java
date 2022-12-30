@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectToServerController {
-	public static LoginController LoginCon;
+	public static UserInstallationController UserCon;
 
     @FXML
     private TextField txtHost;
@@ -90,9 +90,9 @@ public class ConnectToServerController {
 
         Thread thread = new Thread(new getMessages());
         thread.start();
-		LoginCon = new LoginController();
+        UserCon = new UserInstallationController();
 		Stage stage = StageSingleton.getInstance().getStage();
-		LoginCon.start(stage);
+		UserCon.start(stage);
     }
 
     //	HandleConnectionError method - deals with invalid connection errors.

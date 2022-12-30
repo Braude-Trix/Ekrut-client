@@ -102,7 +102,7 @@ public class EKController {
 		List<Object> details = new ArrayList<>();
 		details.add(LoginController.user.getId());
 		details.add(txtPickupCode.getText());
-		details.add(LoginController.machine.getId());
+		details.add(UserInstallationController.machine.getId());
 		Request request = new Request();
 		request.setPath("/order/checkExistPickupOrderAndChangeStatus");
 		request.setMethod(Method.PUT);
@@ -127,7 +127,7 @@ public class EKController {
     
     @FXML
     void createNewOrder(ActionEvent event) {
-    	LoginController.order = new Order(null, null, 0, LoginController.machine.getId(), OrderStatus.Collected,
+    	LoginController.order = new Order(null, null, 0, UserInstallationController.machine.getId(), OrderStatus.Collected,
     			PickUpMethod.selfPickUp, LoginController.user.getId());
     }
     

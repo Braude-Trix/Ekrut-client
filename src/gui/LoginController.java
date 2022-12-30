@@ -19,11 +19,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Customer;
 import models.Machine;
 import models.Method;
 import models.Order;
 import models.Request;
+import models.ResponseCode;
 import models.User;
+import models.Worker;
 import utils.Util;
 
 /**
@@ -33,9 +36,9 @@ import utils.Util;
 public class LoginController  implements Initializable{
 	public static User user = null;
 	public static Order order = null;
-	public static Machine machine = null;
-
-//	public static Subscriber subscriber;
+	
+	private String configuration;
+	
 	public OLController OLcon;
 	public EKController EKcon;
 //	public MarketingManagerController MarketingManagerCon;
@@ -62,8 +65,7 @@ public class LoginController  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		user = null;
 		order = null;
-		machine = null;
-		machine = new Machine("111", "!!!", null, null);
+		configuration = UserInstallationController.configuration;
 	}
 
 	/**
@@ -152,19 +154,25 @@ public class LoginController  implements Initializable{
     private void SelectHomePageToOpen() throws Exception {
     	//request to user from db
     	requestUser();
-    	
-    	//user = new User(null, null, 422222222, null, null, null, null, UserType.Client, null);
-    	//CheckAndGetSubscriberDetails();
     	if (user == null) {
     		return;
     	}
+    	
 		Stage stage = StageSingleton.getInstance().getStage();
-		OLcon = new OLController();	
-		OLcon.start(stage);
-//		EKcon = new EKController();
-//		EKcon.start(stage);
-//		MarketingManagerCon = new MarketingManagerController();
-//		MarketingManagerCon.start(stage);
+    	if (configuration.equals("EK")) {
+    		requestEKCustomer();
+    		if (Client.resFromServer.getCode() == ResponseCode.INVALID_DATA) {
+        		// need to open a new window
+    		}else {
+        		EKcon = new EKController();
+        		EKcon.start(stage);
+    		}
+
+    	}
+    	else if (configuration.equals("OL")){
+    		requestOLUser();
+    	}
+    	
     }
     
     private void requestUser() {
@@ -178,10 +186,10 @@ public class LoginController  implements Initializable{
         request.setBody(usernameAndPassword);
         ClientUI.chat.accept(request);// sending the request to the server.
 
-        handleRsponseGetUser();
+        handleResponseGetUser();
     }
     
-    private void handleRsponseGetUser() {
+    private void handleResponseGetUser() {
 //		handle response info:
         switch (Client.resFromServer.getCode()) {
             case OK:
@@ -196,12 +204,97 @@ public class LoginController  implements Initializable{
         }
     }
     
+    private void requestEKCustomer() {
+    	List<Object> userDetails = new ArrayList<>();
+    	userDetails.add(user);
+    	Request request = new Request();
+        request.setPath("/login/getUserForEkConfiguration");
+        request.setMethod(Method.GET);
+        request.setBody(userDetails);
+        ClientUI.chat.accept(request);// sending the request to the server.
+
+        handleResponseGetCustomerForEkConfiguration();
+    }
     
-//    private void CheckAndGetSubscriberDetails() {
-//    	if (user.getType() == UserType.Subscriber) {
-//    		subscriber = new Subscriber(11, 0);
-//    	}
-//    }
+    private void handleResponseGetCustomerForEkConfiguration() {
+//		handle response info:
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+            	user = (User) Client.resFromServer.getBody().get(0);
+                break;
+            case INVALID_DATA:
+        		// need to open a new window
+            	break;
+            default:
+        		errorLabel.setText(Client.resFromServer.getDescription());
+                break;
+        }
+    }
+    
+    
+    
+    private void requestOLUser() throws Exception {
+    	List<Object> userDetails = new ArrayList<>();
+    	userDetails.add(user);
+    	Request request = new Request();
+        request.setPath("/login/getUserForOLConfiguration");
+        request.setMethod(Method.GET);
+        request.setBody(userDetails);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        
+        handleResponseGetUserForOLConfiguration();
+    }
+    
+    private void handleResponseGetUserForOLConfiguration() throws Exception {
+//		handle response info:
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+            	setUserWindow(Client.resFromServer.getBody());
+                break;
+            case INVALID_DATA:
+        		// need to open a new window
+            	break;
+            default:
+        		errorLabel.setText(Client.resFromServer.getDescription());
+                break;
+        }
+    }
+    
+    
+    private void setUserWindow(List<Object> userDetails) throws Exception {
+		Stage stage = StageSingleton.getInstance().getStage();
+    	if (userDetails.size() == 2) {
+    		// choose one option
+    	}
+    	else if(userDetails.get(0) instanceof Customer) {
+    		OLcon = new OLController();	
+    		OLcon.start(stage);
+    	}
+    	else if(userDetails.get(0) instanceof Worker) {
+    		setWindowByTypeWorker(stage, (Worker)userDetails.get(0));
+    	}
+    }
+    
+    private void setWindowByTypeWorker(Stage stage, Worker worker) {
+    	switch (worker.getType()) {
+    	case CEO:
+    		break;
+    	case OperationalWorker:
+    		break;
+    	case MarketingManager:
+    		break;
+    	case MarketingWorker:
+    		break;
+    	case RegionalManager:
+    		break;
+    	case RegionalDelivery:
+    		break;
+    	case ServiceOperator:
+    		break;
+
+    	}
+    }
+    
     
     /**
      * This method responds to the event of interfacing with EKT (pressing a button).
