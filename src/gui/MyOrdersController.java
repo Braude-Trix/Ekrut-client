@@ -241,7 +241,7 @@ public class MyOrdersController implements Initializable {
     private void getAllOrdersForSpecificUser()
     {
     	List<Object> userId = new ArrayList<>();
-    	userId.add(loginController.user.getId());
+    	userId.add(LoginController.user.getId());
     	Request request = new Request();
         request.setPath("/user/myOrders");
         request.setMethod(Method.GET);

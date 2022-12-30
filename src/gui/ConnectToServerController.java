@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectToServerController {
-	public static loginController LoginCon;
+	public static LoginController LoginCon;
 
     @FXML
     private TextField txtHost;
@@ -89,7 +89,8 @@ public class ConnectToServerController {
 //        stage.setMinWidth(stage.getWidth());
 
 
-		LoginCon = new loginController();
+
+		LoginCon = new LoginController();
 		Stage stage = StageSingleton.getInstance().getStage();
 		LoginCon.start(stage);
     }

@@ -99,7 +99,8 @@ public class OLController implements Initializable {
     @FXML
     void MoveDeliveryForm(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
-		if (DeliveryCon == null)
+
+		if (DeliveryFormController.scene == null)
 		{
 			DeliveryCon = new DeliveryFormController();	
 			DeliveryCon.start(stage);
@@ -120,8 +121,7 @@ public class OLController implements Initializable {
     @FXML
     void MovePickupForm(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
-		if (PickupCon == null)
-		{
+		if (PickupController.scene == null) {
 			PickupCon = new PickupController();	
 			PickupCon.start(stage);
 		}
@@ -162,7 +162,7 @@ public class OLController implements Initializable {
 	
 	void checkDeliveryNotCollected() {
     	List<Object> userDetails = new ArrayList<>();
-    	userDetails.add(loginController.user.getId());
+    	userDetails.add(LoginController.user.getId());
     	Request request = new Request();
         request.setPath("/user/myOrders/deliveryNotCollected");
         request.setMethod(Method.GET);

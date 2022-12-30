@@ -25,7 +25,6 @@ import models.Machine;
 import models.Method;
 import models.Order;
 import models.Request;
-import models.Subscriber;
 import models.User;
 import utils.Util;
 
@@ -33,7 +32,7 @@ import utils.Util;
  * @author gal
  * This class describes the functionality of the login page
  */
-public class loginController  implements Initializable{
+public class LoginController  implements Initializable{
 	public static User user = null;
 	public static Order order = null;
 	public static Machine machine = null;
@@ -169,6 +168,7 @@ public class loginController  implements Initializable{
 
 
 		Stage stage = StageSingleton.getInstance().getStage();
+
 		OLcon = new OLController();
 		OLcon.start(stage);
 //		EKcon = new EKController();
@@ -266,9 +266,9 @@ public class loginController  implements Initializable{
 				Request request = new Request();
 				request.setPath("/getMessages");
 				request.setMethod(Method.GET);
-				if(loginController.user == null)
+				if(LoginController.user == null)
 					return;
-				paramList.add(loginController.user.getId().toString());
+				paramList.add(LoginController.user.getId().toString());
 				request.setBody(paramList);
 				ClientUI.chat.accept(request);// sending the request to the server.
 				switch (Client.MsgResFromServer.getCode()) {
