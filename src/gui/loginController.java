@@ -160,10 +160,10 @@ public class loginController  implements Initializable{
     		return;
     	}
 		Stage stage = StageSingleton.getInstance().getStage();
-//		OLcon = new OLController();	
-//		OLcon.start(stage);
-		EKcon = new EKController();
-		EKcon.start(stage);
+		OLcon = new OLController();	
+		OLcon.start(stage);
+//		EKcon = new EKController();
+//		EKcon.start(stage);
 //		MarketingManagerCon = new MarketingManagerController();
 //		MarketingManagerCon.start(stage);
     }

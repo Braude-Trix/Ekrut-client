@@ -29,7 +29,7 @@ import utils.Util;
  *         selection window.
  */
 public class PickupController implements Initializable {
-	public static Scene scene;
+	public static Scene scene = null;
 
 	@FXML
 	private Label errorLabel;
@@ -50,6 +50,7 @@ public class PickupController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		setRegionComboBox();
 		machinesSet = new ArrayList<>();
+		scene = null;
 	}
 
 	/**
