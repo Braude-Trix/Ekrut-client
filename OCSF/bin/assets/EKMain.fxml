@@ -106,7 +106,7 @@
                   <Image url="@avaaarrrr.png" />
                </image>
             </ImageView>
-            <Label text="Yosi Sabbag">
+            <Label fx:id="labelName">
                <HBox.margin>
                   <Insets left="15.0" right="15.0" />
                </HBox.margin>

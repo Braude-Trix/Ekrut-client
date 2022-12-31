@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UnregisteredUserController">
+   <children>
+      <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Tavlaot.jpg" />
+         </image>
+      </ImageView>
+      <HBox layoutX="20.0" layoutY="20.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <ImageView fitHeight="36.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@avaaarrrr.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="labelName">
+               <HBox.margin>
+                  <Insets left="15.0" right="15.0" top="10.0" />
+               </HBox.margin>
+            </Label>
+            <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#LogOut" prefHeight="32.0" prefWidth="65.0" text="Log Out" />
+         </children>
+      </HBox>
+      <VBox layoutY="81.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="900.0">
+               <children>
+                  <Label text="Unregistered User" textFill="RED">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="900.0">
+               <children>
+                  <Label text="Please contact a service representative at *5555 to register for the system">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

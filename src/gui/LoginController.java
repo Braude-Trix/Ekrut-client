@@ -21,26 +21,29 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Customer;
 import models.Machine;
 import models.Method;
 import models.Order;
 import models.Request;
+import models.ResponseCode;
 import models.User;
+import models.Worker;
 import utils.Util;
 
 /**
  * @author gal
  * This class describes the functionality of the login page
  */
-public class LoginController  implements Initializable{
+public class LoginController implements Initializable{
 	public static User user = null;
 	public static Order order = null;
-	public static Machine machine = null;
+	public static List<Object> customerAndWorker = null;
+	
+	private String configuration;
+	private Stage stage = StageSingleton.getInstance().getStage();
 	public static Thread threadListeningNewMsg;
 
-//	public static Subscriber subscriber;
-	public OLController OLcon;
-	public EKController EKcon;
 //	public MarketingManagerController MarketingManagerCon;
 	
     @FXML
@@ -65,8 +68,8 @@ public class LoginController  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		user = null;
 		order = null;
-		machine = null;
-		machine = new Machine("111", "!!!", null, null);
+		customerAndWorker = null;
+		configuration = UserInstallationController.configuration;
 	}
 
 	/**
@@ -87,10 +90,15 @@ public class LoginController  implements Initializable{
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> forcedExit());
 	}
 	
 
-	
+    private static void forcedExit() {
+        StageSingleton.getInstance().getStage().close();
+        System.exit(0);
+    }
+    
     /**
      * This method opens a customer or employee window depending on the type of user. 
      * And only if the details are correct.
@@ -155,26 +163,27 @@ public class LoginController  implements Initializable{
     private void SelectHomePageToOpen() throws Exception {
     	//request to user from db
     	requestUser();
-    	
-    	//user = new User(null, null, 422222222, null, null, null, null, UserType.Client, null);
-    	//CheckAndGetSubscriberDetails();
     	if (user == null) {
     		return;
     	}
+      
+      threadListeningNewMsg = new Thread(new getMessages());
+		  threadListeningNewMsg.start();    	
+    	if (configuration.equals("EK")) {
+    		requestEKCustomer();
+    		if (Client.resFromServer.getCode() == ResponseCode.INVALID_DATA) {
+    			setWindowUnregisteredUser();
+    		}
+    		else {
+    			EKController EKcon = new EKController();
+        		EKcon.start(stage);
+    		}
 
-
-		threadListeningNewMsg = new Thread(new getMessages());
-		threadListeningNewMsg.start();
-
-
-		Stage stage = StageSingleton.getInstance().getStage();
-
-		OLcon = new OLController();
-		OLcon.start(stage);
-//		EKcon = new EKController();
-//		EKcon.start(stage);
-//		MarketingManagerCon = new MarketingManagerController();
-//		MarketingManagerCon.start(stage);
+    	}
+    	else if (configuration.equals("OL")){
+    		requestOLUser();
+    	}
+    	
     }
     
     private void requestUser() {
@@ -188,17 +197,75 @@ public class LoginController  implements Initializable{
         request.setBody(usernameAndPassword);
         ClientUI.chat.accept(request);// sending the request to the server.
 
-        handleRsponseGetUser();
+        handleResponseGetUser();
     }
     
-    private void handleRsponseGetUser() {
+    private void handleResponseGetUser() {
 //		handle response info:
         switch (Client.resFromServer.getCode()) {
             case OK:
             	user = (User) Client.resFromServer.getBody().get(0);
                 break;
             case INVALID_DATA:
-        		errorLabel.setText("The username or password are incorrect");
+        		errorLabel.setText(Client.resFromServer.getDescription());
+            	break;
+            default:
+        		errorLabel.setText(Client.resFromServer.getDescription());
+                break;
+        }
+    }
+    
+    private void requestEKCustomer() throws Exception {
+    	List<Object> userDetails = new ArrayList<>();
+    	userDetails.add(user);
+    	Request request = new Request();
+        request.setPath("/login/getUserForEkConfiguration");
+        request.setMethod(Method.GET);
+        request.setBody(userDetails);
+        ClientUI.chat.accept(request);// sending the request to the server.
+
+        handleResponseGetCustomerForEkConfiguration();
+    }
+    
+    private void handleResponseGetCustomerForEkConfiguration() {
+//		handle response info:
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+            	user = (User) Client.resFromServer.getBody().get(0);
+                break;
+            case INVALID_DATA:
+            	break;
+            default:
+        		errorLabel.setText(Client.resFromServer.getDescription());
+                break;
+        }
+    }
+    
+    private void setWindowUnregisteredUser() throws Exception {
+    	UnregisteredUserController unregisteredCon = new UnregisteredUserController();
+    	unregisteredCon.start(stage);
+    }
+    
+    private void requestOLUser() throws Exception {
+    	List<Object> userDetails = new ArrayList<>();
+    	userDetails.add(user);
+    	Request request = new Request();
+        request.setPath("/login/getUserForOLConfiguration");
+        request.setMethod(Method.GET);
+        request.setBody(userDetails);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        
+        handleResponseGetUserForOLConfiguration();
+    }
+    
+    private void handleResponseGetUserForOLConfiguration() throws Exception {
+//		handle response info:
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+            	setUserWindow(Client.resFromServer.getBody());
+                break;
+            case INVALID_DATA:
+            	setWindowUnregisteredUser();
             	break;
             default:
         		errorLabel.setText(Client.resFromServer.getDescription());
@@ -207,11 +274,41 @@ public class LoginController  implements Initializable{
     }
     
     
-//    private void CheckAndGetSubscriberDetails() {
-//    	if (user.getType() == UserType.Subscriber) {
-//    		subscriber = new Subscriber(11, 0);
-//    	}
-//    }
+    private void setUserWindow(List<Object> userDetails) throws Exception {
+    	if (userDetails.size() == 2) {
+    		customerAndWorker = userDetails;
+    		SelectOptionWorkerOrCustomer selectWindow = new SelectOptionWorkerOrCustomer();
+    		selectWindow.start(stage);
+    	}
+    	else if(userDetails.get(0) instanceof Customer) {
+    		OLController OLcon = new OLController();	
+    		OLcon.start(stage);
+    	}
+    	else if(userDetails.get(0) instanceof Worker) {
+    		setWindowByTypeWorker(stage, (Worker)userDetails.get(0));
+    	}
+    }
+    
+    private void setWindowByTypeWorker(Stage stage, Worker worker) {
+    	switch (worker.getType()) {
+    	case CEO:
+    		break;
+    	case OperationalWorker:
+    		break;
+    	case MarketingManager:
+    		break;
+    	case MarketingWorker:
+    		break;
+    	case RegionalManager:
+    		break;
+    	case RegionalDelivery:
+    		break;
+    	case ServiceOperator:
+    		break;
+
+    	}
+    }
+    
     
     /**
      * This method responds to the event of interfacing with EKT (pressing a button).
@@ -226,8 +323,7 @@ public class LoginController  implements Initializable{
     		errorTouch.setVisible(true);
     		return;
     	}
-		Stage stage = StageSingleton.getInstance().getStage();
-		EKcon = new EKController();
+    	EKController EKcon = new EKController();
 		EKcon.start(stage);
     }
     
@@ -237,7 +333,7 @@ public class LoginController  implements Initializable{
      */
     @FXML
     void Exit(ActionEvent event) {
-        StageSingleton.getInstance().getStage().close();
+        stage.close();
         System.exit(0);
     }
     
