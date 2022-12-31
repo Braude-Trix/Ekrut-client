@@ -8,7 +8,10 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
+import gui.BillWindowController.TimeOutControllerBillWindow;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,6 +30,7 @@ import models.OrderStatus;
 import models.PickUpMethod;
 import models.Request;
 import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -35,6 +39,7 @@ import utils.Util;
 
 public class EKController implements Initializable {
 	public static Scene scene;
+    public static boolean EKReplace = false;
 
     @FXML
     private Label errorLabel;
@@ -60,6 +65,9 @@ public class EKController implements Initializable {
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
         Util.setNameNavigationBar(labelName);
+        EKReplace = false;
+        Thread timeOutThread = new Thread(new TimeOutControllerEkMain());
+        timeOutThread.start();
 	}
 	/**
 	 * This method describes setting up a new scene.
@@ -97,7 +105,9 @@ public class EKController implements Initializable {
      */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
+    	EKReplace = true;
 		Util.genricLogOut(getClass());
+
     }
     
     /**
@@ -149,6 +159,7 @@ public class EKController implements Initializable {
     void createNewOrder(ActionEvent event) {
     	LoginController.order = new Order(null, null, 0, UserInstallationController.machine.getId(), OrderStatus.Collected,
     			PickUpMethod.selfPickUp, LoginController.user.getId());
+    	EKReplace = true;
     }
     
     /**
@@ -176,6 +187,53 @@ public class EKController implements Initializable {
     private void removeErrorStyle() {
     	txtPickupCode.getStyleClass().remove("validation-error");
     	errorLabel.setText("");
+    }
+    
+    
+    static class TimeOutControllerEkMain implements Runnable {
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
+        private long TimeOutStartTime = System.currentTimeMillis();
+
+        @Override
+        public void run() {
+            while (true) {
+                Platform.runLater(()->handleAnyClick());
+                long TimeOutCurrentTime = System.currentTimeMillis();
+                if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
+                    System.out.println("Time Out passed");
+                    try {
+                        Platform.runLater(()-> {
+                            try {
+                                Util.genricLogOut(getClass());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+                if(EKReplace) {
+                    System.out.println("Thread closed");
+                    return;
+                }
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        public void handleAnyClick() {
+            StageSingleton.getInstance().getStage().getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>(){
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    System.out.print("Mouse clicked, timeout time reset\n");
+                    TimeOutStartTime = System.currentTimeMillis();
+                }
+            });
+        }
     }
     
 }
