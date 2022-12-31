@@ -88,7 +88,7 @@ public class Util {
     	userDetails.add(LoginController.user.getId());
     	userDetails.add(false);
     	Request request = new Request();
-        request.setPath("/login/setLoggeedIn");
+        request.setPath("/login/setLoggedIn");
         request.setMethod(Method.PUT);
         request.setBody(userDetails);
         ClientUI.chat.accept(request);// sending the request to the server.
