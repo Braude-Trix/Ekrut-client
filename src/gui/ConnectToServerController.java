@@ -88,9 +88,7 @@ public class ConnectToServerController {
         stage.setMinHeight(stage.getHeight());
         stage.setMinWidth(stage.getWidth());*/
 
-        Thread thread = new Thread(new getMessages());
-        thread.start();
-        UserCon = new UserInstallationController();
+    UserCon = new UserInstallationController();
 		Stage stage = StageSingleton.getInstance().getStage();
 		UserCon.start(stage);
     }
@@ -132,50 +130,6 @@ public class ConnectToServerController {
     }
 
 
-    public class getMessages implements Runnable {
 
-        @Override
-        public void run() {
-            while (true) {
-                List<Object> paramList = new ArrayList<>();
-                Request request = new Request();
-                request.setPath("/getMessages");
-                request.setMethod(Method.GET);
-                paramList.add("1");
-                request.setBody(paramList);
-                ClientUI.chat.accept(request);// sending the request to the server.
-                switch (Client.MsgResFromServer.getCode()) {
-                    case OK:
-                        StringBuilder msgToClient = new StringBuilder();
-                        List<Object> result = Client.MsgResFromServer.getBody();
-                        if (result.size() == 0 || result.size() == 1)
-                            break;
-                        for(int i = 1; i < result.size(); i++){
-                            msgToClient.append("\n");
-                            msgToClient.append(result.get(i).toString());
-                        }
-                        Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
-                        break;
-
-                    default:
-                        System.out.println("Some error occurred");
-                }
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                Client.MsgResFromServer = null;
-            }
-
-        }
-
-        public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
-            Alert alert = new Alert(alertType); //Information, Error
-            alert.setContentText(alertTitle); // Information, Error
-            alert.setContentText(alertMessage);
-            alert.show();
-        }
-    }
 
 }

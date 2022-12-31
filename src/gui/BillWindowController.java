@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -22,6 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.*;
+import utils.Util;
 
 
 public class BillWindowController implements Initializable {
@@ -62,7 +64,7 @@ public class BillWindowController implements Initializable {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT);
         restoreOrder.setDate(LocalDate.now().format(formatter));
         if(restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
-            ((PickupOrder)restoreOrder).setPickupCode(UUID.randomUUID().toString().replace("-","").substring(0,15));
+            ((PickupOrder)restoreOrder).setPickupCode(UUID.randomUUID().toString().replace("-","").substring(0,8));
 
 
     }
@@ -116,7 +118,11 @@ public class BillWindowController implements Initializable {
         updateInventoryInDB();
         requestSaveDeliveryOrder();
         requestSaveLatePickUpOrder();
-
+        try {
+            returnToMainPage();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         changeToConfirmationOrderPopUpWindow();
     }
 
@@ -296,15 +302,34 @@ public class BillWindowController implements Initializable {
             e.printStackTrace();
             return;
         }
-        Stage stage = StageSingleton.getInstance().getStage();
+        Stage stage = new Stage();
         stage.setTitle(StyleConstants.ORDER_CONFIRMATION_TITLE_LABEL);
         stage.setScene(new Scene(pane));
         stage.centerOnScreen();
-        stage.setResizable(false);
         stage.setMinHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
         stage.setMinWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
         stage.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
         stage.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
+        stage.show();
+    }
+
+    public void returnToMainPage() throws IOException {
+        Parent root;
+        Stage primaryStage = StageSingleton.getInstance().getStage();
+        if (restoreOrder.getPickUpMethod() == PickUpMethod.delivery || restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
+            root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+        else{
+            root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
+        }
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+        primaryStage.setTitle("EKrut Main");
+        primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
+        primaryStage.setResizable(false);
+        primaryStage.show();
+        primaryStage.setMinHeight(primaryStage.getHeight());
+        primaryStage.setMinWidth(primaryStage.getWidth());
     }
 
     @FXML
@@ -327,5 +352,14 @@ public class BillWindowController implements Initializable {
         stage.setScene(new Scene(pane));
         stage.centerOnScreen();
         stage.setResizable(false);
+    }
+
+    @FXML
+    void logOutClicked(ActionEvent event) {
+        try {
+            Util.genricLogOut(getClass());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -61,7 +61,7 @@
             <Image url="@Bill_Icon.png" />
          </image>
       </ImageView>
-      <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" stylesheets="@../styles/BadButton.css" text="Log Out" AnchorPane.bottomAnchor="461.0" AnchorPane.leftAnchor="816.0" />
+      <Button layoutX="736.0" layoutY="14.0" mnemonicParsing="false" onAction="#logOutClicked" stylesheets="@../styles/BadButton.css" text="Log Out" AnchorPane.bottomAnchor="461.0" AnchorPane.leftAnchor="816.0" />
       <Label fx:id="nameLabel" layoutX="746.0" layoutY="23.0" />
       <ImageView fitHeight="29.0" fitWidth="29.0" layoutX="707.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
          <image>

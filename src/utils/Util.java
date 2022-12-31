@@ -9,6 +9,7 @@ import client.Client;
 import client.ClientUI;
 import gui.LoginController;
 import gui.StageSingleton;
+import gui.LoginController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
