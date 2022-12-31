@@ -42,6 +42,8 @@ public class PickupController implements Initializable {
 
 	private List<Machine> machinesSet;
 
+    @FXML
+    private Label labelName;
 	/**
 	 * This method describes the initialization of information that will be
 	 * displayed in the window depending on the client.
@@ -51,6 +53,7 @@ public class PickupController implements Initializable {
 		setRegionComboBox();
 		machinesSet = new ArrayList<>();
 		scene = null;
+        Util.setNameNavigationBar(labelName);
 	}
 
 	/**
@@ -73,6 +76,14 @@ public class PickupController implements Initializable {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> {
+			try {
+				Util.forcedExit();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 	}
 
 	/**
@@ -145,10 +156,10 @@ public class PickupController implements Initializable {
 		request.setBody(regionReq);
 		ClientUI.chat.accept(request);// sending the request to the server.
 
-		handleRsponseGetMachines();
+		handleResponseGetMachines();
 	}
 
-	private void handleRsponseGetMachines() {
+	private void handleResponseGetMachines() {
 		errorLabel.setText("");
 		switch (Client.resFromServer.getCode()) {
 		case OK:

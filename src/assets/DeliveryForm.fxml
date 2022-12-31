@@ -222,7 +222,7 @@
                   <Image url="@avaaarrrr.png" />
                </image>
             </ImageView>
-            <Label text="Alexander">
+            <Label fx:id="labelName">
                <HBox.margin>
                   <Insets left="15.0" right="15.0" top="10.0" />
                </HBox.margin>
