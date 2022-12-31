@@ -32,9 +32,10 @@ import utils.Util;
  * @author gal
  * This class describes the client home page in EK configuration
  */
+
 public class EKController implements Initializable {
 	public static Scene scene;
-	
+
     @FXML
     private Label errorLabel;
     

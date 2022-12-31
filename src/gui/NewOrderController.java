@@ -10,7 +10,11 @@ import java.math.RoundingMode;
 
 import client.Client;
 import client.ClientUI;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -21,9 +25,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import models.*;
+import utils.Util;
+import utils.Utils;
 
 import static java.lang.Thread.sleep;
 
@@ -31,9 +38,13 @@ import static java.lang.Thread.sleep;
 public class NewOrderController implements Initializable {
 
     static Order previousOrder;
+    public static boolean NewOrderReplaced = false;
 
     static User user = LoginController.user;//new Customer("Yuval", "Zohar", 318128841, "asdfjj2@gmail.com", "05234822234", "asdfk", "asdf",false, "00",CustomerType.Client,"3", Regions.South);
     //static User user = new User();
+
+    @FXML
+    private Label NameLabel;
 
     @FXML
     private ListView<VBox> ProductsList;
@@ -55,6 +66,66 @@ public class NewOrderController implements Initializable {
 
     @FXML
     private Label ClearCart;
+
+    @FXML
+    void logOutClicked(ActionEvent event) {
+        try {
+            NewOrderReplaced = true;
+            Util.genricLogOut(getClass());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void backBtnClicked(MouseEvent event) {
+        NewOrderReplaced = true;
+        Stage stage = StageSingleton.getInstance().getStage();
+        // delivery, selfPickUp, latePickUp;
+        //  System.out.println((""));
+
+        if (LoginController.order.getPickUpMethod() == PickUpMethod.delivery)
+        {
+            stage.setScene(DeliveryFormController.scene);
+
+        }
+        else if(LoginController.order.getPickUpMethod() == PickUpMethod.selfPickUp)
+        {
+            stage.setScene(EKController.scene);
+        }
+
+        else
+        {
+            stage.setScene(PickupController.scene);
+        }
+    }
+
+
+
+    @FXML
+    void CancelOrderClicked(ActionEvent event) throws IOException {
+        NewOrderReplaced = true;
+        Parent root;
+        Stage primaryStage = StageSingleton.getInstance().getStage();
+        if (LoginController.order.getPickUpMethod() == PickUpMethod.delivery || LoginController.order.getPickUpMethod() == PickUpMethod.latePickUp)
+            root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+        else{
+            root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
+        }
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+        primaryStage.setTitle("EKrut Main");
+        primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
+        primaryStage.setResizable(false);
+        primaryStage.show();
+        primaryStage.setMinHeight(primaryStage.getHeight());
+        primaryStage.setMinWidth(primaryStage.getWidth());
+    }
+
+
+
+
 
     List<ProductInMachineMonitor> allProductsMonitors = new ArrayList<>();
     private double firstTimeMultiplier;
@@ -123,24 +194,21 @@ public class NewOrderController implements Initializable {
             if(prodInMachine instanceof ProductInMachine) {
                 if(((ProductInMachine)prodInMachine).getProductId().equals(productId))
                 {
-                            return ((ProductInMachine)prodInMachine).getAmount();
-                        }
-                    }
+                    return ((ProductInMachine)prodInMachine).getAmount();
                 }
-             return 0;
+            }
+        }
+        return 0;
     }
 
     private Order receiveOrderFromPreviousPage() {
-        //Order order = new PickupOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.latePickUp, "0000", 318128841,"293492");
-        Order order = LoginController.order; //= new Order(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.selfPickUp, 318128841);
-        //Order order = new DeliveryOrder(null, "25", 0.0, "1", OrderStatus.WaitingApproveDelivery, PickUpMethod.delivery, 318128841, "null", "1", "yuval", "zohar", "052392353", "Nesher, hazahav5", Regions.South, "23423", "24983424","wef", 2.0);
+        Order order = LoginController.order;
         return order;
     }
 
 
-     private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
+    private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
     {
-
         return amount*pricePerItem*firstTimeMultiplier;
     }
 
@@ -267,7 +335,9 @@ public class NewOrderController implements Initializable {
 
             } else {
                 counter.setText(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ONE);
-                AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + product.getPrice() + StyleConstants.CURRENCY_SYMBOL);
+                //roundTo2Digit(calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice()))
+                // AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + product.getPrice() + StyleConstants.CURRENCY_SYMBOL);
+                AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + roundTo2Digit(calculatePriceAfterDiscount(1,product.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                 AddProductInOrderToOrder(product, amountSelected);
                 amountSelected = 1;
             }
@@ -337,6 +407,7 @@ public class NewOrderController implements Initializable {
     {
         List<Object> OrderedIds = requestCompletedOrders(id);
         Boolean isExist = (Boolean)OrderedIds.get(0);
+
         if(isExist)
         {
             firstTimeMultiplier = 1.0;
@@ -351,21 +422,34 @@ public class NewOrderController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        setfirstTimeMultiplier(1234);
+        NewOrderReplaced = false;
+        if(UserInstallationController.configuration.equals("EK")){
+            Thread timeOutThread = new Thread(new gui.NewOrderController.TimeOutControllerNewOrder());
+            timeOutThread.start();
+        }
+        setfirstTimeMultiplier(user.getId());
+        setUserProfile();
         putProductsInMachine();
     }
 
+    private void setUserProfile()
+    {
+        NameLabel.setText(user.getFirstName() + " "+user.getLastName());
+    }
 
     private Order recieveCurrentOrder() {
         Order order;
         if (BillWindowController.restoreOrder != null)
         {
+            System.out.println("Get from yuval");
             order = BillWindowController.restoreOrder;
         }
         else
         {
+            System.out.println("Get from gal");
             order = receiveOrderFromPreviousPage();
         }
+        System.out.println(order.getPrice());
         return order;
     }
 
@@ -421,6 +505,7 @@ public class NewOrderController implements Initializable {
 
 
     private void ContinueOrder(Order order) {
+        NewOrderReplaced = true;
         if (order.getPrice() <= 0.001) {
             EmptyCartAlert.setVisible(true);
             return;
@@ -498,8 +583,8 @@ public class NewOrderController implements Initializable {
                 UpdateCart(order);
                 TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
                 try {
-                        prodImage = recieveImageForProduct(prod);
-//
+                    prodImage = recieveImageForProduct(prod);
+
                 } catch (Exception e) {
                     System.out.println(e);
                     prodImage = new Image(StylePaths.DEFAULT_PRODUCT_IMAGE);
@@ -518,6 +603,53 @@ public class NewOrderController implements Initializable {
 
         }
 
+    }
+
+
+    static class TimeOutControllerNewOrder implements Runnable {
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES; //Utils.TIME_OUT_TIME_IN_MINUTES;
+        private long TimeOutStartTime = System.currentTimeMillis();
+
+        @Override
+        public void run() {
+            while (true) {
+                Platform.runLater(()->handleAnyClick());
+                long TimeOutCurrentTime = System.currentTimeMillis();
+                if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
+                    System.out.println("Time Out passed");
+                    try {
+                        Platform.runLater(()-> {
+                            try {
+                                Util.genricLogOut(getClass());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+                if(NewOrderReplaced) {
+                    System.out.println("Thread closed");
+                    return;
+                }
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        public void handleAnyClick() {
+            StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>(){
+                @Override
+                public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+                    System.out.print("Mouse clicked, timeout time reset\n");
+                    TimeOutStartTime = System.currentTimeMillis();
+                }
+            });
+        }
     }
 
 }
