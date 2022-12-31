@@ -1,13 +1,17 @@
 package gui;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,7 +32,7 @@ import utils.Util;
  * @author gal
  * This class describes the client home page in EK configuration
  */
-public class EKController {
+public class EKController implements Initializable {
 	public Scene scene;
 	
     @FXML
@@ -49,6 +53,13 @@ public class EKController {
     @FXML
     private AnchorPane anchorPane;
     
+    @FXML
+    private Label labelName;
+    
+    @Override
+	public void initialize(URL location, ResourceBundle resources) {
+        Util.setNameNavigationBar(labelName);
+	}
 	/**
 	 * This method describes setting up a new scene.
 	 * @param primaryStage, Description: The stage on which the scene is presented
@@ -67,6 +78,14 @@ public class EKController {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> {
+			try {
+				Util.forcedExit();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 	}
 	
     /**

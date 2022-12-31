@@ -33,14 +33,16 @@ import utils.Util;
  * @author gal
  * This class describes the functionality of the login page
  */
-public class LoginController  implements Initializable{
+public class LoginController implements Initializable{
 	public static User user = null;
 	public static Order order = null;
+	public static List<Object> customerAndWorker = null;
 	
 	private String configuration;
-	
-	public OLController OLcon;
-	public EKController EKcon;
+	private Stage stage = StageSingleton.getInstance().getStage();
+
+
+
 //	public MarketingManagerController MarketingManagerCon;
 	
     @FXML
@@ -65,6 +67,7 @@ public class LoginController  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		user = null;
 		order = null;
+		customerAndWorker = null;
 		configuration = UserInstallationController.configuration;
 	}
 
@@ -86,10 +89,15 @@ public class LoginController  implements Initializable{
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> forcedExit());
 	}
 	
 
-	
+    private static void forcedExit() {
+        StageSingleton.getInstance().getStage().close();
+        System.exit(0);
+    }
+    
     /**
      * This method opens a customer or employee window depending on the type of user. 
      * And only if the details are correct.
@@ -158,13 +166,13 @@ public class LoginController  implements Initializable{
     		return;
     	}
     	
-		Stage stage = StageSingleton.getInstance().getStage();
     	if (configuration.equals("EK")) {
     		requestEKCustomer();
     		if (Client.resFromServer.getCode() == ResponseCode.INVALID_DATA) {
-        		// need to open a new window
-    		}else {
-        		EKcon = new EKController();
+    			setWindowUnregisteredUser();
+    		}
+    		else {
+    			EKController EKcon = new EKController();
         		EKcon.start(stage);
     		}
 
@@ -196,7 +204,7 @@ public class LoginController  implements Initializable{
             	user = (User) Client.resFromServer.getBody().get(0);
                 break;
             case INVALID_DATA:
-        		errorLabel.setText("The username or password are incorrect");
+        		errorLabel.setText(Client.resFromServer.getDescription());
             	break;
             default:
         		errorLabel.setText(Client.resFromServer.getDescription());
@@ -204,7 +212,7 @@ public class LoginController  implements Initializable{
         }
     }
     
-    private void requestEKCustomer() {
+    private void requestEKCustomer() throws Exception {
     	List<Object> userDetails = new ArrayList<>();
     	userDetails.add(user);
     	Request request = new Request();
@@ -223,7 +231,6 @@ public class LoginController  implements Initializable{
             	user = (User) Client.resFromServer.getBody().get(0);
                 break;
             case INVALID_DATA:
-        		// need to open a new window
             	break;
             default:
         		errorLabel.setText(Client.resFromServer.getDescription());
@@ -231,7 +238,10 @@ public class LoginController  implements Initializable{
         }
     }
     
-    
+    private void setWindowUnregisteredUser() throws Exception {
+    	UnregisteredUserController unregisteredCon = new UnregisteredUserController();
+    	unregisteredCon.start(stage);
+    }
     
     private void requestOLUser() throws Exception {
     	List<Object> userDetails = new ArrayList<>();
@@ -252,7 +262,7 @@ public class LoginController  implements Initializable{
             	setUserWindow(Client.resFromServer.getBody());
                 break;
             case INVALID_DATA:
-        		// need to open a new window
+            	setWindowUnregisteredUser();
             	break;
             default:
         		errorLabel.setText(Client.resFromServer.getDescription());
@@ -262,12 +272,13 @@ public class LoginController  implements Initializable{
     
     
     private void setUserWindow(List<Object> userDetails) throws Exception {
-		Stage stage = StageSingleton.getInstance().getStage();
     	if (userDetails.size() == 2) {
-    		// choose one option
+    		customerAndWorker = userDetails;
+    		SelectOptionWorkerOrCustomer selectWindow = new SelectOptionWorkerOrCustomer();
+    		selectWindow.start(stage);
     	}
     	else if(userDetails.get(0) instanceof Customer) {
-    		OLcon = new OLController();	
+    		OLController OLcon = new OLController();	
     		OLcon.start(stage);
     	}
     	else if(userDetails.get(0) instanceof Worker) {
@@ -309,8 +320,7 @@ public class LoginController  implements Initializable{
     		errorTouch.setVisible(true);
     		return;
     	}
-		Stage stage = StageSingleton.getInstance().getStage();
-		EKcon = new EKController();
+    	EKController EKcon = new EKController();
 		EKcon.start(stage);
     }
     
@@ -320,7 +330,7 @@ public class LoginController  implements Initializable{
      */
     @FXML
     void Exit(ActionEvent event) {
-        StageSingleton.getInstance().getStage().close();
+        stage.close();
         System.exit(0);
     }
     

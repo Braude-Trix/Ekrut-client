@@ -2,6 +2,7 @@ package gui;
 
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +19,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import models.Method;
 import models.Request;
+import models.Worker;
 import utils.Util;
 
 /**
@@ -41,12 +43,22 @@ public class OLController implements Initializable {
     @FXML
     private Label errorLabel;
     
+    @FXML
+    private Label labelName;
+    
+    @FXML
+    private ImageView backImage;
 	/**
 	 *This method describes the initialization of information that will be displayed in the window depending on the client.
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		checkDeliveryNotCollected();
+        Util.setNameNavigationBar(labelName);
+        if (LoginController.customerAndWorker != null) {
+        	backImage.setVisible(true);
+        	backImage.setDisable(false);
+        }
 	}
 	
 	/**
@@ -68,6 +80,14 @@ public class OLController implements Initializable {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> {
+			try {
+				Util.forcedExit();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 	}
 	
     /**
@@ -179,6 +199,13 @@ public class OLController implements Initializable {
     	}
     	
 	}
+	
+    @FXML
+    void Back(MouseEvent event) {
+		Stage stage = StageSingleton.getInstance().getStage();
+		stage.setScene(SelectOptionWorkerOrCustomer.scene);
+		stage.show();
+    }
 
 }
 

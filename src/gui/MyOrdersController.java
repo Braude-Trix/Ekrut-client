@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -94,6 +95,9 @@ public class MyOrdersController implements Initializable {
     @FXML
     private Label errorLabel;
     
+    @FXML
+    private Label labelName;
+    
     private List<MyOrders> listMyOrders;
     private List<MyOrders> listDeliveryNotCollected;
     ObservableList<MyOrders> orderObser;
@@ -109,6 +113,7 @@ public class MyOrdersController implements Initializable {
 		getAllOrdersForSpecificUser();
 		setStyleForEmptyTable();
 		addButtonToTable();
+        Util.setNameNavigationBar(labelName);
 	}
 	
 	public void start(Stage primaryStage) throws Exception {
@@ -122,7 +127,14 @@ public class MyOrdersController implements Initializable {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
-
+        primaryStage.setOnCloseRequest(e -> {
+			try {
+				Util.forcedExit();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 	}
 
 

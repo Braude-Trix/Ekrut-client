@@ -69,6 +69,10 @@ public class DeliveryFormController implements Initializable {
     @FXML
     private AnchorPane anchorPane;
 	
+    @FXML
+    private Label labelName;
+    
+      
     private User user;
     
 	@Override
@@ -76,6 +80,7 @@ public class DeliveryFormController implements Initializable {
         setRegionComboBox();
         user = LoginController.user;
         setValuesInTextFields();
+        Util.setNameNavigationBar(labelName);
 	}
     
 	public void start(Stage primaryStage) throws Exception {
@@ -91,6 +96,14 @@ public class DeliveryFormController implements Initializable {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> {
+			try {
+				Util.forcedExit();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 	}
 	
 	private void setValuesInTextFields() {

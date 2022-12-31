@@ -68,7 +68,13 @@ public class UserInstallationController implements Initializable {
 		primaryStage.show();
 		primaryStage.setMinHeight(primaryStage.getHeight());
 		primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> forcedExit());
 	}
+	
+    private static void forcedExit() {
+        StageSingleton.getInstance().getStage().close();
+        System.exit(0);
+    }
 	
     @FXML
     void EkClicked(ActionEvent event) {
