@@ -91,14 +91,15 @@ public class RegionalDeliveryController implements Initializable {
     @FXML
     private Label sideTitleLabel;
 
-    private Worker worker = (Worker)LoginController.user;
+    private Worker worker = (Worker) LoginController.user;
     private Integer myId = worker.getId();
     private String staticRegion = worker.getRegion().toString(); //"North";
 
     /**
      * function that start the fxml of the current window
-     * @param primaryStage - Singelton in our program
-     * @throws Exception
+     *
+     * @param primaryStage - Singleton in our program
+     * @throws Exception - FXMLLoader Exception
      */
     public void start(Stage primaryStage) throws Exception {
 
@@ -221,7 +222,8 @@ public class RegionalDeliveryController implements Initializable {
 
     /**
      * function that initialize the pending orders table according to the worker region
-     * @param region
+     *
+     * @param region - Region Enum
      */
     public void initTablePendingOrders(String region) {
         ordersTable = new TableView<>();
@@ -243,9 +245,11 @@ public class RegionalDeliveryController implements Initializable {
         appDenyCol.setCellValueFactory(new PropertyValueFactory<PendingDeliveryTable, CheckBox>("approveDenyCheckBox"));
         addItemsToPendingTable(region);
     }
+
     /**
      * function that initialize the confirm orders table according to the worker region
-     * @param region
+     *
+     * @param region - Region Enum
      */
     public void initTableConfirmOrders(String region) {
         ConfirmDeliveryTable = new TableView<>();
@@ -267,16 +271,18 @@ public class RegionalDeliveryController implements Initializable {
         confirmBtnColConfirmTable.setCellValueFactory(new PropertyValueFactory<ConfirmDeliveryTable, Button>("confirmDeliveryBtn"));
         addItemsToConfirmTable(region);
     }
+
     /**
      * function that add items the pending orders table according to the worker region
-     * @param region
+     *
+     * @param region - Region Enum
      */
     public void addItemsToPendingTable(String region) {
         List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
         List<DeliveryOrder> deliveryOrders = requestPendingDeliveriesOrdersByRegion(region);
-        Map<String,String> resMap = requestWaitingDeliveryOrdersWithDate();
-        for(DeliveryOrder deliveryOrder: deliveryOrders){
-            if(!resMap.containsKey(deliveryOrder.getOrderId())){
+        Map<String, String> resMap = requestWaitingDeliveryOrdersWithDate();
+        for (DeliveryOrder deliveryOrder : deliveryOrders) {
+            if (!resMap.containsKey(deliveryOrder.getOrderId())) {
                 deliveryToRemove.add(deliveryOrder);
             }
             deliveryOrder.setDate(resMap.get(deliveryOrder.getOrderId()));
@@ -290,31 +296,35 @@ public class RegionalDeliveryController implements Initializable {
         }
         ordersTable.setItems(regionalDeliveriesList);
         ordersTable.fixedCellSizeProperty();
-        if(ordersTable.getItems().size() == 0){
+        if (ordersTable.getItems().size() == 0) {
 
         }
     }
+
     /**
      * function that handle that in confirm table, one of the V buttons in some row clicked.
+     *
      * @param confirmBtn, confirmDeliveriesList, confirmDeliveryTable
      */
     void VImageClicked(Button confirmBtn, ObservableList<ConfirmDeliveryTable> confirmDeliveriesList, ConfirmDeliveryTable confirmDeliveryTable) {
         confirmBtn.setOnMouseClicked(event -> {
             confirmDeliveriesList.remove(confirmDeliveryTable);
             ConfirmDeliveryTable.setItems(confirmDeliveriesList);
-            updateOrderStatus(confirmDeliveryTable.getOrderId(),OrderStatus.Done);
+            updateOrderStatus(confirmDeliveryTable.getOrderId(), OrderStatus.Done);
         });
     }
+
     /**
      * function that add items the confirm orders table according to the worker region
-     * @param region
+     *
+     * @param region - Region Enum
      */
     public void addItemsToConfirmTable(String region) {
         List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
         List<DeliveryOrder> deliveryOrders = requestPendingDeliveriesOrdersByRegion(region);
-        Map<String,String> resMap = requestCollectedDeliveryOrdersWithDate();
-        for(DeliveryOrder deliveryOrder: deliveryOrders){
-            if(!resMap.containsKey(deliveryOrder.getOrderId())){
+        Map<String, String> resMap = requestCollectedDeliveryOrdersWithDate();
+        for (DeliveryOrder deliveryOrder : deliveryOrders) {
+            if (!resMap.containsKey(deliveryOrder.getOrderId())) {
                 deliveryToRemove.add(deliveryOrder);
             }
             deliveryOrder.setDate(resMap.get(deliveryOrder.getOrderId()));
@@ -348,10 +358,9 @@ public class RegionalDeliveryController implements Initializable {
         ClientUI.chat.accept(request);// sending the request to the server.
         switch (Client.resFromServer.getCode()) {
             case OK:
-                if(Client.resFromServer.getBody() == null)
-                    break;
+                if (Client.resFromServer.getBody() == null) break;
                 for (Object deliveryOrder : Client.resFromServer.getBody())
-                    resList.add((DeliveryOrder)deliveryOrder);
+                    resList.add((DeliveryOrder) deliveryOrder);
             default:
                 System.out.println("Some error occurred");
         }
@@ -359,8 +368,7 @@ public class RegionalDeliveryController implements Initializable {
     }
 
 
-
-    private Map<String,String> requestCollectedDeliveryOrdersWithDate() {
+    private Map<String, String> requestCollectedDeliveryOrdersWithDate() {
         Request request = new Request();
         request.setPath("/getCollectedDeliveryOrdersWithDate");
         request.setMethod(Method.GET);
@@ -368,14 +376,14 @@ public class RegionalDeliveryController implements Initializable {
         ClientUI.chat.accept(request);// sending the request to the server.
         switch (Client.resFromServer.getCode()) {
             case OK:
-                return (Map<String,String>)Client.resFromServer.getBody().get(0);
+                return (Map<String, String>) Client.resFromServer.getBody().get(0);
             default:
                 System.out.println("Some error occurred");
         }
         return null;
     }
 
-    private Map<String,String> requestWaitingDeliveryOrdersWithDate() {
+    private Map<String, String> requestWaitingDeliveryOrdersWithDate() {
         Request request = new Request();
         request.setPath("/getWaitingDeliveryOrdersWithDate");
         request.setMethod(Method.GET);
@@ -383,7 +391,7 @@ public class RegionalDeliveryController implements Initializable {
         ClientUI.chat.accept(request);// sending the request to the server.
         switch (Client.resFromServer.getCode()) {
             case OK:
-                return (Map<String,String>)Client.resFromServer.getBody().get(0);
+                return (Map<String, String>) Client.resFromServer.getBody().get(0);
             default:
                 System.out.println("Some error occurred");
         }
@@ -409,12 +417,12 @@ public class RegionalDeliveryController implements Initializable {
 
     /**
      * function that called when the fxml loaded, handle the username label text
+     *
      * @param url
      * @param resourceBundle
      */
     public void initialize(URL url, ResourceBundle resourceBundle) {
         userNameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
-
 
 
     }
@@ -562,7 +570,7 @@ public class RegionalDeliveryController implements Initializable {
         btnHbox.setPadding(new Insets(0, 20, 1, 20));
         refreshImageViewClickedInPendingTable(imageViewRefresh, saveBtn);
         bottomBroderVbox.getChildren().add(btnHbox);
-        if(ordersTable.getItems().size()==0){
+        if (ordersTable.getItems().size() == 0) {
             saveBtn.setOpacity(0.5);
         }
         saveBtnClicked(saveBtn);
@@ -578,8 +586,7 @@ public class RegionalDeliveryController implements Initializable {
     private void refreshImageViewClickedInPendingTable(ImageView refreshImageView, Button saveBtn) {
         refreshImageView.setOnMouseClicked((event3) -> {
             addItemsToPendingTable(staticRegion);
-            if (ordersTable.getItems().size() > 0)
-                saveBtn.setOpacity(1);
+            if (ordersTable.getItems().size() > 0) saveBtn.setOpacity(1);
         });
     }
 

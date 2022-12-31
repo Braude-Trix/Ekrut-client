@@ -28,7 +28,9 @@ import models.*;
 import utils.Util;
 import utils.Utils;
 
-
+/**
+ * class that represents the bill window controller
+ */
 public class BillWindowController implements Initializable {
 
     public static Order restoreOrder;
@@ -61,19 +63,24 @@ public class BillWindowController implements Initializable {
     Integer machineId;
     int customerId;
 
-    public void initBillWindow() {
+    private void initBillWindow() {
         totalPriceLabel.setText(StyleConstants.TOTAL_PRICE_STRING + Double.toString(NewOrderController.previousOrder.getPrice()) + StyleConstants.CURRENCY_INS);
         initBillTable(NewOrderController.previousOrder);
         restoreOrder = NewOrderController.previousOrder;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT);
         restoreOrder.setDate(LocalDate.now().format(formatter));
-        if(restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
-            ((PickupOrder)restoreOrder).setPickupCode(UUID.randomUUID().toString().replace("-","").substring(0,8));
+        if (restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
+            ((PickupOrder) restoreOrder).setPickupCode(UUID.randomUUID().toString().replace("-", "").substring(0, 8));
 
 
     }
 
-
+    /**
+     * function that called while BillWindow fxml loaded, open the Timeout thread, init the window table and set vars
+     *
+     * @param url
+     * @param resourceBundle
+     */
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             Util.forcedExit();
@@ -82,7 +89,7 @@ public class BillWindowController implements Initializable {
             e1.printStackTrace();
         }
 
-        if(UserInstallationController.configuration.equals("EK")) {
+        if (UserInstallationController.configuration.equals("EK")) {
             BillReplaced = false;
             Thread timeOutThread = new Thread(new TimeOutControllerBillWindow());
             timeOutThread.start();
@@ -93,7 +100,7 @@ public class BillWindowController implements Initializable {
         customerId = NewOrderController.user.getId();
     }
 
-    public void initBillTable(Order order) {
+    private void initBillTable(Order order) {
         amountCol.setCellValueFactory(new PropertyValueFactory<ProductInOrder, Double>("amount"));
         priceCol.setCellValueFactory(new PropertyValueFactory<ProductInOrder, Double>("totalProductPrice"));
         productCol.setCellValueFactory(new PropertyValueFactory<ProductInOrder, String>("productName"));
@@ -102,17 +109,24 @@ public class BillWindowController implements Initializable {
         billTable.setItems(productsInBill);
     }
 
-    public boolean validateProductsInInventory(){
+    private boolean validateProductsInInventory() {
         List<ProductInMachine> machineProducts = requestMachineProducts(machineId);
-        for(ProductInOrder productInOrder: restoreOrder.getProductsInOrder()){
-            for(ProductInMachine productInMachine: machineProducts){
-                if(productInOrder.getProduct().getProductId().equals(productInMachine.getProductId()) && productInOrder.getAmount() > productInMachine.getAmount())
+        for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
+            for (ProductInMachine productInMachine : machineProducts) {
+                if (productInOrder.getProduct().getProductId().equals(productInMachine.getProductId()) && productInOrder.getAmount() > productInMachine.getAmount())
                     return false;
             }
         }
         return true;
     }
 
+    /**
+     * function that createAnAlert of javaFX using given alertType, String title of the alert and the alert message
+     *
+     * @param alertType - AlertType object of javaFX
+     * @param alertTitle - String alert title
+     * @param alertMessage - String alert message
+     */
     public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
         Alert alert = new Alert(alertType); //Information, Error
         alert.setContentText(alertTitle); // Information, Error
@@ -120,9 +134,14 @@ public class BillWindowController implements Initializable {
         alert.show();
     }
 
+    /**
+     * function that handle while proceedPayment Clicked, checked the inventory still exists, update the DB and handle the confirmation order popUp
+     *
+     * @param event
+     */
     @FXML
     void proceedPaymentClicked(ActionEvent event) {
-        if(!validateProductsInInventory()){
+        if (!validateProductsInInventory()) {
             restoreOrder = null;
 
             replaceWindowToNewOrder();
@@ -142,7 +161,7 @@ public class BillWindowController implements Initializable {
         changeToConfirmationOrderPopUpWindow();
     }
 
-    void requestSaveOrder() {
+    private void requestSaveOrder() {
         List<Object> orderList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/newOrder");
@@ -161,9 +180,9 @@ public class BillWindowController implements Initializable {
         }
     }
 
-    void requestSaveDeliveryOrder(){
-        if(NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.delivery){
-            DeliveryOrder deliveryOrder = (DeliveryOrder)NewOrderController.previousOrder;
+    private void requestSaveDeliveryOrder() {
+        if (NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.delivery) {
+            DeliveryOrder deliveryOrder = (DeliveryOrder) NewOrderController.previousOrder;
             List<Object> paramList = new ArrayList<>();
             Request request = new Request();
             request.setPath("/saveDeliveryOrder");
@@ -180,9 +199,9 @@ public class BillWindowController implements Initializable {
         }
     }
 
-    void requestSaveLatePickUpOrder(){
-        if(NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.latePickUp){
-            PickupOrder latePickUpOrder = (PickupOrder)NewOrderController.previousOrder;
+    private void requestSaveLatePickUpOrder() {
+        if (NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
+            PickupOrder latePickUpOrder = (PickupOrder) NewOrderController.previousOrder;
             List<Object> paramList = new ArrayList<>();
             Request request = new Request();
             request.setPath("/saveLatePickUpOrder");
@@ -199,7 +218,7 @@ public class BillWindowController implements Initializable {
         }
     }
 
-    void requestSaveProductsInOrder() {
+    private void requestSaveProductsInOrder() {
         List<Object> orderList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/saveProductsInOrder");
@@ -216,7 +235,7 @@ public class BillWindowController implements Initializable {
         }
     }
 
-    public int getMachineThreshold() {
+    private int getMachineThreshold() {
         int threshold = -1;
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
@@ -237,9 +256,7 @@ public class BillWindowController implements Initializable {
     }
 
 
-
-
-    public void updateInventoryInDB(){
+    private void updateInventoryInDB() {
         List<ProductInMachine> updatedInventory = getUpdatedInventory();
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
@@ -256,7 +273,7 @@ public class BillWindowController implements Initializable {
         }
     }
 
-    public List<ProductInMachine> getUpdatedInventory() {
+    private List<ProductInMachine> getUpdatedInventory() {
         List<ProductInMachine> updatedMachineList = new ArrayList<>();
         List<ProductInMachine> productsInMachineList = requestMachineProducts(machineId);
         StatusInMachine newStatusInMachine;
@@ -264,8 +281,7 @@ public class BillWindowController implements Initializable {
         ProductInMachine productInMachine;
         for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
             int newAmount = getProductMachineAmountFromList(productsInMachineList, machineId, Integer.valueOf(productInOrder.getProduct().getProductId())) - productInOrder.getAmount();
-            if (newAmount == 0)
-                newStatusInMachine = StatusInMachine.Not_Available;
+            if (newAmount == 0) newStatusInMachine = StatusInMachine.Not_Available;
             else if (newAmount < getMachineThreshold) {
                 newStatusInMachine = StatusInMachine.Below;
             } else {
@@ -278,8 +294,7 @@ public class BillWindowController implements Initializable {
     }
 
 
-
-    public Integer getProductMachineAmountFromList(List<ProductInMachine> productsInMachineList, Integer machineId, Integer productId) {
+    private Integer getProductMachineAmountFromList(List<ProductInMachine> productsInMachineList, Integer machineId, Integer productId) {
         for (ProductInMachine productInMachine : productsInMachineList) {
             if ((machineId.toString()).equals(productInMachine.getMachineId()) && Objects.equals(productId, Integer.valueOf(productInMachine.getProductId())))
                 return productInMachine.getAmount();
@@ -287,7 +302,7 @@ public class BillWindowController implements Initializable {
         return -1;
     }
 
-    public List<ProductInMachine> requestMachineProducts(Integer machineId) {
+    private List<ProductInMachine> requestMachineProducts(Integer machineId) {
         List<ProductInMachine> productInMachineList = new ArrayList<>();
         List<Object> listObject = new ArrayList<>();
         Request request = new Request();
@@ -310,7 +325,7 @@ public class BillWindowController implements Initializable {
     }
 
 
-    public void changeToConfirmationOrderPopUpWindow() {
+    private void changeToConfirmationOrderPopUpWindow() {
         BillReplaced = true;
         AnchorPane pane;
         try {
@@ -333,13 +348,13 @@ public class BillWindowController implements Initializable {
         stage.show();
     }
 
-    public void returnToMainPage() throws IOException {
+    private void returnToMainPage() throws IOException {
         BillReplaced = true;
         Parent root;
         Stage primaryStage = StageSingleton.getInstance().getStage();
         if (restoreOrder.getPickUpMethod() == PickUpMethod.delivery || restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
             root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
-        else{
+        else {
             root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
         }
         Scene scene = new Scene(root);
@@ -353,12 +368,17 @@ public class BillWindowController implements Initializable {
         primaryStage.setMinWidth(primaryStage.getWidth());
     }
 
+    /**
+     * function that handle while back button is clicked. it will open the new order window
+     *
+     * @param event
+     */
     @FXML
     void backBtnClicked(MouseEvent event) {
         replaceWindowToNewOrder();
     }
 
-    void replaceWindowToNewOrder(){
+    private void replaceWindowToNewOrder() {
         BillReplaced = true;
         AnchorPane pane;
         try {
@@ -376,6 +396,11 @@ public class BillWindowController implements Initializable {
         stage.setResizable(false);
     }
 
+    /**
+     * function that handle while logout button is clicked. back to the login page and log out the user.
+     *
+     * @param event
+     */
     @FXML
     void logOutClicked(ActionEvent event) {
         BillReplaced = true;
@@ -386,25 +411,26 @@ public class BillWindowController implements Initializable {
         }
     }
 
-
-
-
-
-
-
+    /**
+     * inner class that handle the timeOut of this current scene. if TIME_OUT_TIME_IN_MINUTES time over wihout activity, the system will logout the user.
+     */
     static class TimeOutControllerBillWindow implements Runnable {
         private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
+        /**
+         * run method, running while new thread started with object of this class. measuring
+         * time,  logout the user and close the thread if there is no click identified in the scene.
+         */
         @Override
         public void run() {
             while (true) {
-                Platform.runLater(()->handleAnyClick());
+                Platform.runLater(() -> handleAnyClick());
                 long TimeOutCurrentTime = System.currentTimeMillis();
                 if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
                     System.out.println("Time Out passed");
                     try {
-                        Platform.runLater(()-> {
+                        Platform.runLater(() -> {
                             try {
                                 Util.genricLogOut(getClass());
                             } catch (Exception e) {
@@ -416,7 +442,7 @@ public class BillWindowController implements Initializable {
                     }
                     return;
                 }
-                if(BillReplaced) {
+                if (BillReplaced) {
                     System.out.println("Thread closed");
                     return;
                 }
@@ -427,8 +453,12 @@ public class BillWindowController implements Initializable {
                 }
             }
         }
+
+        /**
+         * method that reset the TimeOutStartTime with any click on the screen.
+         */
         public void handleAnyClick() {
-            StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>(){
+            StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>() {
                 @Override
                 public void handle(javafx.scene.input.MouseEvent mouseEvent) {
                     System.out.print("Mouse clicked, timeout time reset\n");
@@ -437,5 +467,4 @@ public class BillWindowController implements Initializable {
             });
         }
     }
-
 }

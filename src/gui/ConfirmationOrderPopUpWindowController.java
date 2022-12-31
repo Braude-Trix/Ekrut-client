@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
+/**
+ * class that handle the confirmation order popup controller
+ */
 public class ConfirmationOrderPopUpWindowController implements Initializable {
     final static int POP_UP_WIDTH = 600;
     final static int POP_UP_HEIGHT = 340;
@@ -60,31 +63,35 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
 
     private static Order order = BillWindowController.restoreOrder;
 
+    /**
+     * function that called when the current fxml is loaded, init controller vars and init the popup screen view.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initVars();
         initWindow();
     }
 
-    public void initVars(){
-        if (order.getPickUpMethod() == PickUpMethod.delivery){
-            deliveryAddress = ((DeliveryOrder)order).getFullAddress();
+    private void initVars() {
+        if (order.getPickUpMethod() == PickUpMethod.delivery) {
+            deliveryAddress = ((DeliveryOrder) order).getFullAddress();
         }
-        if (order.getPickUpMethod() == PickUpMethod.latePickUp){
-            pinCode = ((PickupOrder)order).getPickupCode();
+        if (order.getPickUpMethod() == PickUpMethod.latePickUp) {
+            pinCode = ((PickupOrder) order).getPickupCode();
             choosenMachine = getMachineNameById();
         }
-        if(NewOrderController.user instanceof Customer){
-            CustomerType customerType = ((Customer)NewOrderController.user).getType();
-            if(customerType == CustomerType.Client)
-                isSubscriber = false;
-            else if(customerType == CustomerType.Subscriber)
-                isSubscriber = true;
+        if (NewOrderController.user instanceof Customer) {
+            CustomerType customerType = ((Customer) NewOrderController.user).getType();
+            if (customerType == CustomerType.Client) isSubscriber = false;
+            else if (customerType == CustomerType.Subscriber) isSubscriber = true;
 
         }
 
     }
 
-    public String getMachineNameById(){
+    private String getMachineNameById() {
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/getMachineName");
@@ -101,7 +108,8 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
         return Client.resFromServer.getBody().get(0).toString();
 
     }
-    public void initWindow() {
+
+    private void initWindow() {
         setMonthlyBillLabel();
         String date = order.getDate();
         PickUpMethod pickUpMethod = order.getPickUpMethod();
@@ -137,7 +145,7 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
         }
     }
 
-    public Double getMonthlyBill(){
+    private Double getMonthlyBill() {
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/getMonthlyBill");
@@ -154,8 +162,8 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
         return Double.parseDouble(Client.resFromServer.getBody().get(0).toString());
     }
 
-    public void setMonthlyBillLabel(){
-        if(isSubscriber){
+    private void setMonthlyBillLabel() {
+        if (isSubscriber) {
             Double monthlyBill = getMonthlyBill();
             Double newMonthlyBill = BillWindowController.restoreOrder.getPrice() + monthlyBill;
             List<Object> paramList = new ArrayList<>();
