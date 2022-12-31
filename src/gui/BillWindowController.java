@@ -74,6 +74,14 @@ public class BillWindowController implements Initializable {
 
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            Util.forcedExit();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+
         BillReplaced = false;
         Thread timeOutThread = new Thread(new TimeOutControllerBillWindow());
         timeOutThread.start();

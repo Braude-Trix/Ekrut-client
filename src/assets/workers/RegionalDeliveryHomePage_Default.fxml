@@ -79,7 +79,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </Separator>
-                  <Button fx:id="logoutBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Log out" />
+                  <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logOutClicked" prefHeight="30.0" prefWidth="200.0" text="Log out" />
                </children>
                <opaqueInsets>
                   <Insets />

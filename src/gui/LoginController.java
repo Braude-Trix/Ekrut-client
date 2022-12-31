@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
+import gui.workers.RegionalDeliveryController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Customer;
@@ -325,7 +327,7 @@ public class LoginController implements Initializable{
     	}
     }
     
-    private void setWindowByTypeWorker(Stage stage, Worker worker) {
+    private void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
     	switch (worker.getType()) {
     	case CEO:
     		break;
@@ -338,6 +340,7 @@ public class LoginController implements Initializable{
     	case RegionalManager:
     		break;
     	case RegionalDelivery:
+			(new RegionalDeliveryController()).start(stage);
     		break;
     	case ServiceOperator:
     		break;

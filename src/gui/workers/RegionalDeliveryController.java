@@ -3,14 +3,18 @@ package gui.workers;
 
 import client.Client;
 import client.ClientUI;
+import gui.LoginController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,8 +24,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import models.*;
+import utils.Util;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +37,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static utils.Util.forcedExit;
+
+/**
+ * class that represents Controller to RegionalDelivery
+ */
 public class RegionalDeliveryController implements Initializable {
     @FXML
     private ImageView bgImage;
@@ -79,11 +91,38 @@ public class RegionalDeliveryController implements Initializable {
     @FXML
     private Label sideTitleLabel;
 
-    private static String staticRegion = "North";
+    private Worker worker = (Worker)LoginController.user;
+    private Integer myId = worker.getId();
+    private String staticRegion = worker.getRegion().toString(); //"North";
 
-    private Integer myId = 123;
+    /**
+     * function that start the fxml of the current window
+     * @param primaryStage - Singelton in our program
+     * @throws Exception
+     */
+    public void start(Stage primaryStage) throws Exception {
 
+        Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/RegionalDeliveryHomePage_Default.fxml"));
+        Scene scene = new Scene(root);
+        primaryStage.setTitle("Regional Manager");
+        primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
+        primaryStage.setResizable(false);
+        primaryStage.show();
+        primaryStage.setMinHeight(primaryStage.getHeight());
+        primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setOnCloseRequest(e -> {
+            try {
+                forcedExit();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
 
+    /**
+     * class that represents the table of Pending deliveries, with 4 columns of orderId, checkBox, deliveryDate, and deliveryAddress.
+     */
     public static class PendingDeliveryTable {
         private String orderId;
         private CheckBox approveDenyCheckBox;
@@ -131,7 +170,9 @@ public class RegionalDeliveryController implements Initializable {
         }
     }
 
-
+    /**
+     * class that represents the table of Confirmed deliveries, with 4 columns of orderId, deliveryAcceptanceDate, deliveryDate, and confirm btn.
+     */
     public static class ConfirmDeliveryTable {
         private String orderId;
         private String deliveryAcceptanceDate;
@@ -178,6 +219,10 @@ public class RegionalDeliveryController implements Initializable {
         }
     }
 
+    /**
+     * function that initialize the pending orders table according to the worker region
+     * @param region
+     */
     public void initTablePendingOrders(String region) {
         ordersTable = new TableView<>();
         ordersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -198,7 +243,10 @@ public class RegionalDeliveryController implements Initializable {
         appDenyCol.setCellValueFactory(new PropertyValueFactory<PendingDeliveryTable, CheckBox>("approveDenyCheckBox"));
         addItemsToPendingTable(region);
     }
-
+    /**
+     * function that initialize the confirm orders table according to the worker region
+     * @param region
+     */
     public void initTableConfirmOrders(String region) {
         ConfirmDeliveryTable = new TableView<>();
         ConfirmDeliveryTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -219,7 +267,10 @@ public class RegionalDeliveryController implements Initializable {
         confirmBtnColConfirmTable.setCellValueFactory(new PropertyValueFactory<ConfirmDeliveryTable, Button>("confirmDeliveryBtn"));
         addItemsToConfirmTable(region);
     }
-
+    /**
+     * function that add items the pending orders table according to the worker region
+     * @param region
+     */
     public void addItemsToPendingTable(String region) {
         List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
         List<DeliveryOrder> deliveryOrders = requestPendingDeliveriesOrdersByRegion(region);
@@ -239,8 +290,14 @@ public class RegionalDeliveryController implements Initializable {
         }
         ordersTable.setItems(regionalDeliveriesList);
         ordersTable.fixedCellSizeProperty();
-    }
+        if(ordersTable.getItems().size() == 0){
 
+        }
+    }
+    /**
+     * function that handle that in confirm table, one of the V buttons in some row clicked.
+     * @param confirmBtn, confirmDeliveriesList, confirmDeliveryTable
+     */
     void VImageClicked(Button confirmBtn, ObservableList<ConfirmDeliveryTable> confirmDeliveriesList, ConfirmDeliveryTable confirmDeliveryTable) {
         confirmBtn.setOnMouseClicked(event -> {
             confirmDeliveriesList.remove(confirmDeliveryTable);
@@ -248,7 +305,10 @@ public class RegionalDeliveryController implements Initializable {
             updateOrderStatus(confirmDeliveryTable.getOrderId(),OrderStatus.Done);
         });
     }
-
+    /**
+     * function that add items the confirm orders table according to the worker region
+     * @param region
+     */
     public void addItemsToConfirmTable(String region) {
         List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
         List<DeliveryOrder> deliveryOrders = requestPendingDeliveriesOrdersByRegion(region);
@@ -277,7 +337,7 @@ public class RegionalDeliveryController implements Initializable {
         ConfirmDeliveryTable.fixedCellSizeProperty();
     }
 
-    public List<DeliveryOrder> requestPendingDeliveriesOrdersByRegion(String region) {
+    private List<DeliveryOrder> requestPendingDeliveriesOrdersByRegion(String region) {
         List<DeliveryOrder> resList = new ArrayList<>();
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
@@ -300,7 +360,7 @@ public class RegionalDeliveryController implements Initializable {
 
 
 
-    public Map<String,String> requestCollectedDeliveryOrdersWithDate() {
+    private Map<String,String> requestCollectedDeliveryOrdersWithDate() {
         Request request = new Request();
         request.setPath("/getCollectedDeliveryOrdersWithDate");
         request.setMethod(Method.GET);
@@ -315,7 +375,7 @@ public class RegionalDeliveryController implements Initializable {
         return null;
     }
 
-    public Map<String,String> requestWaitingDeliveryOrdersWithDate() {
+    private Map<String,String> requestWaitingDeliveryOrdersWithDate() {
         Request request = new Request();
         request.setPath("/getWaitingDeliveryOrdersWithDate");
         request.setMethod(Method.GET);
@@ -330,7 +390,7 @@ public class RegionalDeliveryController implements Initializable {
         return null;
     }
 
-    public Integer requestCustomerId(String orderId) {
+    private Integer requestCustomerId(String orderId) {
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/getCustomerIdByOrderId");
@@ -347,12 +407,20 @@ public class RegionalDeliveryController implements Initializable {
         }
     }
 
+    /**
+     * function that called when the fxml loaded, handle the username label text
+     * @param url
+     * @param resourceBundle
+     */
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        userNameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
+
+
 
     }
 
 
-    void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
+    private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/postMsg");
@@ -370,7 +438,7 @@ public class RegionalDeliveryController implements Initializable {
         }
     }
 
-    void updateOrderStatus(String orderId, OrderStatus orderStatus) {
+    private void updateOrderStatus(String orderId, OrderStatus orderStatus) {
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/updateOrderStatus");
@@ -387,7 +455,7 @@ public class RegionalDeliveryController implements Initializable {
         }
     }
 
-    public void saveFunctionallity(Button saveBtnId) {
+    private void saveFunctionallity(Button saveBtnId) {
         String msg;
         int orderTableSize = ordersTable.getItems().size();
         List<PendingDeliveryTable> PendingDeliveryTableListToRemove = new ArrayList<>();
@@ -398,10 +466,10 @@ public class RegionalDeliveryController implements Initializable {
                     updateOrderStatus(orderId, OrderStatus.NotCollected);
                     String deliveryDate = PendingDeliveryTable.getDeliveryDate();
                     String deliveryAddress = PendingDeliveryTable.getDeliveryAddress();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                    LocalDate date = LocalDate.parse(deliveryDate, formatter);
-                    LocalDate newDeliveryDate = date.plusDays(7);
-                    msg = StyleConstants.HEADER_MSG_TO_CLIENT + orderId + StyleConstants.AFTER_HEADER_MSG_TO_CLIENT + newDeliveryDate.toString() + StyleConstants.FOOTER_HEADER_MSG_TO_CLIENT + deliveryAddress;
+//                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-DD");
+//                    LocalDate date = LocalDate.parse(deliveryDate, formatter);
+//                    LocalDate newDeliveryDate = date.plusDays(7);
+                    msg = StyleConstants.HEADER_MSG_TO_CLIENT + orderId + StyleConstants.AFTER_HEADER_MSG_TO_CLIENT + deliveryDate.toString() + StyleConstants.FOOTER_HEADER_MSG_TO_CLIENT + deliveryAddress;
                     writeNewMsgToDB(msg, myId, requestCustomerId(orderId));
                     PendingDeliveryTableListToRemove.add(PendingDeliveryTable);
                 }
@@ -417,7 +485,7 @@ public class RegionalDeliveryController implements Initializable {
     }
 
 
-    public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
+    private void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
         Alert alert = new Alert(alertType); //Information, Error
         alert.setContentText(alertTitle); // Information, Error
         alert.setContentText(alertMessage);
@@ -426,7 +494,7 @@ public class RegionalDeliveryController implements Initializable {
 
 
     @FXML
-    void confirmDeliveriesClicked(ActionEvent event) {
+    private void confirmDeliveriesClicked(ActionEvent event) {
         bgImage.setImage(new Image(StylePaths.REGIONAL_DELIVERY_SEC_BG));
         enableAll();
         clearBorderPane();
@@ -449,7 +517,7 @@ public class RegionalDeliveryController implements Initializable {
         bottomBroderVbox.getChildren().add(vboxRefresh);
     }
 
-    public void refreshImageViewClickedInConfirmTable(ImageView refreshImageView) {
+    private void refreshImageViewClickedInConfirmTable(ImageView refreshImageView) {
         refreshImageView.setOnMouseClicked((event3) -> {
             addItemsToConfirmTable(staticRegion);
         });
@@ -457,7 +525,8 @@ public class RegionalDeliveryController implements Initializable {
 
 
     @FXML
-    void pendingDeliveriesClicked(ActionEvent event) {
+    private void pendingDeliveriesClicked(ActionEvent event) {
+
         bgImage.setImage(new Image(StylePaths.REGIONAL_DELIVERY_SEC_BG));
         initTablePendingOrders(staticRegion);
         enableAll();
@@ -493,17 +562,20 @@ public class RegionalDeliveryController implements Initializable {
         btnHbox.setPadding(new Insets(0, 20, 1, 20));
         refreshImageViewClickedInPendingTable(imageViewRefresh, saveBtn);
         bottomBroderVbox.getChildren().add(btnHbox);
+        if(ordersTable.getItems().size()==0){
+            saveBtn.setOpacity(0.5);
+        }
         saveBtnClicked(saveBtn);
 
     }
 
-    public void saveBtnClicked(Button saveBtn) {
+    private void saveBtnClicked(Button saveBtn) {
         saveBtn.setOnMouseClicked((event2) -> {
             saveFunctionallity(saveBtn);
         });
     }
 
-    public void refreshImageViewClickedInPendingTable(ImageView refreshImageView, Button saveBtn) {
+    private void refreshImageViewClickedInPendingTable(ImageView refreshImageView, Button saveBtn) {
         refreshImageView.setOnMouseClicked((event3) -> {
             addItemsToPendingTable(staticRegion);
             if (ordersTable.getItems().size() > 0)
@@ -520,6 +592,15 @@ public class RegionalDeliveryController implements Initializable {
         topBorderVBox.getChildren().clear();
         centerBroderVbox.getChildren().clear();
         bottomBroderVbox.getChildren().clear();
+    }
+
+    @FXML
+    private void logOutClicked(ActionEvent event) {
+        try {
+            Util.genricLogOut(getClass());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
