@@ -9,6 +9,8 @@ import java.util.ResourceBundle;
 import client.Client;
 import client.ClientUI;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,15 +18,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Customer;
 import models.Machine;
 import models.Method;
 import models.Order;
+import models.Regions;
 import models.Request;
 import models.ResponseCode;
 import models.User;
@@ -44,6 +49,11 @@ public class LoginController implements Initializable{
 	private Stage stage = StageSingleton.getInstance().getStage();
 	public static Thread threadListeningNewMsg;
 
+    @FXML
+    private ComboBox<Integer> comboBoxSubscribers;
+	
+    @FXML
+    private VBox simulationTouch;
 	
     @FXML
     private Label errorLabel;
@@ -58,9 +68,6 @@ public class LoginController implements Initializable{
     private AnchorPane anchorPane;
     
     @FXML
-    private TextField txtTouch;
-    
-    @FXML
     private Label errorTouch;
     
 	@Override
@@ -69,6 +76,10 @@ public class LoginController implements Initializable{
 		order = null;
 		customerAndWorker = null;
 		configuration = UserInstallationController.configuration;
+		if (configuration.equals("EK")) {
+			simulationTouch.setVisible(true);
+			setComboBoxFastLogin();
+		}
 	}
 
 	/**
@@ -166,8 +177,7 @@ public class LoginController implements Initializable{
     		return;
     	}
       
-//    	threadListeningNewMsg = new Thread(new getMessages());
-//		threadListeningNewMsg.start();    	
+ 
     	if (configuration.equals("EK")) {
     		requestEKCustomer();
     		if (Client.resFromServer.getCode() == ResponseCode.INVALID_DATA) {
@@ -182,7 +192,33 @@ public class LoginController implements Initializable{
     	else if (configuration.equals("OL")){
     		requestOLUser();
     	}
+    	threadListeningNewMsg = new Thread(new getMessages());
+		threadListeningNewMsg.start(); 
     	
+    }
+    
+    private void setComboBoxFastLogin() {
+    	Request request = new Request();
+        request.setPath("/login/getAllSubscriberForFastLogin");
+        request.setMethod(Method.GET);
+        request.setBody(null);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+        case OK:
+        	setSubscribers(Client.resFromServer.getBody());
+            break;
+        default:
+        	errorTouch.setText(Client.resFromServer.getDescription());
+            break;
+        }
+    }
+    
+    private void setSubscribers(List<Object> subscribers) {
+		ObservableList<Integer> options = FXCollections.observableArrayList();
+		for (int i = 0;i<subscribers.size();i++) {
+			options.add((Integer)subscribers.get(i));
+		}
+		comboBoxSubscribers.getItems().addAll(options);
     }
     
     private void requestUser() {
@@ -230,7 +266,7 @@ public class LoginController implements Initializable{
 //		handle response info:
         switch (Client.resFromServer.getCode()) {
             case OK:
-            	user = (User) Client.resFromServer.getBody().get(0);
+            	user = (Customer) Client.resFromServer.getBody().get(0);
                 break;
             case INVALID_DATA:
             	break;
@@ -253,7 +289,6 @@ public class LoginController implements Initializable{
         request.setMethod(Method.GET);
         request.setBody(userDetails);
         ClientUI.chat.accept(request);// sending the request to the server.
-        
         handleResponseGetUserForOLConfiguration();
     }
     
@@ -280,10 +315,12 @@ public class LoginController implements Initializable{
     		selectWindow.start(stage);
     	}
     	else if(userDetails.get(0) instanceof Customer) {
+    		user = (Customer) userDetails.get(0);
     		OLController OLcon = new OLController();	
     		OLcon.start(stage);
     	}
     	else if(userDetails.get(0) instanceof Worker) {
+    		user = (Worker) userDetails.get(0);
     		setWindowByTypeWorker(stage, (Worker)userDetails.get(0));
     	}
     }
@@ -316,16 +353,46 @@ public class LoginController implements Initializable{
      */
     @FXML
     void btnTouch(ActionEvent event) throws Exception {
-    	txtTouch.getStyleClass().remove("validation-error");
-    	if (Util.isBlankString(txtTouch.getText())){
-    		Util.setFieldTextErrorBorder(txtTouch);
-    		errorTouch.setVisible(true);
+    	comboBoxSubscribers.getStyleClass().remove("validation-error");
+    	if (!isValidFillComboBoxes()){
     		return;
     	}
-    	EKController EKcon = new EKController();
-		EKcon.start(stage);
+    	requestUserById();
     }
     
+	private boolean isValidFillComboBoxes() {
+		if (comboBoxSubscribers.getValue() == null) {
+			comboBoxSubscribers.getStyleClass().add("validation-error");
+			errorTouch.setText("Please select subscriber id");
+			return false;
+		} 
+		return true;
+	}
+    
+    private void requestUserById() throws Exception {
+    	List<Object> idSubscriber = new ArrayList<>();
+    	idSubscriber.add(comboBoxSubscribers.getValue());
+    	Request request = new Request();
+        request.setPath("/login/getCustomerById");
+        request.setMethod(Method.GET);
+        request.setBody(idSubscriber);
+        ClientUI.chat.accept(request);// sending the request to the server.
+
+        handleResponseGetUserById();
+    }
+    
+    private void handleResponseGetUserById() throws Exception {
+        switch (Client.resFromServer.getCode()) {
+        case OK:
+        	user = (Customer) Client.resFromServer.getBody().get(0);
+        	EKController EKcon = new EKController();
+    		EKcon.start(stage);
+            break;
+        default:
+        	errorTouch.setText(Client.resFromServer.getDescription());
+            break;
+        }
+    }
     /**
      * This method describes an event of clicking exit and exiting the application.
      * @param event, Description: Event - clicking the Exit button.
@@ -347,56 +414,51 @@ public class LoginController implements Initializable{
     }
 
 
+	public class getMessages implements Runnable {
 
+		@Override
+		public void run() {
+			while (true) {
+				List<Object> paramList = new ArrayList<>();
+				Request request = new Request();
+				request.setPath("/getMessages");
+				request.setMethod(Method.GET);
+				if(LoginController.user == null)
+					return;
+				paramList.add(LoginController.user.getId().toString());
+				request.setBody(paramList);
+				ClientUI.chat.accept(request);// sending the request to the server.
+				switch (Client.MsgResFromServer.getCode()) {
+					case OK:
+						StringBuilder msgToClient = new StringBuilder();
+						List<Object> result = Client.MsgResFromServer.getBody();
+						if (result.size() == 0 || result.size() == 1)
+							break;
+						for(int i = 1; i < result.size(); i++){
+							msgToClient.append("\n");
+							msgToClient.append(result.get(i).toString());
+						}
+						Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
+						break;
 
+					default:
+						System.out.println("Some error occurred");
+				}
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+				Client.MsgResFromServer = null;
+			}
+		}
 
-
-//
-//	public class getMessages implements Runnable {
-//
-//		@Override
-//		public void run() {
-//			while (true) {
-//				List<Object> paramList = new ArrayList<>();
-//				Request request = new Request();
-//				request.setPath("/getMessages");
-//				request.setMethod(Method.GET);
-//				if(LoginController.user == null)
-//					return;
-//				paramList.add(LoginController.user.getId().toString());
-//				request.setBody(paramList);
-//				ClientUI.chat.accept(request);// sending the request to the server.
-//				switch (Client.MsgResFromServer.getCode()) {
-//					case OK:
-//						StringBuilder msgToClient = new StringBuilder();
-//						List<Object> result = Client.MsgResFromServer.getBody();
-//						if (result.size() == 0 || result.size() == 1)
-//							break;
-//						for(int i = 1; i < result.size(); i++){
-//							msgToClient.append("\n");
-//							msgToClient.append(result.get(i).toString());
-//						}
-//						Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
-//						break;
-//
-//					default:
-//						System.out.println("Some error occurred");
-//				}
-//				try {
-//					Thread.sleep(10000);
-//				} catch (InterruptedException e) {
-//					throw new RuntimeException(e);
-//				}
-//				Client.MsgResFromServer = null;
-//			}
-//		}
-
-//		public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
-//			Alert alert = new Alert(alertType); //Information, Error
-//			alert.setContentText(alertTitle); // Information, Error
-//			alert.setContentText(alertMessage);
-//			alert.show();
-//		}
-//	}
+		public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
+			Alert alert = new Alert(alertType); //Information, Error
+			alert.setContentText(alertTitle); // Information, Error
+			alert.setContentText(alertMessage);
+			alert.show();
+		}
+	}
 
 }
