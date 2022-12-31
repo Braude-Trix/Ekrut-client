@@ -30,6 +30,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import models.*;
 import utils.Util;
+import utils.Utils;
 
 import static java.lang.Thread.sleep;
 
@@ -422,8 +423,10 @@ public class NewOrderController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         NewOrderReplaced = false;
-        Thread timeOutThread = new Thread(new gui.NewOrderController.TimeOutControllerNewOrder());
-        timeOutThread.start();
+        if(UserInstallationController.configuration.equals("EK")){
+            Thread timeOutThread = new Thread(new gui.NewOrderController.TimeOutControllerNewOrder());
+            timeOutThread.start();
+        }
         setfirstTimeMultiplier(user.getId());
         setUserProfile();
         putProductsInMachine();
@@ -604,7 +607,7 @@ public class NewOrderController implements Initializable {
 
 
     static class TimeOutControllerNewOrder implements Runnable {
-        private int TimeOutTime = 1; //Utils.TIME_OUT_TIME_IN_MINUTES;
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES; //Utils.TIME_OUT_TIME_IN_MINUTES;
         private long TimeOutStartTime = System.currentTimeMillis();
 
         @Override

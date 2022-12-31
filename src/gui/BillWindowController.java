@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.*;
 import utils.Util;
+import utils.Utils;
 
 
 public class BillWindowController implements Initializable {
@@ -81,10 +82,11 @@ public class BillWindowController implements Initializable {
             e1.printStackTrace();
         }
 
-
-        BillReplaced = false;
-        Thread timeOutThread = new Thread(new TimeOutControllerBillWindow());
-        timeOutThread.start();
+        if(UserInstallationController.configuration.equals("EK")) {
+            BillReplaced = false;
+            Thread timeOutThread = new Thread(new TimeOutControllerBillWindow());
+            timeOutThread.start();
+        }
         initBillWindow();
         nameLabel.setText(NewOrderController.user.getFirstName() + " " + NewOrderController.user.getLastName());
         machineId = Integer.parseInt(NewOrderController.previousOrder.getMachineId());
@@ -391,7 +393,7 @@ public class BillWindowController implements Initializable {
 
 
     static class TimeOutControllerBillWindow implements Runnable {
-        private int TimeOutTime = 1; //Utils.TIME_OUT_TIME_IN_MINUTES;
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
         @Override
