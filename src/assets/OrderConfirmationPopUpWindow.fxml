@@ -22,37 +22,37 @@
       </Label>
       <VBox fx:id="vboxContainer" layoutX="10.0" layoutY="33.0" prefHeight="295.0" prefWidth="580.0">
          <children>
-            <Label fx:id="totalPriceLabel" text="Total price: ">
+            <Label fx:id="totalPriceLabel" prefHeight="27.0" prefWidth="573.0" text="Total price: ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="pickUpMethodLabel" prefHeight="31.0" prefWidth="275.0" text="Pick-up method: ">
+            <Label fx:id="pickUpMethodLabel" prefHeight="27.0" prefWidth="578.0" text="Pick-up method: ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="pickUpMachineLabel" prefHeight="27.0" prefWidth="293.0" text="Pick-up machine: ">
+            <Label fx:id="pickUpMachineLabel" prefHeight="27.0" prefWidth="581.0" text="Pick-up machine: ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="deliveryAddressLabel" prefHeight="27.0" prefWidth="324.0" text="Delivery address: ">
+            <Label fx:id="deliveryAddressLabel" prefHeight="27.0" prefWidth="578.0" text="Delivery address: ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="pickUpCodeLabel" prefHeight="27.0" prefWidth="293.0" text="Pick-up code: ">
+            <Label fx:id="pickUpCodeLabel" prefHeight="27.0" prefWidth="578.0" text="Pick-up code: ">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="monthlyBillLabel" prefHeight="27.0" prefWidth="293.0" text="Currently monthly bill : ">
+            <Label fx:id="monthlyBillLabel" prefHeight="27.0" prefWidth="578.0" text="Currently monthly bill : ">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="orderDateLabel" prefHeight="27.0" prefWidth="324.0" text="Order date: ">
+            <Label fx:id="orderDateLabel" prefHeight="27.0" prefWidth="577.0" text="Order date: ">
                <font>
                   <Font size="18.0" />
                </font>

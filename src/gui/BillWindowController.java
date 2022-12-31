@@ -8,9 +8,11 @@ import java.util.*;
 
 import client.Client;
 import client.ClientUI;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -30,6 +32,7 @@ public class BillWindowController implements Initializable {
 
     public static Order restoreOrder;
 
+    public static boolean BillReplaced = false;
     @FXML
     private ImageView backBtn;
     @FXML
@@ -71,6 +74,9 @@ public class BillWindowController implements Initializable {
 
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        BillReplaced = false;
+        Thread timeOutThread = new Thread(new TimeOutControllerBillWindow());
+        timeOutThread.start();
         initBillWindow();
         nameLabel.setText(NewOrderController.user.getFirstName() + " " + NewOrderController.user.getLastName());
         machineId = Integer.parseInt(NewOrderController.previousOrder.getMachineId());
@@ -212,6 +218,7 @@ public class BillWindowController implements Initializable {
         switch (Client.resFromServer.getCode()) {
             case OK:
                 threshold = (Integer) Client.resFromServer.getBody().get(0);
+                break;
             default:
                 System.out.println("Some error occurred");
         }
@@ -285,6 +292,7 @@ public class BillWindowController implements Initializable {
                 for (Object obj : result) {
                     productInMachineList.add((ProductInMachine) obj);
                 }
+                break;
             default:
                 System.out.println("Some error occurred");
         }
@@ -293,6 +301,7 @@ public class BillWindowController implements Initializable {
 
 
     public void changeToConfirmationOrderPopUpWindow() {
+        BillReplaced = true;
         AnchorPane pane;
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -302,6 +311,7 @@ public class BillWindowController implements Initializable {
             e.printStackTrace();
             return;
         }
+        restoreOrder = null;
         Stage stage = new Stage();
         stage.setTitle(StyleConstants.ORDER_CONFIRMATION_TITLE_LABEL);
         stage.setScene(new Scene(pane));
@@ -314,6 +324,7 @@ public class BillWindowController implements Initializable {
     }
 
     public void returnToMainPage() throws IOException {
+        BillReplaced = true;
         Parent root;
         Stage primaryStage = StageSingleton.getInstance().getStage();
         if (restoreOrder.getPickUpMethod() == PickUpMethod.delivery || restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
@@ -338,6 +349,7 @@ public class BillWindowController implements Initializable {
     }
 
     void replaceWindowToNewOrder(){
+        BillReplaced = true;
         AnchorPane pane;
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -356,10 +368,64 @@ public class BillWindowController implements Initializable {
 
     @FXML
     void logOutClicked(ActionEvent event) {
+        BillReplaced = true;
         try {
             Util.genricLogOut(getClass());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+
+
+
+
+
+
+    static class TimeOutControllerBillWindow implements Runnable {
+        private int TimeOutTime = 1; //Utils.TIME_OUT_TIME_IN_MINUTES;
+        private long TimeOutStartTime = System.currentTimeMillis();
+
+        @Override
+        public void run() {
+            while (true) {
+                Platform.runLater(()->handleAnyClick());
+                long TimeOutCurrentTime = System.currentTimeMillis();
+                if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
+                    System.out.println("Time Out passed");
+                    try {
+                        Platform.runLater(()-> {
+                            try {
+                                Util.genricLogOut(getClass());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+                if(BillReplaced) {
+                    System.out.println("Thread closed");
+                    return;
+                }
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        public void handleAnyClick() {
+            StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>(){
+                @Override
+                public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+                    System.out.print("Mouse clicked, timeout time reset\n");
+                    TimeOutStartTime = System.currentTimeMillis();
+                }
+            });
+        }
+    }
+
 }
