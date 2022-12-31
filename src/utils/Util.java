@@ -10,6 +10,7 @@ import client.ClientUI;
 import gui.LoginController;
 import gui.StageSingleton;
 import gui.LoginController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -72,7 +73,15 @@ public class Util {
 		stage.show();
 		stage.setMinHeight(stage.getHeight());
 		stage.setMinWidth(stage.getWidth());
+		stage.setOnCloseRequest(e -> Exit());
+
 	}
+	
+    static void Exit() {
+		Stage stage = StageSingleton.getInstance().getStage();
+        stage.close();
+        System.exit(0);
+    }
 	
     public static void forcedExit() throws IOException {
     	List<Object> userDetails = new ArrayList<>();

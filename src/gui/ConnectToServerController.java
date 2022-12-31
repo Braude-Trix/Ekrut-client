@@ -88,7 +88,7 @@ public class ConnectToServerController {
         stage.setMinHeight(stage.getHeight());
         stage.setMinWidth(stage.getWidth());*/
 
-    UserCon = new UserInstallationController();
+        UserCon = new UserInstallationController();
 		Stage stage = StageSingleton.getInstance().getStage();
 		UserCon.start(stage);
     }

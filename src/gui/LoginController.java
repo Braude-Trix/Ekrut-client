@@ -44,7 +44,6 @@ public class LoginController implements Initializable{
 	private Stage stage = StageSingleton.getInstance().getStage();
 	public static Thread threadListeningNewMsg;
 
-//	public MarketingManagerController MarketingManagerCon;
 	
     @FXML
     private Label errorLabel;
@@ -167,8 +166,8 @@ public class LoginController implements Initializable{
     		return;
     	}
       
-      threadListeningNewMsg = new Thread(new getMessages());
-		  threadListeningNewMsg.start();    	
+//    	threadListeningNewMsg = new Thread(new getMessages());
+//		threadListeningNewMsg.start();    	
     	if (configuration.equals("EK")) {
     		requestEKCustomer();
     		if (Client.resFromServer.getCode() == ResponseCode.INVALID_DATA) {
@@ -352,52 +351,52 @@ public class LoginController implements Initializable{
 
 
 
+//
+//	public class getMessages implements Runnable {
+//
+//		@Override
+//		public void run() {
+//			while (true) {
+//				List<Object> paramList = new ArrayList<>();
+//				Request request = new Request();
+//				request.setPath("/getMessages");
+//				request.setMethod(Method.GET);
+//				if(LoginController.user == null)
+//					return;
+//				paramList.add(LoginController.user.getId().toString());
+//				request.setBody(paramList);
+//				ClientUI.chat.accept(request);// sending the request to the server.
+//				switch (Client.MsgResFromServer.getCode()) {
+//					case OK:
+//						StringBuilder msgToClient = new StringBuilder();
+//						List<Object> result = Client.MsgResFromServer.getBody();
+//						if (result.size() == 0 || result.size() == 1)
+//							break;
+//						for(int i = 1; i < result.size(); i++){
+//							msgToClient.append("\n");
+//							msgToClient.append(result.get(i).toString());
+//						}
+//						Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
+//						break;
+//
+//					default:
+//						System.out.println("Some error occurred");
+//				}
+//				try {
+//					Thread.sleep(10000);
+//				} catch (InterruptedException e) {
+//					throw new RuntimeException(e);
+//				}
+//				Client.MsgResFromServer = null;
+//			}
+//		}
 
-	public class getMessages implements Runnable {
-
-		@Override
-		public void run() {
-			while (true) {
-				List<Object> paramList = new ArrayList<>();
-				Request request = new Request();
-				request.setPath("/getMessages");
-				request.setMethod(Method.GET);
-				if(LoginController.user == null)
-					return;
-				paramList.add(LoginController.user.getId().toString());
-				request.setBody(paramList);
-				ClientUI.chat.accept(request);// sending the request to the server.
-				switch (Client.MsgResFromServer.getCode()) {
-					case OK:
-						StringBuilder msgToClient = new StringBuilder();
-						List<Object> result = Client.MsgResFromServer.getBody();
-						if (result.size() == 0 || result.size() == 1)
-							break;
-						for(int i = 1; i < result.size(); i++){
-							msgToClient.append("\n");
-							msgToClient.append(result.get(i).toString());
-						}
-						Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
-						break;
-
-					default:
-						System.out.println("Some error occurred");
-				}
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				}
-				Client.MsgResFromServer = null;
-			}
-		}
-
-		public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
-			Alert alert = new Alert(alertType); //Information, Error
-			alert.setContentText(alertTitle); // Information, Error
-			alert.setContentText(alertMessage);
-			alert.show();
-		}
-	}
+//		public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
+//			Alert alert = new Alert(alertType); //Information, Error
+//			alert.setContentText(alertTitle); // Information, Error
+//			alert.setContentText(alertMessage);
+//			alert.show();
+//		}
+//	}
 
 }
