@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
-import gui.BillWindowController.TimeOutControllerBillWindow;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

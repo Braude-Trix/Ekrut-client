@@ -1,6 +1,6 @@
 package client;
 
-import gui.workers.RegionalGui;
+import gui.workers.RegionalManagerGui;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,7 +24,7 @@ public class RegionalManager extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/assets/workers/ManagerHomePage_Default.fxml"));
             anchorPane = loader.load();
-            RegionalGui.controller = loader.getController();
+            RegionalManagerGui.controller = loader.getController();
         } catch (IOException e) {
             e.printStackTrace();
             return;

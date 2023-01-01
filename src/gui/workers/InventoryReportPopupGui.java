@@ -1,5 +1,8 @@
 package gui.workers;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
@@ -9,14 +12,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseEvent;
+import models.InventoryReport;
 import utils.ReportPopupUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -27,6 +29,9 @@ public class InventoryReportPopupGui implements Initializable {
     public static String machineName;
     public static int year;
     public static int month;
+    public static InventoryReport inventoryReportData;
+    private List<List<XYChart.Series<Integer, String>>> allDaysInventory;
+    private int presentedDay;
 
     @FXML
     private Button closeBtn;
@@ -60,8 +65,9 @@ public class InventoryReportPopupGui implements Initializable {
         // setting title
         ReportPopupUtils.setSubTitle(titleInfo, machineName, month, year);
 
-        XYChart.Series<String, Integer> belowSeries = getSeries("Below threshold", 31, 40);
-        XYChart.Series<String, Integer> unavailableSeries = decreaseSeriesBy(belowSeries, "Unavailable", 0.4);
+        // Using passed InventoryReport data object
+        XYChart.Series<String, Integer> belowSeries = getBelowSeries();
+        XYChart.Series<String, Integer> unavailableSeries = getUnavailableSeries();
         productsUnderChart.getData().addAll(belowSeries, unavailableSeries);
 
         for (XYChart.Series<String, Integer> series : productsUnderChart.getData()) {
@@ -70,89 +76,102 @@ public class InventoryReportPopupGui implements Initializable {
             }
         }
 
-        // daily report - loads first day of month
-        List<String> snacks = Arrays.asList("Doritos", "Bamba", "Trix", "Magnoom", "Bisli",
-                "Waffel", "TimTam", "Popcorn", "Peanuts", "Apropo");
-        dailyInventory.getData().addAll(getSnacksReSeries(snacks));
-        setDailyInventoryTitle(1);
+        allDaysInventory = getDailyInventory();
+        initDailyInventory();
 
+        // setting slider size
+        daySlider.setMax(ReportPopupUtils.getDaysOfMonth(month, year));
+        daySlider.setOnMouseReleased(event -> onMouseReleaseSlider());
+
+        refreshBtn.setDisable(true);
+        refreshBtn.setOnMouseClicked(event -> Platform.runLater(this::onRefreshClicked));
+    }
+
+    private static XYChart.Series<String, Integer> getBelowSeries() {
+        List<Integer> belowThresholdAmount = inventoryReportData.getBelowThresholdAmount();
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        series.setName("Below threshold");
+
+        for (int i = 0; i < belowThresholdAmount.size(); i++) {
+            Integer yValue = belowThresholdAmount.get(i);
+            series.getData().add(new XYChart.Data<>(String.valueOf(i + 1), yValue));
+        }
+
+        return series;
+    }
+
+    private static XYChart.Series<String, Integer> getUnavailableSeries() {
+        List<Integer> unavailableAmount = inventoryReportData.getUnavailableAmount();
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        series.setName("Unavailable");
+
+        for (int i = 0; i < unavailableAmount.size(); i++) {
+            Integer yValue = unavailableAmount.get(i);
+            series.getData().add(new XYChart.Data<>(String.valueOf(i + 1), yValue));
+        }
+
+        return series;
+    }
+
+    private static List<List<XYChart.Series<Integer, String>>> getDailyInventory() {
+        List<Map<String, Integer>> dailyInventory = inventoryReportData.getDailyInventory();
+        // list of all days -> list of XYChart.Series (product and its value)
+        List<List<XYChart.Series<Integer, String>>> allDaysSeriesList = new ArrayList<>();
+        int indexOfDay = 0;
+        for (Map<String, Integer> productsOfDay : dailyInventory) { // iterating over all days
+            allDaysSeriesList.add(new ArrayList<>());
+            for (Map.Entry<String, Integer> entry : productsOfDay.entrySet()) { // iterating over all products
+                XYChart.Series<Integer, String> seriesForProduct = new XYChart.Series<>();
+                seriesForProduct.setName(entry.getKey());
+                seriesForProduct.getData().add(new XYChart.Data<>(entry.getValue(), ""));
+                allDaysSeriesList.get(indexOfDay).add(seriesForProduct);
+            }
+            indexOfDay++;
+        }
+        return allDaysSeriesList;
+    }
+
+    private void initDailyInventory() {
+        if (allDaysInventory.size() >= 1) {
+            dailyInventory.getData().addAll(allDaysInventory.get(0));
+            setDailyInventoryTitle(1);
+            installDaysTooltip();
+        }
+    }
+
+    private void installDaysTooltip() {
         for (XYChart.Series<Integer, String> series : dailyInventory.getData()) {
             for (XYChart.Data<Integer, String> item : series.getData()) {
-                item.getNode().setOnMousePressed((MouseEvent event) -> {
-                    System.out.println("you clicked " + item.toString() + series.toString());
-                });
                 Tooltip.install(item.getNode(), new Tooltip(series.getName() + ": " + item.getXValue()));
             }
         }
-        // setting slider size
-        daySlider.setMax(ReportPopupUtils.getDaysOfMonth(month, year));
-
-        refreshBtn.setOnMouseClicked(event -> onRefreshClicked());
     }
 
-    private static XYChart.Series<String, Integer> getSeries(String name, int xRange, int yRange) {
-        XYChart.Series<String, Integer> series = new XYChart.Series<>();
-        series.setName(name);
-
-        for (int i = 1; i <= xRange; i++) {
-            Integer yValue = new Random().nextInt(yRange + 1);
-            series.getData().add(new XYChart.Data<>(String.valueOf(i), yValue));
-        }
-
-        return series;
-    }
-
-    private static XYChart.Series<String, Integer> decreaseSeriesBy(XYChart.Series<String, Integer> series,
-                                                                    String name,
-                                                                    Double upToPresent) {
-        XYChart.Series<String, Integer> decSeries = new XYChart.Series<>();
-        decSeries.setName(name);
-
-        for (int i = 0; i < series.getData().size(); i++) {
-            Integer yValue = (int) Math.floor(series.getData().get(i).getYValue() * upToPresent);
-            decSeries.getData().add(new XYChart.Data<>(series.getData().get(i).getXValue(), yValue));
-        }
-
-        return decSeries;
-    }
-
-    private static List<XYChart.Series<String, Integer>> getSnacksSeries(List<String> names) {
-        List<XYChart.Series<String, Integer>> seriesList = new ArrayList<>();
-        for (String name : names) {
-            seriesList.add(getSeries(name, 1, 50));
-        }
-        return seriesList;
-    }
-
-// ** reversed bar ** //
-
-
-    private static XYChart.Series<Integer, String> getReSeries(String name, int xRange, int yRange) {
-        XYChart.Series<Integer, String> series = new XYChart.Series<>();
-        series.setName(name);
-
-        for (int i = 1; i <= yRange; i++) {
-            Integer xValue = new Random().nextInt(xRange + 1);
-            series.getData().add(new XYChart.Data<>(xValue, ""));
-        }
-        return series;
-    }
-
-
-    private static List<XYChart.Series<Integer, String>> getSnacksReSeries(List<String> names) {
-        List<XYChart.Series<Integer, String>> seriesList = new ArrayList<>();
-        for (String name : names) {
-            seriesList.add(getReSeries(name, 50, 1));
-        }
-        return seriesList;
+    private void onMouseReleaseSlider() {
+        int day = Double.valueOf(daySlider.getValue()).intValue();
+        refreshBtn.setDisable(day == presentedDay);
     }
 
     private void onRefreshClicked() {
-        System.out.println("Refresh was clicked" + " slider with the value: " + daySlider.getValue());
-        setDailyInventoryTitle(Double.valueOf(daySlider.getValue()).intValue());
+        int day = Double.valueOf(daySlider.getValue()).intValue();
+        if (day == presentedDay) {
+            return;
+        }
+        List<XYChart.Series<Integer, String>> newDayInventory;
+        if (allDaysInventory.size() >= day)
+            newDayInventory = allDaysInventory.get(day - 1);
+        else
+            newDayInventory = new ArrayList<>();
+
+        ObservableList<XYChart.Series<Integer, String>> observableList = FXCollections.observableList(newDayInventory);
+        dailyInventory.setData(observableList);
+        installDaysTooltip();
+        setDailyInventoryTitle(day);
+        refreshBtn.setDisable(true);
     }
 
     private void setDailyInventoryTitle(int day) {
         dailyInventory.setTitle("Daily Inventory - day: " + day);
+        presentedDay = day;
     }
 }

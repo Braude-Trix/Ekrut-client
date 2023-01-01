@@ -1,15 +1,20 @@
 package gui.workers;
 
+import client.RegionalManager;
+import gui.LoginController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -20,29 +25,37 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import models.Regions;
+import models.Worker;
 import utils.ColorsAndFonts;
+import utils.Util;
 import utils.WorkerNodesUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static utils.Util.forcedExit;
 import static utils.WorkerNodesUtils.getErrorLabel;
 import static utils.WorkerNodesUtils.getSuccessLabel;
 
 /**
  * Gui controller for presenting regional manger window
  */
-public class RegionalGui implements Initializable {
-    public static RegionalGui controller;
-    public static String region = "North"; // todo: replace this with db
+public class RegionalManagerGui implements Initializable {
+    public static RegionalManagerGui controller;
+    public static Regions region = Regions.North; // todo: replace this with db
     public static String userName = "Ben"; // todo: replace this with db
     public static boolean isCEOLogged = false;
+    static Worker worker = (Worker) LoginController.user;
     static final String VALIDATION_ERROR_MSG = "Missing input data, please check your selections";
     static final String NO_DATA_FOUND_ERROR_MSG = "No report was found for specified date\n\t\tPlease change input";
 
@@ -92,9 +105,10 @@ public class RegionalGui implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         // setting username and region
-        WorkerNodesUtils.setUserName(userNameLabel, userName);
-        WorkerNodesUtils.setRegion(userRoleLabel, region);
+        WorkerNodesUtils.setUserName(userNameLabel, worker);
+        WorkerNodesUtils.setRole(userRoleLabel, worker.getRegion(), worker.getType());
 
         inventoryReportBtn.setOnMouseClicked((event) -> {
             enableAll();
@@ -126,7 +140,13 @@ public class RegionalGui implements Initializable {
             pendingAccBtn.setDisable(true);
             new PendingAccounts().loadPendingAccounts();
         });
-        logoutBtn.setOnMouseClicked((event) -> System.out.println(event.getSource().toString()));
+        logoutBtn.setOnMouseClicked((event) -> {
+            try {
+                Util.genricLogOut(getClass());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         if (isCEOLogged)
             logoutBtn.setVisible(false);
@@ -305,7 +325,8 @@ public class RegionalGui implements Initializable {
         private TableColumn<PendingAccountData, PendingAccountData> confirmedColumn;
         private Button saveButton;
         private Button refreshButton;
-        private final List<PendingAccountData> confirmedAccounts = new ArrayList<>();
+        private final ObservableList<PendingAccountData> confirmedAccounts =
+                FXCollections.observableList(new ArrayList<>());
 
         private void loadPendingAccounts() {
             // Replacing background
@@ -351,9 +372,12 @@ public class RegionalGui implements Initializable {
             // Creating 'Save' and 'Refresh' buttons
             saveButton = WorkerNodesUtils.createWide85Button("Save");
             refreshButton = WorkerNodesUtils.createWide85Button("Refresh");
+            saveButton.setDisable(true);
 
             saveButton.setOnMouseClicked(event -> onSave());
             refreshButton.setOnMouseClicked(event -> onRefresh());
+            confirmedAccounts.addListener((ListChangeListener<? super PendingAccountData>) observable ->
+                    saveButton.setDisable(confirmedAccounts.isEmpty()));
 
             // Adding the buttons to buttonsHBox
             buttonsHBox.getChildren().addAll(saveButton, refreshButton);
@@ -432,13 +456,70 @@ public class RegionalGui implements Initializable {
         private void onSave() {
             // todo: make a server call and request for change accounts to be approved
             accountsTable.getItems().removeAll(confirmedAccounts);
+            confirmedAccounts.clear();
             accountsTable.refresh();
+            cleanMessageLabel();
+
+            boolean responseIsOk = true;
+            if (responseIsOk) {
+                addMessageLabel("The chosen pending accounts are confirmed", false);
+            } else {
+                addMessageLabel("There was an error while trying to confirm accounts", true);
+            }
         }
 
         private void onRefresh() {
             // todo: make a server call and request for new pending accounts to be approved
             accountsTable.refresh();
             confirmedAccounts.clear();
+            cleanMessageLabel();
         }
+
+        private void addMessageLabel(String msg, boolean isError) {
+            Label label;
+            if (isError) {
+                label = WorkerNodesUtils.getErrorLabel(msg);
+            } else {
+                label = WorkerNodesUtils.getSuccessLabel(msg);
+            }
+            bottomBroderVbox.getChildren().add(label);
+        }
+
+        private void cleanMessageLabel() {
+            if (bottomBroderVbox.getChildren().size() > 1) {
+                bottomBroderVbox.getChildren().remove(1);
+            }
+        }
+    }
+
+    /**
+     * function that start the fxml of the current window
+     * @param primaryStage - Singleton stage
+     */
+    public void start(Stage primaryStage) {
+        RegionalManager.primaryStage = primaryStage;
+        AnchorPane anchorPane;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/assets/workers/ManagerHomePage_Default.fxml"));
+            anchorPane = loader.load();
+            RegionalManagerGui.controller = loader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        Scene scene = new Scene(anchorPane);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Regional Manager"); // set window title
+        primaryStage.setResizable(false);
+        primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> {
+            try {
+                forcedExit();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 }
