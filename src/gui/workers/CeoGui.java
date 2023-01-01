@@ -1,24 +1,35 @@
 package gui.workers;
 
+import client.Ceo;
+import gui.LoginController;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import models.Worker;
+import models.WorkerType;
+import utils.Util;
 import utils.WorkerNodesUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static utils.Util.forcedExit;
 
 /**
  * Gui controller for presenting CEO window
  */
 public class CeoGui implements Initializable {
-
     public static CeoGui controller;
-    public static String userName = "Richard"; // todo: replace this with db
-    public static WorkerType workerType;
+    public static Worker worker = (Worker) LoginController.user;
+    public static WorkerType chosenWorkerType = models.WorkerType.CEO;
 
     @FXML
     ImageView bgImage;
@@ -53,6 +64,9 @@ public class CeoGui implements Initializable {
     @FXML
     VBox topBorderVBox;
 
+    @FXML
+    private Label userRoleLabel;
+
     /**
      * Initializing CEO window
      *
@@ -64,7 +78,8 @@ public class CeoGui implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // setting username
-        WorkerNodesUtils.setUserName(userNameLabel, userName);
+        WorkerNodesUtils.setUserName(userNameLabel, worker);
+        WorkerNodesUtils.setRole(userRoleLabel, worker.getType());
 
         managersBtn.setOnMouseClicked((event) -> {
             enableAll();
@@ -77,7 +92,7 @@ public class CeoGui implements Initializable {
             enableAll();
             clearBorderPane();
             marketingWorkersBtn.setDisable(true);
-            workerType = WorkerType.MARKETING;
+            chosenWorkerType = WorkerType.MarketingWorker;
             new CeoSelectWorker().loadMyMarketWorkers();
         });
 
@@ -85,7 +100,7 @@ public class CeoGui implements Initializable {
             enableAll();
             clearBorderPane();
             operationalWorkersBtn.setDisable(true);
-            workerType = WorkerType.OPERATION;
+            chosenWorkerType = WorkerType.OperationalWorker;
             new CeoSelectWorker().loadMyMarketWorkers();
         });
 
@@ -93,7 +108,7 @@ public class CeoGui implements Initializable {
             enableAll();
             clearBorderPane();
             serviceOperatorsBtn.setDisable(true);
-            workerType = WorkerType.SERVICE;
+            chosenWorkerType = WorkerType.ServiceOperator;
             new CeoSelectWorker().loadMyMarketWorkers();
         });
 
@@ -101,11 +116,17 @@ public class CeoGui implements Initializable {
             enableAll();
             clearBorderPane();
             deliveryOperatorsBtn.setDisable(true);
-            workerType = WorkerType.DELIVERY;
+            chosenWorkerType = WorkerType.RegionalDelivery;
             new CeoSelectWorker().loadMyMarketWorkers();
         });
 
-        logoutBtn.setOnMouseClicked((event) -> System.out.println(event.getSource().toString()));
+        logoutBtn.setOnMouseClicked((event) -> {
+            try {
+                Util.genricLogOut(getClass());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void enableAll() {
@@ -123,11 +144,34 @@ public class CeoGui implements Initializable {
         bottomBroderVbox.getChildren().clear();
     }
 
-    public enum WorkerType {
-        DELIVERY, SERVICE, MARKETING, OPERATION;
-
-        public boolean hasRegion() {
-            return (this == DELIVERY) || (this == MARKETING);
+    /**
+     * function that start the fxml of the current window
+     * @param primaryStage - Singleton in our program
+     */
+    public void start(Stage primaryStage) {
+        Ceo.primaryStage = primaryStage;
+        AnchorPane anchorPane;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/assets/workers/CeoHomePage_Default.fxml"));
+            anchorPane = loader.load();
+            CeoGui.controller = loader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
+
+        Scene scene = new Scene(anchorPane);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("CEO"); // set window title
+        primaryStage.setResizable(false);
+        primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> {
+            try {
+                forcedExit();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 }

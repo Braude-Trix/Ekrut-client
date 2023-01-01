@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import models.Regions;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
@@ -135,19 +136,18 @@ public class CeoSelectManagers {
         if (managerType == ManagerType.MARKET) {
             // todo: sync with marketing manager
         } else {
-            RegionalGui.userName = CeoGui.userName;
-            RegionalGui.isCEOLogged = true;
+            RegionalManagerGui.isCEOLogged = true;
         }
 
         switch (managerType) {
             case NORTH:
-                RegionalGui.region = "North";
+                RegionalManagerGui.region = Regions.North;
                 break;
             case SOUTH:
-                RegionalGui.region = "South";
+                RegionalManagerGui.region = Regions.South;
                 break;
             case UAE:
-                RegionalGui.region = "UAE";
+                RegionalManagerGui.region = Regions.UAE;
                 break;
             case MARKET:
                 // todo: sync with marketing manager
@@ -160,6 +160,6 @@ public class CeoSelectManagers {
         if (managerType == ManagerType.MARKET) {
             // todo: sync with marketing manager
         } else
-            RegionalGui.controller = loader.getController();
+            RegionalManagerGui.controller = loader.getController();
     }
 }

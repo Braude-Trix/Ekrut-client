@@ -27,11 +27,10 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import models.*;
 import utils.Util;
+import utils.WorkerNodesUtils;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -85,23 +84,26 @@ public class RegionalDeliveryController implements Initializable {
     private TableColumn<ConfirmDeliveryTable, String> deliveryDateConfirmTable;
     private TableColumn<ConfirmDeliveryTable, Button> confirmBtnColConfirmTable;
 
+    private Worker worker = (Worker) LoginController.user;
+    private Integer myId = worker.getId();
+    private String staticRegion = worker.getRegion().toString();
+    public static RegionalDeliveryController controller;
+    public static boolean isCEOLogged = false;
 
     @FXML
     private Label mainTitleLabel;
     @FXML
     private Label sideTitleLabel;
 
-    private Worker worker = (Worker)LoginController.user;
-    private Integer myId = worker.getId();
-    private String staticRegion = worker.getRegion().toString(); //"North";
+    @FXML
+    private Label userRoleLabel;
 
     /**
      * function that start the fxml of the current window
-     * @param primaryStage - Singelton in our program
+     * @param primaryStage - Singleton in our program
      * @throws Exception
      */
     public void start(Stage primaryStage) throws Exception {
-
         Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/RegionalDeliveryHomePage_Default.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Regional Manager");
@@ -413,10 +415,12 @@ public class RegionalDeliveryController implements Initializable {
      * @param resourceBundle
      */
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        userNameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
+        WorkerNodesUtils.setUserName(userNameLabel, worker);
+        WorkerNodesUtils.setRole(userRoleLabel, worker.getRegion(), worker.getType());
+        logoutBtn.setOnMouseClicked((event) -> System.out.println(event.getSource().toString()));
 
-
-
+        if (isCEOLogged)
+            logoutBtn.setVisible(false);
     }
 
 

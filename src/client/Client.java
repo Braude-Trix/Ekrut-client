@@ -1,5 +1,9 @@
 package client;
 
+import gui.ConnectToServerController;
+import gui.LoginController;
+import gui.StageSingleton;
+import javafx.application.Platform;
 import models.Response;
 import ocsf.client.AbstractClient;
 
@@ -93,7 +97,15 @@ public class Client extends AbstractClient {
 	 */
 	protected void connectionException(Exception exception) {
 		System.out.println("connectionException, server could be disconnected");
-		//SubscribersController.moveToConnectToServer();
+		Platform.runLater(() -> {
+            try {
+				if (LoginController.threadListeningNewMsg != null)
+					LoginController.threadListeningNewMsg.interrupt();
+				ConnectToServerController.start(StageSingleton.getInstance().getStage());
+            } catch (IOException e) {
+			throw new RuntimeException(e);
+            }
+        });
 	}
 
 	/**
