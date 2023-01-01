@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import gui.workers.RegionalDeliveryController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -70,13 +71,13 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
     }
 
     @FXML
-    void employeeClicked(ActionEvent event) {
+    void employeeClicked(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
     	LoginController.user = (Worker) LoginController.customerAndWorker.get(1);
 		setWindowByTypeWorker(stage, (Worker) LoginController.customerAndWorker.get(1));
     }
     
-    private void setWindowByTypeWorker(Stage stage, Worker worker) {
+    private void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
     	switch (worker.getType()) {
     	case CEO:
     		break;
@@ -89,7 +90,8 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
     	case RegionalManager:
     		break;
     	case RegionalDelivery:
-    		break;
+			(new RegionalDeliveryController()).start(stage);
+			break;
     	case ServiceOperator:
     		break;
 

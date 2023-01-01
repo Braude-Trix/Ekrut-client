@@ -28,6 +28,8 @@ import models.*;
 import utils.Util;
 import utils.Utils;
 
+import static utils.Util.forcedExit;
+
 /**
  * class that represents the bill window controller
  */
@@ -82,13 +84,13 @@ public class BillWindowController implements Initializable {
      * @param resourceBundle
      */
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            Util.forcedExit();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
+        StageSingleton.getInstance().getStage().setOnCloseRequest(e -> {
+            try {
+                forcedExit();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         if (UserInstallationController.configuration.equals("EK")) {
             BillReplaced = false;
             Thread timeOutThread = new Thread(new TimeOutControllerBillWindow());

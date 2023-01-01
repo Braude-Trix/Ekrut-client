@@ -339,7 +339,7 @@ public class RegionalDeliveryController implements Initializable {
             imageViewV.setFitWidth(20);
             imageViewV.setFitHeight(20);
             confirmBtn.setGraphic(imageViewV);
-            ConfirmDeliveryTable confirmDeliveryTable = new ConfirmDeliveryTable(deliveryOrder.getOrderId(), deliveryOrder.getDate(), deliveryOrder.getDateReceived(), confirmBtn);
+            ConfirmDeliveryTable confirmDeliveryTable = new ConfirmDeliveryTable(deliveryOrder.getOrderId(), deliveryOrder.getDate(), deliveryOrder.getDate(), confirmBtn);
             VImageClicked(confirmBtn, confirmDeliveriesList, confirmDeliveryTable);
             confirmDeliveriesList.add(confirmDeliveryTable);
         }
@@ -361,6 +361,7 @@ public class RegionalDeliveryController implements Initializable {
                 if (Client.resFromServer.getBody() == null) break;
                 for (Object deliveryOrder : Client.resFromServer.getBody())
                     resList.add((DeliveryOrder) deliveryOrder);
+                break;
             default:
                 System.out.println("Some error occurred");
         }

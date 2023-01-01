@@ -263,5 +263,13 @@ public class PickupController implements Initializable {
 		stage.setScene(new Scene(pane));
 		stage.centerOnScreen();
 		stage.setResizable(false);
+		stage.setOnCloseRequest(e -> {
+			try {
+				Util.forcedExit();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 	}
 }
