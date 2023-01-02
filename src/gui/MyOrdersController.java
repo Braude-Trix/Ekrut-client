@@ -3,9 +3,12 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.swing.text.StyleConstants;
 
 import client.Client;
 import client.ClientUI;
@@ -143,7 +146,6 @@ public class MyOrdersController implements Initializable {
     	orderObser.clear();
 		getAllOrdersForSpecificUser();
 		setStyleForEmptyTable();
-		addButtonToTable();
     }
 
 	private void addButtonToTable() {
@@ -160,9 +162,9 @@ public class MyOrdersController implements Initializable {
                         btn.setOnAction((ActionEvent event) -> {
                         	//need to change status in db and in table
                         	errorUpdateStatusDB.setVisible(false);
-                        	String time = LocalDate.now().toString();
-                        	if (isChangeStatusDeliveryOrderInDB(getTableView().getItems().get(getIndex()).getOrderId(),time)) {
-                            	updateStatusDeliveryInLocallyListMyOrders(getTableView().getItems().get(getIndex()),time);
+                        	String date = LocalDate.now().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
+                        	if (isChangeStatusDeliveryOrderInDB(getTableView().getItems().get(getIndex()).getOrderId(),date)) {
+                            	updateStatusDeliveryInLocallyListMyOrders(getTableView().getItems().get(getIndex()),date);
                             	getTableView().getItems().remove(getIndex());
                         	}                       	
                         });

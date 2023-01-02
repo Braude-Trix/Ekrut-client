@@ -20,21 +20,22 @@
 }
 .table-view .table-cell{
     -fx-border-color: transparent;
-    -fx-padding: 2 0 2 10px;
+   -fx-padding: 2 0 2 10px;
 }
+
 
 .table-row-cell: hover {
     -fx-background-color: gray;
     -fx-text-background-color: white;
 }
-
-
 .table-row-cell: odd {
     -fx-padding: 0.0em;
 }
-.table-row-cell: even{
+
+.table-row-cell: even {
     -fx-padding: 0.0em;
 }
+
 .table-view .virtual-flow .scroll-bar:vertical,
 .table-view .virtual-flow .scroll-bar:vertical .track,
 .table-view .virtual-flow .scroll-bar:vertical .track-background,
@@ -72,6 +73,7 @@
 
 .table-row-cell:empty {
     -fx-background-color: transparent;
+
     -fx-opacity: 0;
 }
 
@@ -119,3 +121,8 @@
     .text-field:focused {
         -fx-background-color: #ffc39c, white;
     }
+
+
+.table-row-cell:first-child {
+    -fx-background-color: transparent;
+}

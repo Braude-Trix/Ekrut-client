@@ -19,6 +19,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import models.Machine;
 import models.Method;
@@ -31,6 +32,8 @@ public class UserInstallationController implements Initializable {
 	public static Machine machine = null;
 	public static String configuration = null;
 
+    @FXML
+    private Label title;
     @FXML
     private VBox VboxAfterClickedEk;
     
@@ -60,7 +63,7 @@ public class UserInstallationController implements Initializable {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/UserInstallation.fxml"));
 				
 		Scene scene = new Scene(root);
-//		scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/styles/userInstallation.css").toExternalForm());
 		primaryStage.setTitle("Install Window");
 		primaryStage.setScene(scene);
 		primaryStage.centerOnScreen();
@@ -79,6 +82,8 @@ public class UserInstallationController implements Initializable {
     @FXML
     void EkClicked(ActionEvent event) {
     	HboxConfiguration.setVisible(false);
+    	title.setText("You must select a region and the machine in the \"EK\" configuration");
+    	title.setFont(new Font(16));
     	setRegionComboBox();
     	VboxAfterClickedEk.setVisible(true);
     	configuration = "EK";

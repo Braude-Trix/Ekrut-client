@@ -54,7 +54,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="regionList" onAction="#selectItem" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Region" />
+                                    <ComboBox fx:id="regionList" onAction="#selectItem" prefHeight="27.0" prefWidth="190.0" promptText="Choose A Region" />
                                  </children>
                               </VBox>
                               <VBox prefHeight="70.0" prefWidth="202.0">
@@ -65,7 +65,7 @@
                                           <Label text="*" textFill="#e15959" />
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="machineList" disable="true" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Machine" />
+                                    <ComboBox fx:id="machineList" disable="true" prefHeight="27.0" prefWidth="190.0" promptText="Choose A Machine" />
                                  </children>
                               </VBox>
                            </children>
