@@ -420,6 +420,7 @@ public class MarketingWorkerWindowController implements Initializable {
 			updateRunningSales(Client.resFromServer.getBody());
 			break;
 		default:
+			System.out.println(Client.resFromServer.getCode());
 			System.out.println("error");
 			// setErrorPlaceHolder();
 			break;

@@ -398,13 +398,10 @@ public class BillWindowController implements Initializable {
      * @param event
      */
     @FXML
-    void logOutClicked(ActionEvent event) {
+    void logOutClicked(ActionEvent event) throws Exception {
+        System.out.println("OOUT");
         BillReplaced = true;
-        try {
-            Util.genricLogOut(getClass());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Util.genricLogOut(getClass());
     }
 
     /**
