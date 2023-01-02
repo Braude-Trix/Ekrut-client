@@ -13,7 +13,7 @@
 
 <VBox prefHeight="335.0" prefWidth="644.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ConnectToServerController">
    <children>
-      <AnchorPane prefHeight="335.0" prefWidth="99.0">
+      <AnchorPane prefHeight="335.0" prefWidth="99.0" stylesheets="@../styles/ConnectToServer.css">
          <children>
             <ImageView fitHeight="410.0" fitWidth="646.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                <image>
