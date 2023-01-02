@@ -533,6 +533,7 @@ public class NewOrderController implements Initializable {
                 e1.printStackTrace();
             }
         });
+        stage.show();
 
     }
     private Image recieveImageForProduct(Product product)

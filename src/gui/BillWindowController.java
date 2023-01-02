@@ -84,13 +84,7 @@ public class BillWindowController implements Initializable {
      * @param resourceBundle
      */
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        StageSingleton.getInstance().getStage().setOnCloseRequest(e -> {
-            try {
-                forcedExit();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+
         if (UserInstallationController.configuration.equals("EK")) {
             BillReplaced = false;
             Thread timeOutThread = new Thread(new TimeOutControllerBillWindow());

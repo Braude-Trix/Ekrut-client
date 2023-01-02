@@ -339,7 +339,17 @@ public class RegionalDeliveryController implements Initializable {
             imageViewV.setFitWidth(20);
             imageViewV.setFitHeight(20);
             confirmBtn.setGraphic(imageViewV);
-            ConfirmDeliveryTable confirmDeliveryTable = new ConfirmDeliveryTable(deliveryOrder.getOrderId(), deliveryOrder.getDate(), deliveryOrder.getDate(), confirmBtn);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT);
+            LocalDate date = LocalDate.parse(deliveryOrder.getDate(), formatter);
+            LocalDate newDeliveryDate = date.plusDays(7);
+            //formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+           //String formattedDate = newDeliveryDate.format(formatter);
+            String formattedDate = newDeliveryDate.format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
+
+
+
+            ConfirmDeliveryTable confirmDeliveryTable = new ConfirmDeliveryTable(deliveryOrder.getOrderId(), formattedDate.toString(),deliveryOrder.getDate(), confirmBtn);
             VImageClicked(confirmBtn, confirmDeliveriesList, confirmDeliveryTable);
             confirmDeliveriesList.add(confirmDeliveryTable);
         }
@@ -475,10 +485,11 @@ public class RegionalDeliveryController implements Initializable {
                     updateOrderStatus(orderId, OrderStatus.NotCollected);
                     String deliveryDate = PendingDeliveryTable.getDeliveryDate();
                     String deliveryAddress = PendingDeliveryTable.getDeliveryAddress();
-//                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-DD");
-//                    LocalDate date = LocalDate.parse(deliveryDate, formatter);
-//                    LocalDate newDeliveryDate = date.plusDays(7);
-                    msg = StyleConstants.HEADER_MSG_TO_CLIENT + orderId + StyleConstants.AFTER_HEADER_MSG_TO_CLIENT + deliveryDate.toString() + StyleConstants.FOOTER_HEADER_MSG_TO_CLIENT + deliveryAddress;
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT);
+                    LocalDate date = LocalDate.parse(deliveryDate, formatter);
+                    LocalDate newDeliveryDate = date.plusDays(7);
+                    String formattedDate = newDeliveryDate.format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
+                    msg = StyleConstants.HEADER_MSG_TO_CLIENT + orderId + StyleConstants.AFTER_HEADER_MSG_TO_CLIENT + formattedDate + StyleConstants.FOOTER_HEADER_MSG_TO_CLIENT + deliveryAddress;
                     writeNewMsgToDB(msg, myId, requestCustomerId(orderId));
                     PendingDeliveryTableListToRemove.add(PendingDeliveryTable);
                 }
