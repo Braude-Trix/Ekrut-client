@@ -21,25 +21,28 @@
             <Image url="@login.jpeg" />
          </image>
       </ImageView>
-      <VBox alignment="CENTER" layoutX="387.0" prefHeight="422.0" prefWidth="514.0">
+      <VBox alignment="CENTER" layoutX="387.0" prefHeight="350.0" prefWidth="514.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="92.0" prefWidth="514.0">
+            <HBox alignment="CENTER" prefHeight="91.0" prefWidth="514.0">
                <children>
                   <Label text="Login">
                      <font>
                         <Font size="24.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
                   </Label>
                </children>
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </HBox>
-            <VBox alignment="CENTER" prefHeight="377.0" prefWidth="514.0">
+            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="246.0" prefWidth="514.0">
                <children>
                   <Line endX="400.0529479980469" endY="-121.63934326171875" startX="727.745849609375" startY="-122.85870361328125" stroke="#969696">
                      <VBox.margin>
-                        <Insets />
+                        <Insets top="30.0" />
                      </VBox.margin>
                   </Line>
                   <VBox alignment="CENTER" prefHeight="218.0" prefWidth="514.0">
@@ -54,7 +57,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <TextField fx:id="txtUsername" focusTraversable="false" prefHeight="26.0" prefWidth="225.0" promptText="Enter Username" />
+                              <TextField fx:id="txtUsername" prefHeight="26.0" prefWidth="225.0" promptText="Enter Username" />
                            </children>
                            <VBox.margin>
                               <Insets top="40.0" />
@@ -73,7 +76,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <PasswordField fx:id="txtPassword" focusTraversable="false" prefHeight="26.0" prefWidth="225.0" promptText="Enter Password">
+                              <PasswordField fx:id="txtPassword" prefHeight="26.0" prefWidth="225.0" promptText="Enter Password">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -85,7 +88,7 @@
                               <Insets left="35.0" top="15.0" />
                            </VBox.margin>
                         </Label>
-                        <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" onAction="#moveHomePage" prefHeight="30.0" prefWidth="225.0" text="Login">
+                        <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" focusTraversable="false" mnemonicParsing="false" onAction="#moveHomePage" prefHeight="30.0" prefWidth="225.0" text="Login">
                            <VBox.margin>
                               <Insets left="35.0" top="10.0" />
                            </VBox.margin>
@@ -95,7 +98,7 @@
                         </Button>
                      </children>
                   </VBox>
-                  <Label text="If you do not have a user, contact a service&#10;representative at the number *5555">
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="226.0" text="If you do not have a user, contact a service&#10;representative at the number *5555">
                      <VBox.margin>
                         <Insets left="37.0" />
                      </VBox.margin>
@@ -107,27 +110,44 @@
             </VBox>
          </children>
       </VBox>
-      <Button fx:id="exitBtn" layoutX="12.0" layoutY="461.0" mnemonicParsing="false" onAction="#Exit" prefHeight="26.0" prefWidth="66.0" text="Exit" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
-      <VBox fx:id="simulationTouch" alignment="CENTER" layoutX="387.0" layoutY="412.0" prefHeight="0.0" prefWidth="514.0" visible="false">
+      <Button fx:id="exitBtn" focusTraversable="false" layoutX="12.0" layoutY="461.0" mnemonicParsing="false" onAction="#Exit" prefHeight="26.0" prefWidth="66.0" text="Exit" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+      <VBox fx:id="simulationTouch" alignment="CENTER" layoutX="387.0" layoutY="316.0" prefHeight="153.0" prefWidth="514.0" visible="false">
          <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Line endX="55.0" startX="-100.0" stroke="#969696" />
+                  <Label text=" or ">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Line endX="55.0" startX="-100.0" stroke="#949494" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
             <Label prefHeight="26.0" prefWidth="249.0" text="Fast Login:">
                <font>
                   <Font size="16.0" />
                </font>
                <VBox.margin>
-                  <Insets left="22.0" />
+                  <Insets />
                </VBox.margin>
             </Label>
             <HBox alignment="CENTER">
                <children>
-                  <ComboBox fx:id="comboBoxSubscribers" prefWidth="150.0" promptText="Subscribers">
+                  <ComboBox fx:id="comboBoxSubscribers" prefHeight="26.0" prefWidth="164.0" promptText="Subscribers">
                      <HBox.margin>
                         <Insets right="30.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <Button mnemonicParsing="false" onAction="#btnTouch" prefHeight="26.0" prefWidth="80.0" text="Touch">
+                  <Button mnemonicParsing="false" onAction="#btnTouch" prefHeight="26.0" prefWidth="77.0" text="Touch">
                      <HBox.margin>
-                        <Insets />
+                        <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
                </children>
@@ -135,7 +155,7 @@
                   <Insets left="33.0" />
                </padding>
             </HBox>
-            <Label fx:id="errorTouch" prefHeight="18.0" prefWidth="227.0" textFill="RED" />
+            <Label fx:id="errorTouch" prefHeight="18.0" prefWidth="250.0" textFill="RED" />
          </children>
       </VBox>
    </children>

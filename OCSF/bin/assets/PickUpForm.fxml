@@ -54,7 +54,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="regionList" onAction="#selectItem" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Region" />
+                                    <ComboBox fx:id="regionList" focusTraversable="false" onAction="#selectItem" prefHeight="27.0" prefWidth="190.0" promptText="Choose A Region" />
                                  </children>
                               </VBox>
                               <VBox prefHeight="70.0" prefWidth="202.0">
@@ -65,7 +65,7 @@
                                           <Label text="*" textFill="#e15959" />
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="machineList" disable="true" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Machine" />
+                                    <ComboBox fx:id="machineList" disable="true" focusTraversable="false" prefHeight="27.0" prefWidth="190.0" promptText="Choose A Machine" />
                                  </children>
                               </VBox>
                            </children>
@@ -114,7 +114,7 @@
             </HBox>
             <HBox prefHeight="46.0" prefWidth="523.0">
                <children>
-                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ContinueToOrder" prefHeight="39.0" prefWidth="471.0" text="Continue">
+                  <Button defaultButton="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ContinueToOrder" prefHeight="39.0" prefWidth="471.0" text="Continue">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -158,7 +158,7 @@
                   <Insets left="15.0" right="15.0" top="10.0" />
                </HBox.margin>
             </Label>
-            <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#LogOut" prefHeight="32.0" prefWidth="65.0" text="Log Out" />
+            <Button fx:id="logoutBtn" focusTraversable="false" mnemonicParsing="false" onAction="#LogOut" prefHeight="32.0" prefWidth="65.0" text="Log Out" />
          </children>
       </HBox>
       <Label text="Enter Details" AnchorPane.leftAnchor="275.0" AnchorPane.topAnchor="40.0">

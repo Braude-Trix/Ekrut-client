@@ -16,16 +16,23 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import models.InventoryReport;
+import models.OrdersReport;
+import models.UsersReport;
 import utils.ColorsAndFonts;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-import static gui.workers.RegionalGui.VALIDATION_ERROR_MSG;
+import static gui.workers.RegionalManagerGui.VALIDATION_ERROR_MSG;
 
 /**
  * Gui controller for presenting different types of reports for regional manger window
@@ -46,12 +53,12 @@ public class SelectReportGui {
     void loadInventoryReport() {
         reportType = ReportType.INVENTORY;
         // Replacing background
-        WorkerNodesUtils.setBackground("/assets/workers/InventoryReportMenu.jpg", RegionalGui.controller.bgImage);
+        WorkerNodesUtils.setBackground("/assets/workers/InventoryReportMenu.jpg", RegionalManagerGui.controller.bgImage);
         // Replacing top border
-        WorkerNodesUtils.setTitle("Inventory Report", RegionalGui.controller.topBorderVBox);
+        WorkerNodesUtils.setTitle("Inventory Report", RegionalManagerGui.controller.topBorderVBox);
 
         // Replacing center border
-        ObservableList<Node> nodes = RegionalGui.controller.centerBroderVbox.getChildren();
+        ObservableList<Node> nodes = RegionalManagerGui.controller.centerBroderVbox.getChildren();
 
         VBox contentVBox = getContentVBox();
 
@@ -82,12 +89,12 @@ public class SelectReportGui {
     void loadOrdersReport() {
         reportType = ReportType.ORDERS;
         // Replacing background
-        WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", RegionalGui.controller.bgImage);
+        WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", RegionalManagerGui.controller.bgImage);
         // Replacing top border
-        WorkerNodesUtils.setTitle("Orders Report", RegionalGui.controller.topBorderVBox);
+        WorkerNodesUtils.setTitle("Orders Report", RegionalManagerGui.controller.topBorderVBox);
 
         // Replacing center border
-        ObservableList<Node> nodes = RegionalGui.controller.centerBroderVbox.getChildren();
+        ObservableList<Node> nodes = RegionalManagerGui.controller.centerBroderVbox.getChildren();
 
         VBox contentVBox = getContentVBox();
         VBox dateSelectVBox = getDateSelectVBox();
@@ -104,12 +111,12 @@ public class SelectReportGui {
     void loadUsersReport() {
         reportType = ReportType.USERS;
         // Replacing background
-        WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", RegionalGui.controller.bgImage); // todo: BADIHI HELP US...
+        WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", RegionalManagerGui.controller.bgImage); // todo: BADIHI HELP US...
         // Replacing top border
-        WorkerNodesUtils.setTitle("Users Report", RegionalGui.controller.topBorderVBox);
+        WorkerNodesUtils.setTitle("Users Report", RegionalManagerGui.controller.topBorderVBox);
 
         // Replacing center border
-        ObservableList<Node> nodes = RegionalGui.controller.centerBroderVbox.getChildren();
+        ObservableList<Node> nodes = RegionalManagerGui.controller.centerBroderVbox.getChildren();
 
         VBox contentVBox = getContentVBox();
         VBox dateSelectVBox = getDateSelectVBox();
@@ -151,7 +158,7 @@ public class SelectReportGui {
     }
 
     private VBox getViewReportVBox() {
-        VBox bottomBroderVbox = RegionalGui.controller.bottomBroderVbox;
+        VBox bottomBroderVbox = RegionalManagerGui.controller.bottomBroderVbox;
         viewButton = new Button("View Report");
         viewButton.setPrefSize(200, 30);
         bottomBroderVbox.getChildren().add(viewButton);
@@ -211,16 +218,91 @@ public class SelectReportGui {
                 InventoryReportPopupGui.machineName = machineComboBox.getValue();
                 InventoryReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
                 InventoryReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
+                InventoryReportPopupGui.inventoryReportData = getDummyInventoryReport();
                 break;
             case ORDERS:
                 OrdersReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
                 OrdersReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
+                OrdersReportPopupGui.ordersReportData = getDummyOrdersReport();
                 break;
             case USERS:
                 UsersReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
                 UsersReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
+                UsersReportPopupGui.usersReportData = getDummyUsersReport();
                 break;
         }
+    }
+
+    private InventoryReport getDummyInventoryReport() {
+        List<Map<String, Integer>> dailyInventory = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            Map<String, Integer> productInventory = new HashMap<>();
+            productInventory.put("aaa" + i, new Random().nextInt(10 + 1));
+            productInventory.put("bbb" + i, new Random().nextInt(10 + 1));
+            productInventory.put("ccc" + i, new Random().nextInt(10 + 1));
+            dailyInventory.add(productInventory);
+        }
+
+        List<Integer> belowThresholdAmount = new ArrayList<>();
+        List<Integer> unavailableAmount = new ArrayList<>();
+
+        for (int i = 1; i <= 30; i++) {
+            int yValue = new Random().nextInt(40 + 1);
+            belowThresholdAmount.add(yValue);
+            unavailableAmount.add((int) (yValue * 0.3));
+        }
+
+        return new InventoryReport(machineComboBox.getValue(), monthComboBox.getValue(), yearComboBox.getValue(),
+                dailyInventory, belowThresholdAmount, unavailableAmount);
+    }
+
+    private OrdersReport getDummyOrdersReport() {
+        List<Map<String, Integer>> ekOrders = new ArrayList<>();
+        for (int i=1; i<=30; i++) {
+            Map<String, Integer> ekOrdersDaily = new HashMap<>();
+            ekOrdersDaily.put("L 606", new Random().nextInt(30 + 1));
+            ekOrdersDaily.put("M 101", new Random().nextInt(30 + 1));
+            ekOrdersDaily.put("EM 302" , new Random().nextInt(30 + 1));
+            ekOrders.add(ekOrdersDaily);
+        }
+
+        List<Map<String, Integer>> latePickupOrders = new ArrayList<>();
+        for (int i=1; i<=30; i++) {
+            Map<String, Integer> latePickupOrdersDaily = new HashMap<>();
+            latePickupOrdersDaily.put("L 606", new Random().nextInt(15 + 1));
+            latePickupOrdersDaily.put("M 101", new Random().nextInt(15 + 1));
+            latePickupOrdersDaily.put("EM 302", new Random().nextInt(15 + 1));
+            latePickupOrders.add(latePickupOrdersDaily);
+        }
+
+        return new OrdersReport(RegionalManagerGui.region.toString(), monthComboBox.getValue(), yearComboBox.getValue(),
+                ekOrders, latePickupOrders);
+    }
+
+    private UsersReport getDummyUsersReport() {
+        Map<String, Integer> clientsOrders = getOrders();
+        Map<String, Integer> subscribersOrders = getOrders1();
+        List<String> top3ClientNames = Arrays.asList("Yuval", "Fisher", "Avihay");
+
+        return new UsersReport(RegionalManagerGui.region.toString(), monthComboBox.getValue(), yearComboBox.getValue(),
+                clientsOrders, subscribersOrders, top3ClientNames);
+    }
+
+    private Map<String, Integer> getOrders() {
+        Map<String, Integer> orders = new HashMap<>();
+        int top = new Random().nextInt(15 + 1);
+        for (int i = 0; i < top; i++) {
+            orders.put(String.valueOf(new Random().nextInt(1000000 + 1)), new Random().nextInt(20 + 1));
+        }
+        return orders;
+    }
+    private Map<String, Integer> getOrders1() {
+        Map<String, Integer> orders = new HashMap<>();
+        int top = new Random().nextInt(25 + 1);
+        for (int i = 0; i < top; i++) {
+            orders.put(String.valueOf(new Random().nextInt(1000000 + 1)), new Random().nextInt(20 + 1));
+        }
+        return orders;
     }
 
     private void setControllerInReportsPopup(FXMLLoader loader) {

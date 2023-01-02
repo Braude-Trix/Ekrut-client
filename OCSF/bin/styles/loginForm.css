@@ -61,4 +61,13 @@
         -fx-background-color: #00ff90;
         -fx-backgroup-radius: 30 30 30 30;
     }
-   
+
+
+.combo-box {
+    -fx-background-color: #ffc39c;
+}
+
+    .combo-box:hover {
+        -fx-background-color: #00ff90;
+        -fx-backgroup-radius: 30 30 30 30;
+    }

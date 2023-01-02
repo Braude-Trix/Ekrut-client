@@ -10,6 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import models.Regions;
+import models.Worker;
+import models.WorkerType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,14 +67,20 @@ public final class WorkerNodesUtils {
         bgImage.setImage(image);
     }
 
-    public static void setUserName(Label userNameLabel, String userName) {
-        userNameLabel.setText("Hello " + userName);
+    public static void setUserName(Label userNameLabel, Worker worker) {
+        userNameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
     }
 
-    public static void setRegion(Label userRoleLabel, String region) {
-        userRoleLabel.setText("Regional Manager: " + region);
+    public static void setRole(Label userRoleLabel, Regions region, WorkerType workerType) {
+        if (region != null && region != Regions.All)
+            userRoleLabel.setText(workerType.toString() + ": " + region.name());
+        else
+            setRole(userRoleLabel, workerType);
     }
 
+    public static void setRole(Label userRoleLabel, WorkerType workerType) {
+        userRoleLabel.setText(workerType.toString());
+    }
     public static void setTitle(String titleName, VBox vBoxContainer) {
         Label title = new Label();
         title.setText(titleName);

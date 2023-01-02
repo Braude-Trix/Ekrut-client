@@ -1,0 +1,108 @@
+/*.text-field {
+    -fx-border-radius: 20px;
+    -fx-border-color: grey;
+    -fx-padding: 0.333333em 1em 0.333333em 1em;
+    -fx-background-color: transparent;
+    -fx-pref-height: 0px;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+}
+
+    .text-field:focused {
+        -fx-background-color: transparent;
+        -fx-pref-height: 0px;
+        -fx-translate-y: 0px;
+        -fx-background-color: transparent;
+        -fx-pref-height: 0px;
+    }*/
+
+.text-field {
+  -fx-accent: #ffc39c;
+  -fx-background-insets: -1, 0 0 1 0;
+  -fx-background-radius: 0;
+  -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
+}
+
+.text-field:focused {
+  -fx-background-color: #ffc39c, white;
+}
+
+.validation-error {
+  -fx-background-color: #fff0f0;
+  -fx-border-color: #ff0000;
+}
+
+.validation-error-comboBox {
+  -fx-background-color: #fff0f0;
+  -fx-border-radius: 13px;
+  -fx-border-color: #ff0000;
+}
+
+.date-picker .cell {
+  -fx-background-color: white;
+}
+
+.date-picker .cell:hover {
+  -fx-background-color: #c26000;
+}
+
+.date-picker .cell:focused {
+  -fx-background-color: #c26000;
+}
+
+.date-picker .selected {
+  -fx-background-color: #c26000;
+  -fx-text-fill: white;
+}
+
+.date-picker .selected:focused {
+  -fx-background-color: #c26000;
+  -fx-text-fill: white;
+}
+/*
+.date-picker-popup {
+  -fx-border-color: transparent;
+}
+*/
+.date-picker-popup .month-year-pane {
+  -fx-background-color: #c26000;
+}
+
+.date-picker-popup .month-year-pane .label {
+  -fx-text-fill: white;
+}
+
+.date-picker-popup .week-number-cell {
+  -fx-text-fill: #864500;
+}
+
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+  -fx-background-color: #c2d70e;
+}
+
+.date-picker > .text-field {
+  -fx-background-color: linear-gradient(
+      to bottom,
+      derive(-fx-text-box-border, -10%),
+      -fx-text-box-border
+    ),
+    linear-gradient(
+      from 0px 0px to 0px 5px,
+      derive(-fx-control-inner-background, -9%),
+      -fx-control-inner-background
+    );
+  -fx-background-insets: 1 0 1 1;
+  -fx-background-radius: 2 0 0 2;
+}
+
+.date-picker:focused > .text-field,
+.date-picker > .text-field:focused {
+  -fx-background-color: -fx-control-inner-background, -fx-faint-focus-color,
+    linear-gradient(
+      from 0px 0px to 0px 5px,
+      derive(-fx-control-inner-background, -9%),
+      -fx-control-inner-background
+    );
+  -fx-background-insets: 1 0 1 1, 1 0 1 1, 3 2 3 3;
+  -fx-background-radius: 2 0 0 2, 1 0 0 1, 0;
+}

@@ -9,18 +9,14 @@ import client.Client;
 import client.ClientUI;
 import gui.LoginController;
 import gui.StageSingleton;
-import gui.LoginController;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.Method;
 import models.Request;
-import models.ResponseCode;
 
 public class Util {
 	public static boolean isBlankString(String string) {
@@ -39,7 +35,7 @@ public class Util {
 	}
 	
 	public static void setNameNavigationBar(Label labelName) {
-		labelName.setText(LoginController.user.getFirstName() +" " +LoginController.user.getLastName());
+		labelName.setText(LoginController.user.getFirstName() +" " + LoginController.user.getLastName());
 	}
 	
 	private static void requestLogOut(Class getClass) throws IOException {
@@ -92,8 +88,14 @@ public class Util {
         request.setMethod(Method.PUT);
         request.setBody(userDetails);
         ClientUI.chat.accept(request);// sending the request to the server.
-        StageSingleton.getInstance().getStage().close();
-        System.exit(0);
-    }
+        switch (Client.resFromServer.getCode()) {
+        case OK:
+            StageSingleton.getInstance().getStage().close();
+            System.exit(0);
+            break;
+        default:
+            break;
+        }
 
+    }
 }

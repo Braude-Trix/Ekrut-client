@@ -27,6 +27,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import models.*;
 import utils.Util;
+import utils.WorkerNodesUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -85,16 +86,20 @@ public class RegionalDeliveryController implements Initializable {
     private TableColumn<ConfirmDeliveryTable, String> deliveryDateConfirmTable;
     private TableColumn<ConfirmDeliveryTable, Button> confirmBtnColConfirmTable;
 
+    private Worker worker = (Worker) LoginController.user;
+    private Integer myId = worker.getId();
+    private String staticRegion = worker.getRegion().toString();
+    public static RegionalDeliveryController controller;
+    public static boolean isCEOLogged = false;
 
     @FXML
     private Label mainTitleLabel;
     @FXML
     private Label sideTitleLabel;
 
-    private Worker worker = (Worker) LoginController.user;
-    private Integer myId = worker.getId();
-    private String staticRegion = worker.getRegion().toString(); //"North";
 
+    @FXML
+    private Label userRoleLabel;
     /**
      * function that start the fxml of the current window
      *
@@ -245,7 +250,6 @@ public class RegionalDeliveryController implements Initializable {
         appDenyCol.setCellValueFactory(new PropertyValueFactory<PendingDeliveryTable, CheckBox>("approveDenyCheckBox"));
         addItemsToPendingTable(region);
     }
-
     /**
      * function that initialize the confirm orders table according to the worker region
      *
@@ -271,7 +275,6 @@ public class RegionalDeliveryController implements Initializable {
         confirmBtnColConfirmTable.setCellValueFactory(new PropertyValueFactory<ConfirmDeliveryTable, Button>("confirmDeliveryBtn"));
         addItemsToConfirmTable(region);
     }
-
     /**
      * function that add items the pending orders table according to the worker region
      *
@@ -300,10 +303,8 @@ public class RegionalDeliveryController implements Initializable {
 
         }
     }
-
     /**
      * function that handle that in confirm table, one of the V buttons in some row clicked.
-     *
      * @param confirmBtn, confirmDeliveriesList, confirmDeliveryTable
      */
     void VImageClicked(Button confirmBtn, ObservableList<ConfirmDeliveryTable> confirmDeliveriesList, ConfirmDeliveryTable confirmDeliveryTable) {
@@ -313,11 +314,9 @@ public class RegionalDeliveryController implements Initializable {
             updateOrderStatus(confirmDeliveryTable.getOrderId(), OrderStatus.Done);
         });
     }
-
     /**
      * function that add items the confirm orders table according to the worker region
-     *
-     * @param region - Region Enum
+     * @param region
      */
     public void addItemsToConfirmTable(String region) {
         List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
@@ -428,14 +427,16 @@ public class RegionalDeliveryController implements Initializable {
 
     /**
      * function that called when the fxml loaded, handle the username label text
-     *
      * @param url
      * @param resourceBundle
      */
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        userNameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
+        WorkerNodesUtils.setUserName(userNameLabel, worker);
+        WorkerNodesUtils.setRole(userRoleLabel, worker.getRegion(), worker.getType());
+        logoutBtn.setOnMouseClicked((event) -> System.out.println(event.getSource().toString()));
 
-
+        if (isCEOLogged)
+            logoutBtn.setVisible(false);
     }
 
 

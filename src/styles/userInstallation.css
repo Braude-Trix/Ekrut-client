@@ -1,0 +1,42 @@
+.button {
+    -fx-background-color: #ffc39c;
+    -fx-background-radius: 60 60 60 60;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #000000;
+}
+
+    .button:hover {
+        -fx-background-color: #00ff90;
+        -fx-background-radius: 30 30 30 30;
+    }
+
+.validation-error {
+    -fx-background-color: #FFF0F0;
+    -fx-border-color: #ff0000;
+}
+
+
+
+
+.text-field {
+    -fx-accent: #ffc39c;
+    -fx-background-insets: -1, 0 0 1 0;
+    -fx-background-radius: 0;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+}
+
+    .text-field:focused {
+        -fx-background-color: #ffc39c, white;
+    }
+
+
+
+
+.combo-box {
+    -fx-background-color: #ffc39c;
+}
+/*
+    .combo-box:hover {
+        -fx-background-color: #00ff90;
+    }*/
+

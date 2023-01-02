@@ -74,29 +74,9 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
     void employeeClicked(ActionEvent event) throws Exception {
 		Stage stage = StageSingleton.getInstance().getStage();
     	LoginController.user = (Worker) LoginController.customerAndWorker.get(1);
-		setWindowByTypeWorker(stage, (Worker) LoginController.customerAndWorker.get(1));
+		LoginController.setWindowByTypeWorker(stage, (Worker) LoginController.customerAndWorker.get(1));
     }
-    
-    private void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
-    	switch (worker.getType()) {
-    	case CEO:
-    		break;
-    	case OperationalWorker:
-    		break;
-    	case MarketingManager:
-    		break;
-    	case MarketingWorker:
-    		break;
-    	case RegionalManager:
-    		break;
-    	case RegionalDelivery:
-			(new RegionalDeliveryController()).start(stage);
-			break;
-    	case ServiceOperator:
-    		break;
 
-    	}
-    }
 
 }
 

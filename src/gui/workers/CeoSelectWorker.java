@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import models.Regions;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
@@ -37,25 +38,21 @@ public class CeoSelectWorker {
     private TableColumn<WorkersData, String> marketWorkerNameCol;
     private TableColumn<WorkersData, String> marketWorkerRegionCol;
     private Button goToButton;
-    private WorkersData selectedMarketWorker;
-
-    private enum RegionType {
-        NORTH, SOUTH, UAE
-    }
+    private WorkersData selectedWorker;
 
     void loadMyMarketWorkers() {
         // Replacing background
         WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", CeoGui.controller.bgImage);
 
         // Replacing top border with title based on worker type
-        switch (CeoGui.workerType) {
-            case DELIVERY:
+        switch (CeoGui.chosenWorkerType) {
+            case RegionalDelivery:
                 WorkerNodesUtils.setTitle("Delivery Operators", CeoGui.controller.topBorderVBox);
                 break;
-            case MARKETING:
+            case MarketingWorker:
                 WorkerNodesUtils.setTitle("Marketing Workers", CeoGui.controller.topBorderVBox);
                 break;
-            case SERVICE:
+            case ServiceOperator:
                 WorkerNodesUtils.setTitle("Service Operators", CeoGui.controller.topBorderVBox);
                 break;
             default:
@@ -87,7 +84,7 @@ public class CeoSelectWorker {
         // Adding columns to marketingWorkersTable
         workersTable.getColumns().addAll(marketWorkerIDCol, marketWorkerNameCol);
         // if we are on DELIVERY or MARKETING worker we add region
-        if (CeoGui.workerType.hasRegion())
+        if (CeoGui.chosenWorkerType.hasRegion())
             workersTable.getColumns().addAll(marketWorkerRegionCol);
         configureTableData();
         setTableData();
@@ -110,18 +107,18 @@ public class CeoSelectWorker {
     private void configureTableData() {
         marketWorkerIDCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         marketWorkerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        if (CeoGui.workerType.hasRegion())
+        if (CeoGui.chosenWorkerType.hasRegion())
             marketWorkerRegionCol.setCellValueFactory(new PropertyValueFactory<>("region"));
     }
 
     private void setTableData() { // todo: replace with server data
         List<WorkersData> workerData = new ArrayList<>();
         // todo: do a switch for CeoGui.workerType enum to go to specific DB from server
-        if (CeoGui.workerType.hasRegion()) {
-            workerData.add(new WorkersData("318882800", "Elad", RegionType.NORTH));
-            workerData.add(new WorkersData("123456789", "David", RegionType.SOUTH));
-            workerData.add(new WorkersData("987654321", "Snake", RegionType.NORTH));
-            workerData.add(new WorkersData("818181810", "Liquid", RegionType.UAE));
+        if (CeoGui.chosenWorkerType.hasRegion()) {
+            workerData.add(new WorkersData("318882800", "Elad", Regions.North));
+            workerData.add(new WorkersData("123456789", "David", Regions.South));
+            workerData.add(new WorkersData("987654321", "Snake", Regions.North));
+            workerData.add(new WorkersData("818181810", "Liquid", Regions.UAE));
         } else {
             workerData.add(new WorkersData("318882800", "Ratchet"));
             workerData.add(new WorkersData("123456789", "Link"));
@@ -138,30 +135,31 @@ public class CeoSelectWorker {
             if (newSelection != null) {
                 if (goToButton.isDisable())
                     goToButton.setDisable(false);
-                selectedMarketWorker = newSelection;
+                selectedWorker = newSelection;
             }
         });
     }
 
     private void onGoToClick() {
-        chosenID = selectedMarketWorker.id;
-        chosenName = selectedMarketWorker.name;
-        if (CeoGui.workerType.hasRegion()) {
-            chosenRegion = selectedMarketWorker.region;
+        chosenID = selectedWorker.id;
+        chosenName = selectedWorker.name;
+        if (CeoGui.chosenWorkerType.hasRegion()) {
+            chosenRegion = selectedWorker.region;
         }
 
         // choosing which work space we open
-        switch (CeoGui.workerType) {
-            case DELIVERY:
+        switch (CeoGui.chosenWorkerType) {
+            case RegionalDelivery:
+                openWorkerPopup("/assets/workers/RegionalDeliveryHomePage_Default.fxml");
                 //openWorkerPopup(); todo: sync with DB
                 break;
-            case MARKETING:
+            case MarketingWorker:
                 //openWorkerPopup(); todo: sync with DB
                 break;
-            case SERVICE:
+            case ServiceOperator:
                 //openWorkerPopup(); todo: sync with DB
                 break;
-            case OPERATION:
+            case OperationalWorker:
                 openWorkerPopup("/assets/workers/OperationalWorkerHomePage_Default.fxml");
                 break;
             default:
@@ -187,7 +185,7 @@ public class CeoSelectWorker {
         }
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
-
+        //setTitleForScene()
         popupDialog.setX(Ceo.primaryStage.getX() + 75);
         popupDialog.setY(Ceo.primaryStage.getY() + 75);
         popupDialog.setResizable(false);
@@ -196,21 +194,20 @@ public class CeoSelectWorker {
 
     // set at the current worker gui the name of CEO and notify he is logged on
     private void setInitValuesInWorkerPopup() {
-        switch (CeoGui.workerType) {
-            case DELIVERY:
+        switch (CeoGui.chosenWorkerType) {
+            case RegionalDelivery:
                 // todo: sync with delivery worker
+                RegionalDeliveryController.isCEOLogged = true;
                 break;
-            case SERVICE:
+            case ServiceOperator:
                 // todo: sync with service
                 break;
-            case MARKETING:
+            case MarketingWorker:
                 // todo: sync with marketing
                 break;
-            case OPERATION:
+            case OperationalWorker:
                 OperationalWorkerGui.isCEOLogged = true;
-                OperationalWorkerGui.userName = CeoGui.userName;
                 break;
-
             default:
                 System.out.println("oh nooooo!");
         }
@@ -218,17 +215,18 @@ public class CeoSelectWorker {
 
     private void setControllerWorkerPopup(FXMLLoader loader) {
         // get the controller of the right worker
-        switch (CeoGui.workerType) {
-            case DELIVERY:
+        switch (CeoGui.chosenWorkerType) {
+            case RegionalDelivery:
                 // todo: sync with delivery worker
+                RegionalDeliveryController.controller = loader.getController();
                 break;
-            case SERVICE:
+            case ServiceOperator:
                 // todo: sync with service
                 break;
-            case MARKETING:
+            case MarketingWorker:
                 // todo: sync with marketing
                 break;
-            case OPERATION:
+            case OperationalWorker:
                 OperationalWorkerGui.controller = loader.getController();
                 break;
 
@@ -254,7 +252,7 @@ public class CeoSelectWorker {
 
         // constructor for workers with a specific region
         // marketing and delivery workers
-        public WorkersData(String id, String name, RegionType regionType) {
+        public WorkersData(String id, String name, Regions regionType) {
             this.id = id;
             this.name = name;
             this.region = regionType.name();

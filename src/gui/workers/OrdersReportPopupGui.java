@@ -14,14 +14,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
+import models.OrdersReport;
 import utils.ReportPopupUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -31,6 +30,7 @@ public class OrdersReportPopupGui implements Initializable {
     public static OrdersReportPopupGui controller;
     public static int year;
     public static int month;
+    public static OrdersReport ordersReportData;
     private static ObservableList<OrdersAmount> monthlyOrdersList = FXCollections.observableArrayList();
 
     @FXML
@@ -70,40 +70,38 @@ public class OrdersReportPopupGui implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        monthlyOrdersList.clear();
         closeBtn.setOnMouseClicked(event -> ReportPopupUtils.onCloseClicked());
 
         // setting title
-        titleUpper.setText("Orders Report | " + RegionalGui.region);
+        titleUpper.setText("Orders Report | " + ordersReportData.getRegion());
         ReportPopupUtils.setSubTitle(titleInfo, month, year);
 
-        // setting stacked bar chart
-        List<String> machines = Arrays.asList("L 606", "M 203", "EF 606", "P 103", "K 404",
-                "Cafeteria", "Greg", "Falafel");
-        dailyOrdersStackedBar.getData().addAll(getMachinesSeries(machines));
 
+        // setting stacked bar chart
+        List<String> machines = new ArrayList<>();
+        for (Map.Entry<String, Integer> machine : ordersReportData.getMonthlyOrders().entrySet()) {
+            machines.add(machine.getKey());
+        }
+        dailyOrdersStackedBar.getData().addAll(getMachinesSeries(machines, ordersReportData.getMonthlyOrders()));
+
+        // adding tooltip for slots in left graph
         for (XYChart.Series<String, Integer> series : dailyOrdersStackedBar.getData()) {
             for (XYChart.Data<String, Integer> item : series.getData()) {
-                item.getNode().setOnMousePressed((MouseEvent event) -> {
-                    System.out.println("you clicked " + item.toString() + series.toString());
-                });
                 Tooltip.install(item.getNode(), new Tooltip(series.getName() + ": " + item.getYValue()));
             }
         }
 
-        // setting pie chart
-        int amountOfEk = 260;
-        int amountOfLatePickup = 80;
-        int ekPercentage = (int) Math.floor((100.0 / (amountOfEk + amountOfLatePickup)) * amountOfEk);
-        int latePickupPercentage = (int) Math.ceil((100.0 / (amountOfEk + amountOfLatePickup)) * amountOfLatePickup);
-        PieChart.Data ekPercentageData = new PieChart.Data("EK (Localy)", ekPercentage);
+        // setting pie chart of percentage
+        double ekPercentage = ordersReportData.getEkOrdersPercentage();
+        double latePickupPercentage = ordersReportData.getLatePickupOrdersPercentage();
+        PieChart.Data ekPercentageData = new PieChart.Data("EK (Locally)", ekPercentage);
         PieChart.Data latePickupPercentageData = new PieChart.Data("Late-pickup (OL)", latePickupPercentage);
         monthlyOrdersPie.getData().addAll(ekPercentageData, latePickupPercentageData);
         monthlyOrdersPie.setLabelsVisible(false);
 
+        // adding tooltip for pie chart
         for (PieChart.Data series : monthlyOrdersPie.getData()) {
-            series.getNode().setOnMousePressed((MouseEvent event) -> {
-                System.out.println("x: " + event.getSceneX() + "y: " + event.getSceneY());
-            });
             Tooltip.install(series.getNode(), new Tooltip(series.getName() + ": " + series.getPieValue() + "%"));
         }
 
@@ -120,8 +118,18 @@ public class OrdersReportPopupGui implements Initializable {
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         series.setName(name);
 
+        // for each day from 1 to xRange we set each day with some amount of yRange
         for (int i = 1; i <= xRange; i++) {
-            Integer yValue = new Random().nextInt(yRange + 1);
+            Integer yValue = 0;
+            // getting the amount of ekOrders for each day
+            Map<String, Integer> ekDay = ordersReportData.getEkOrders().get(i - 1);
+            yValue += ekDay.get(name);
+
+            // getting the amount of lateOrders for each day
+            Map<String, Integer> lateDay = ordersReportData.getLatePickupOrders().get(i - 1);
+            yValue += lateDay.get(name);
+
+            //Integer yValue = new Random().nextInt(yRange + 1);
             series.getData().add(new XYChart.Data<>(String.valueOf(i), yValue));
             sum += yValue;
         }
@@ -130,10 +138,15 @@ public class OrdersReportPopupGui implements Initializable {
         return series;
     }
 
-    private List<XYChart.Series<String, Integer>> getMachinesSeries(List<String> names) {
+    private List<XYChart.Series<String, Integer>> getMachinesSeries(List<String> names, Map<String, Integer> monthlyOrders) {
         List<XYChart.Series<String, Integer>> seriesList = new ArrayList<>();
-        for (String name : names) {
-            seriesList.add(getSeries(name, 31, 100));
+        // for each machine with monthlyOrders amount we check send a machines name and amount
+        for (Map.Entry<String, Integer> entry : monthlyOrders.entrySet()) {
+            String machineName = entry.getKey();
+            Integer amountMonth = entry.getValue();
+            if (names.contains(machineName)) {
+                seriesList.add(getSeries(machineName, ordersReportData.getEkOrders().size(), amountMonth));
+            }
         }
         return seriesList;
     }

@@ -1,7 +1,5 @@
 package gui.workers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
@@ -13,11 +11,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
+import models.UsersReport;
 import utils.ReportPopupUtils;
 
 import java.net.URL;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -27,7 +27,7 @@ public class UsersReportPopupGui implements Initializable {
     public static UsersReportPopupGui controller;
     public static int year;
     public static int month;
-    public static ObservableList<userTableData> top3UserList = FXCollections.observableArrayList();
+    public static UsersReport usersReportData;
 
     @FXML
     private Button closeBtn;
@@ -42,16 +42,16 @@ public class UsersReportPopupGui implements Initializable {
     private BarChart<String, Integer> usersActivityLevelChart;
 
     @FXML
-    private TableView<userTableData> top3ClientsTable;
+    private TableView<UserTableData> top3ClientsTable;
 
     @FXML
-    private TableColumn<userTableData, String> ClientCol;
+    private TableColumn<UserTableData, String> ClientCol;
 
     @FXML
-    private TableColumn<userTableData, Integer> OrdersCol;
+    private TableColumn<UserTableData, Integer> OrdersCol;
 
     @FXML
-    private TableColumn<userTableData, Integer> IDCol;
+    private TableColumn<UserTableData, Integer> IDCol;
 
     @FXML
     private PieChart PieClients;
@@ -71,12 +71,11 @@ public class UsersReportPopupGui implements Initializable {
         closeBtn.setOnMouseClicked(event -> ReportPopupUtils.onCloseClicked());
 
         // setting title
-        titleUpper.setText("Users Report | " + RegionalGui.region);
+        titleUpper.setText("Users Report | " + RegionalManagerGui.region);
         ReportPopupUtils.setSubTitle(titleInfo, month, year);
 
         // setting usersActivityLevelChart
-        XYChart.Series<String, Integer> userSeries = getSeries("Users activity level", 10, 50);
-        usersActivityLevelChart.getData().addAll(userSeries);
+        usersActivityLevelChart.getData().addAll(getUsersActivitySeries());
 
         // setting values in table with tooltip
         for (XYChart.Series<String, Integer> series : usersActivityLevelChart.getData()) {
@@ -89,20 +88,13 @@ public class UsersReportPopupGui implements Initializable {
         usersActivityLevelChart.getData().get(0).getChart().setStyle("-fx-stroke: #a3b68d;");
 
         // setting pieChart for distribution between clients and subscribes
-        int amountOfClients = 200;
-        int amountOfSubscribres = 185;
-        int clientsPrecentage = (int) Math.floor((100.0 / (amountOfClients + amountOfSubscribres)) * amountOfClients);
-        int subsPrecentage = (int) Math.floor((100.0 / (amountOfClients + amountOfSubscribres)) * amountOfSubscribres);
-        PieChart.Data clientsPrecentageData = new PieChart.Data("Clients", clientsPrecentage);
-        PieChart.Data subsPrecentageData = new PieChart.Data("Subscribers", subsPrecentage);
-        PieClients.getData().addAll(clientsPrecentageData, subsPrecentageData);
+        PieChart.Data clientsPercentageData = new PieChart.Data("Clients", usersReportData.getClientsPercentage());
+        PieChart.Data subsPercentageData = new PieChart.Data("Subscribers", usersReportData.getSubscribersPercentage());
+        PieClients.getData().addAll(clientsPercentageData, subsPercentageData);
         PieClients.setLabelsVisible(false);
 
-        // adding tooltip for data in piechart
+        // adding tooltip for data in pie-chart
         for (PieChart.Data series : PieClients.getData()) {
-            series.getNode().setOnMousePressed((MouseEvent event) -> {
-                System.out.println("x: " + event.getSceneX() + "y: " + event.getSceneY());
-            });
             Tooltip.install(series.getNode(), new Tooltip(series.getName() + ": " + series.getPieValue() + "%"));
         }
 
@@ -110,36 +102,45 @@ public class UsersReportPopupGui implements Initializable {
         IDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
         ClientCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
         OrdersCol.setCellValueFactory(new PropertyValueFactory<>("ordersAmount"));
-        top3ClientsTable.setItems(top3UserList);
         top3ClientsTable.getItems().clear();
-
-        userTableData userNo1 = new userTableData(812002611, "Jack Oswald White", 8181);
-        top3ClientsTable.getItems().add(userNo1);
+        top3ClientsTable.getItems().setAll(getTop3Users());
     }
 
-
-    private static XYChart.Series<String, Integer> getSeries(String name, int xRange, int yRange) {
+    private static XYChart.Series<String, Integer> getUsersActivitySeries() {
+        Map<String, Integer> usersActivityDistribution = usersReportData.getUsersActivityDistribution();
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
-        series.setName(name);
+        series.setName("Users activity level");
 
-        for (int i = 1; i <= xRange; i++) {
-            Integer yValue = new Random().nextInt(yRange + 1);
-            String xValue = String.format("%s-%s", i * 100, (i + 1) * 100);
-            series.getData().add(new XYChart.Data<>(xValue, yValue));
+        for (Map.Entry<String, Integer> entry : usersActivityDistribution.entrySet()) {
+            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
         }
         return series;
     }
 
-    public static class userTableData {
+    private static List<UserTableData> getTop3Users() {
+        if (usersReportData.getTop3UserIdAndAmount().isEmpty()) return new ArrayList<>();
+        List<UserTableData> tableData = new ArrayList<>();
+        int userIndex = 0;
+        for (Map.Entry<String, Integer> userIdAndAmountEntry : usersReportData.getTop3UserIdAndAmount().entrySet()) {
+            String userName = usersReportData.getTop3ClientNames().get(userIndex++);
+            String userId = userIdAndAmountEntry.getKey();
+            Integer amount = userIdAndAmountEntry.getValue();
 
-        private final String userName;
+            tableData.add(new UserTableData(Integer.parseInt(userId), userName, amount));
+        }
+        return tableData;
+    }
+
+    public static class UserTableData {
+
         private final Integer userID;
+        private final String userName;
         private final Integer ordersAmount;
 
-        public userTableData(Integer UserID, String UserName, Integer OrdersAmount) {
-            this.userName = UserName;
-            this.userID = UserID;
-            this.ordersAmount = OrdersAmount;
+        public UserTableData(Integer userID, String userName, Integer ordersAmount) {
+            this.userID = userID;
+            this.userName = userName;
+            this.ordersAmount = ordersAmount;
         }
 
         public String getUserName() {
