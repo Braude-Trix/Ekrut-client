@@ -351,7 +351,7 @@ public class MyOrdersController implements Initializable {
     }
     
     private void setStyleForEmptyTable() {
-		Label tableViewApproveLabel = new Label ("There are no shipments awaiting approval");
+		Label tableViewApproveLabel = new Label ("There are no deliveries awaiting approval");
 		tableViewApproveLabel.setStyle(
 				"-fx-text-fill : #FF3547;-fx-font-weight: bold;  -fx-font-size: 12");
 		Label tableViewOrdersLabel = new Label ("No orders yet");

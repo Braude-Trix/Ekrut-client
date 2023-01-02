@@ -9,6 +9,8 @@ import java.util.ResourceBundle;
 import client.Client;
 import client.ClientUI;
 import gui.workers.CeoGui;
+import gui.workers.MarketingManagerController;
+import gui.workers.MarketingWorkerWindowController;
 import gui.workers.OperationalWorkerGui;
 import gui.workers.RegionalDeliveryController;
 import gui.workers.RegionalManagerGui;
@@ -336,8 +338,10 @@ public class LoginController implements Initializable{
                 new OperationalWorkerGui().start(stage);
                 break;
             case MarketingManager:
+            	new MarketingManagerController().start(stage);
                 break;
             case MarketingWorker:
+            	new MarketingWorkerWindowController().start(stage);
                 break;
             case RegionalManager:
                 new RegionalManagerGui().start(stage);

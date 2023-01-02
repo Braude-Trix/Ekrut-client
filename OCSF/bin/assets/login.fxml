@@ -57,7 +57,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <TextField fx:id="txtUsername" focusTraversable="false" prefHeight="26.0" prefWidth="225.0" promptText="Enter Username" />
+                              <TextField fx:id="txtUsername" prefHeight="26.0" prefWidth="225.0" promptText="Enter Username" />
                            </children>
                            <VBox.margin>
                               <Insets top="40.0" />
@@ -76,7 +76,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <PasswordField fx:id="txtPassword" focusTraversable="false" prefHeight="26.0" prefWidth="225.0" promptText="Enter Password">
+                              <PasswordField fx:id="txtPassword" prefHeight="26.0" prefWidth="225.0" promptText="Enter Password">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>

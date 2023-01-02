@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.effect.BoxBlur?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorPaneScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.MarketingWorkerWindowController">
+   <children>
+      <ImageView fx:id="backGroundImage" fitHeight="505.0" fitWidth="910.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@mainPage.jpg" />
+         </image>
+      </ImageView>
+      <HBox prefHeight="505.0" prefWidth="900.0">
+         <children>
+            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="273.0" spacing="10.0" stylesheets="@../../styles/SideButtons.css">
+               <children>
+                  <HBox spacing="5.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <VBox>
+                           <children>
+                              <ImageView fitHeight="34.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@avatar.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="14.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <Label fx:id="usernameLabel" text="name" textFill="WHITE" />
+                                    <Line endX="-100.00007629394531" endY="14.292893409729004" startX="-100.00010681152344" startY="-1.4142135381698608" stroke="WHITE" />
+                                    <Label fx:id="usernameRegionLabel" text="region" textFill="WHITE" />
+                                 </children>
+                              </HBox>
+                              <Label text="Marketing Worker" textFill="WHITE" underline="true" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0">
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </Separator>
+                  <Button fx:id="runningSalesBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Running Sales" />
+                  <Button fx:id="readySalesBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Ready Sales" />
+                  <Separator prefWidth="200.0">
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </Separator>
+                  <Button fx:id="logOutBtn" mnemonicParsing="false" onAction="#logOut" prefHeight="30.0" prefWidth="200.0" text="Log out" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+            <AnchorPane prefHeight="495.0" prefWidth="628.0" stylesheets="@../../styles/MainButtons.css">
+               <children>
+                  <BorderPane fx:id="mainBorderPane" prefHeight="505.0" prefWidth="628.0">
+                     <top>
+                        <VBox fx:id="topBorderVBox2" alignment="CENTER" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label alignment="CENTER" text="Welcome Back">
+                                 <font>
+                                    <Font size="32.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" text="To Your Workspace">
+                                 <font>
+                                    <Font size="32.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" text="choose one of the options on the left panel to begin">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets top="50.0" />
+                           </padding>
+                        </VBox>
+                     </top>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                  </BorderPane>
+                  <BorderPane fx:id="runningSalesBorderPane" prefHeight="498.0" prefWidth="628.0" visible="false">
+                     <center>
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="522.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <VBox fx:id="runningSalesVbox" prefHeight="200.0" prefWidth="464.0" spacing="5.0">
+                                 <children>
+                                    <TableView fx:id="runningSalesTableView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#runningSaleTableRowClicked" prefHeight="200.0" prefWidth="465.0">
+                                       <columns>
+                                          <TableColumn fx:id="runningSaleNameCol" minWidth="40.0" prefWidth="150.0" text="Sale Name" />
+                                          <TableColumn fx:id="runningSaleStartDateCol" minWidth="40.0" text="Start Date" />
+                                          <TableColumn fx:id="runningSaleEndDateCol" minWidth="40.0" text="End Date" />
+                                          <TableColumn fx:id="runningSalesInfoCol" maxWidth="413.0" prefWidth="155.0" text="Discount" />
+                                       </columns>
+                                       <VBox.margin>
+                                          <Insets left="35.0" top="15.0" />
+                                       </VBox.margin>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                              <Button fx:id="refreshBtnRunningTable" mnemonicParsing="false" onAction="#clickRefreshBtn" prefHeight="15.0" prefWidth="15.0" AnchorPane.topAnchor="15.0">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../refresh-page-option.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                     </center>
+                     <top>
+                        <VBox fx:id="topBorderVBox" alignment="CENTER" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label fx:id="runningSales" alignment="CENTER" text="Running Sales">
+                                 <font>
+                                    <Font size="32.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" text="click on the sale you want to preview! remove if wanted">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </top>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                     <bottom>
+                        <AnchorPane maxWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <VBox fx:id="salePreviewSection" alignment="CENTER" prefHeight="200.0" prefWidth="588.0">
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="461.0" text="Current Sale Preview:">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <HBox fx:id="previewSaleHbox" maxWidth="-Infinity" prefHeight="89.0" prefWidth="463.0" style="-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: #c9d9e9;">
+                                       <children>
+                                          <VBox fx:id="previewSaleVbox" prefHeight="85.0" prefWidth="463.0">
+                                             <children>
+                                                <HBox prefHeight="40.0" prefWidth="400.0" style="-fx-border-color: black;">
+                                                   <children>
+                                                      <Label fx:id="saleNameLabel" alignment="CENTER" prefHeight="38.0" prefWidth="178.0" style="-fx-border-color: black;" text="Sale Name">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <VBox prefHeight="38.0" prefWidth="211.0">
+                                                         <children>
+                                                            <Label fx:id="regionLabel" prefHeight="19.0" prefWidth="172.0" style="-fx-border-width: 1px; -fx-border-color: black;" text="Region">
+                                                               <padding>
+                                                                  <Insets left="5.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label fx:id="saleTypeLabel" prefHeight="19.0" prefWidth="171.0" style="-fx-border-width: 1px; -fx-border-color: black;" text="Type">
+                                                               <padding>
+                                                                  <Insets left="5.0" />
+                                                               </padding>
+                                                            </Label>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox prefHeight="38.0" prefWidth="248.0">
+                                                         <children>
+                                                            <HBox prefHeight="19.0" prefWidth="250.0" style="-fx-border-color: black;">
+                                                               <children>
+                                                                  <Label fx:id="saleStartDateLabel" text="StartDate">
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label text="-">
+                                                                     <padding>
+                                                                        <Insets left="10.0" right="10.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label fx:id="saleEndDateLabel" prefHeight="17.0" prefWidth="73.0" text="EndDate">
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <Label fx:id="saleTimeLabel" prefHeight="19.0" prefWidth="249.0" style="-fx-border-color: black;" text="Time">
+                                                               <padding>
+                                                                  <Insets left="5.0" />
+                                                               </padding>
+                                                            </Label>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                                <HBox prefHeight="45.0" prefWidth="429.0" style="-fx-border-color: black;">
+                                                   <children>
+                                                      <VBox fx:id="statusBoxInSalePreview" prefHeight="43.0" prefWidth="120.0" style="-fx-border-color: black;">
+                                                         <children>
+                                                            <Label fx:id="saleStatusLabel" alignment="CENTER" prefHeight="41.0" prefWidth="117.0" text="Sale Status">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </VBox>
+                                                      <TextArea fx:id="saleDescriptionTxt" editable="false" prefHeight="43.0" prefWidth="341.0" style="-fx-border-color: black;" text="Sale Description" wrapText="true" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                             <effect>
+                                                <BoxBlur />
+                                             </effect>
+                                          </VBox>
+                                       </children>
+                                       <effect>
+                                          <Glow level="0.62" />
+                                       </effect>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <Label fx:id="salePreviewPlaceHolder" prefHeight="51.0" prefWidth="294.0" text="Choose Sale From The Table" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="64.0">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </bottom>
+                  </BorderPane>
+                  <BorderPane fx:id="readyForStartBorderPane" prefHeight="498.0" prefWidth="628.0" visible="false">
+                     <center>
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="522.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <VBox prefHeight="200.0" prefWidth="464.0" spacing="5.0">
+                                 <children>
+                                    <TableView fx:id="readyForStartTableView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#readyForStartSaleTableRowClicked" prefHeight="200.0" prefWidth="465.0">
+                                       <columns>
+                                          <TableColumn fx:id="readyForStartSaleNameCol" minWidth="40.0" prefWidth="150.0" text="Sale Name" />
+                                          <TableColumn fx:id="readyForStartStartDateCol" minWidth="40.0" text="Sale Name" />
+                                          <TableColumn fx:id="readyForStartEndDateCol" minWidth="40.0" text="Sale Name" />
+                                       </columns>
+                                       <VBox.margin>
+                                          <Insets left="35.0" top="15.0" />
+                                       </VBox.margin>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                              <Button fx:id="refreshBtnReadyTable" mnemonicParsing="false" onAction="#clickRefreshBtn" prefHeight="15.0" prefWidth="15.0" AnchorPane.topAnchor="15.0">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../refresh-page-option.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                     </center>
+                     <top>
+                        <VBox fx:id="topBorderVBox1" alignment="CENTER" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label fx:id="runningSales1" alignment="CENTER" text="Ready For Start Sales">
+                                 <font>
+                                    <Font size="32.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" text="your manager initialized them.. start them">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </top>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                     <bottom>
+                        <AnchorPane maxWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <VBox fx:id="salePreviewSection1" alignment="CENTER" prefHeight="200.0" prefWidth="588.0">
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="461.0" text="Current Sale Preview:">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <HBox fx:id="previewSaleHbox1" maxWidth="-Infinity" prefHeight="89.0" prefWidth="463.0" style="-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: #c9d9e9;">
+                                       <children>
+                                          <VBox prefHeight="89.0" prefWidth="463.0">
+                                             <children>
+                                                <HBox prefHeight="40.0" prefWidth="400.0" style="-fx-border-color: black;">
+                                                   <children>
+                                                      <Label fx:id="saleNameLabel1" alignment="CENTER" prefHeight="38.0" prefWidth="178.0" style="-fx-border-color: black;" text="Sale Name">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <VBox prefHeight="38.0" prefWidth="211.0">
+                                                         <children>
+                                                            <Label fx:id="regionLabel1" prefHeight="19.0" prefWidth="172.0" style="-fx-border-width: 1px; -fx-border-color: black;" text="Region">
+                                                               <padding>
+                                                                  <Insets left="5.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label fx:id="saleTypeLabel1" prefHeight="19.0" prefWidth="171.0" style="-fx-border-width: 1px; -fx-border-color: black;" text="Type">
+                                                               <padding>
+                                                                  <Insets left="5.0" />
+                                                               </padding>
+                                                            </Label>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox prefHeight="38.0" prefWidth="248.0">
+                                                         <children>
+                                                            <HBox prefHeight="19.0" prefWidth="250.0" style="-fx-border-color: black;">
+                                                               <children>
+                                                                  <Label fx:id="saleStartDateLabel1" text="StartDate">
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label text="-">
+                                                                     <padding>
+                                                                        <Insets left="10.0" right="10.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label fx:id="saleEndDateLabel1" prefHeight="17.0" prefWidth="73.0" text="EndDate">
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <Label fx:id="saleTimeLabel1" prefHeight="19.0" prefWidth="249.0" style="-fx-border-color: black;" text="Time">
+                                                               <padding>
+                                                                  <Insets left="5.0" />
+                                                               </padding>
+                                                            </Label>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                                <HBox prefHeight="45.0" prefWidth="429.0" style="-fx-border-color: black;">
+                                                   <children>
+                                                      <VBox fx:id="statusBoxInSalePreview1" prefHeight="43.0" prefWidth="177.0" style="-fx-border-color: black;">
+                                                         <children>
+                                                            <Label fx:id="saleStatusLabel1" alignment="CENTER" prefHeight="58.0" prefWidth="119.0" text="Sale Status">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </VBox>
+                                                      <TextArea fx:id="saleDescriptionTxt1" editable="false" prefHeight="43.0" prefWidth="398.0" style="-fx-border-color: black;" text="Sale Description" wrapText="true" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                             <effect>
+                                                <BoxBlur />
+                                             </effect>
+                                          </VBox>
+                                       </children>
+                                       <effect>
+                                          <Glow level="0.62" />
+                                       </effect>
+                                    </HBox>
+                                 </children>
+                                 <effect>
+                                    <BoxBlur iterations="0" />
+                                 </effect>
+                              </VBox>
+                              <Label fx:id="salePreviewPlaceHolder1" prefHeight="51.0" prefWidth="294.0" text="Choose Sale From The Table" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="64.0">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </bottom>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+      <ImageView fx:id="backBtn" fitHeight="45.0" fitWidth="50.0" onMouseClicked="#Back" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="280.0">
+         <image>
+            <Image url="@../Back.png" />
+         </image>
+         <effect>
+            <ColorAdjust brightness="-1.0" />
+         </effect>
+      </ImageView>
+   </children>
+</AnchorPane>
