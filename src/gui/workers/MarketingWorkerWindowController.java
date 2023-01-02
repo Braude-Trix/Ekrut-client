@@ -40,13 +40,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import models.Method;
-import models.Product;
 import models.Regions;
 import models.Request;
 import models.Sale;
 import models.SaleStatus;
-import models.TimeSale;
-import models.TypeSale;
 import models.Worker;
 import utils.Util;
 
@@ -220,7 +217,7 @@ public class MarketingWorkerWindowController implements Initializable {
 		// handleSalePreview();
 
 	}
-	
+
 	/**
 	 * This method sets a scene to a given stage.
 	 * 
@@ -259,20 +256,18 @@ public class MarketingWorkerWindowController implements Initializable {
 		}
 
 	}
+
 	@FXML
-    void Back(MouseEvent event) {
+	void Back(MouseEvent event) {
 		Stage stage = StageSingleton.getInstance().getStage();
 		stage.setScene(SelectOptionWorkerOrCustomer.scene);
 		stage.show();
-    }
-
+	}
 
 	private void setUsernameLabels() {
 		usernameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
 		usernameRegionLabel.setText(worker.getRegion().toString());
 	}
-
-
 
 	private void handleSalePreview(String table) {
 //		previewSale
@@ -478,8 +473,6 @@ public class MarketingWorkerWindowController implements Initializable {
 		}
 	}
 
-
-
 	private void addButtonsToReadyToStartTable() {
 		TableColumn<Sale, Void> colBtn = new TableColumn<Sale, Void>("Action");
 		Callback<TableColumn<Sale, Void>, TableCell<Sale, Void>> cellFactory = new Callback<TableColumn<Sale, Void>, TableCell<Sale, Void>>() {
@@ -519,7 +512,6 @@ public class MarketingWorkerWindowController implements Initializable {
 
 		readyForStartTableView.getColumns().add(colBtn);
 
-
 	}
 
 	public void requestSaleStart(Sale sale) {
@@ -550,13 +542,9 @@ public class MarketingWorkerWindowController implements Initializable {
 		}
 	}
 
-
-
 	public Sale getSalePreview() {
 		return previewSale;
 	}
-
-
 
 	@FXML
 	void runningSaleTableRowClicked(MouseEvent event) {
@@ -578,8 +566,6 @@ public class MarketingWorkerWindowController implements Initializable {
 //				catches null pointer exceptions whenever a user clicks the header row.
 		}
 	}
-
-
 
 	@FXML
 	void clickRefreshBtn(ActionEvent event) {

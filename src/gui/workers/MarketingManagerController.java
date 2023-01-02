@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.xml.ws.Response;
 
 import client.Client;
 import client.ClientUI;
@@ -48,9 +47,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import models.Method;
-import models.MyOrders;
-import models.PickUpMethod;
-import models.Product;
+
 import models.Regions;
 import models.Request;
 import models.Sale;
@@ -197,6 +194,7 @@ public class MarketingManagerController implements Initializable {
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 
 	}
+
 	/**
 	 * This method sets a scene to a given stage.
 	 * 
@@ -232,17 +230,17 @@ public class MarketingManagerController implements Initializable {
 
 	private void setBackBtnIfExist() {
 		if (LoginController.customerAndWorker != null) {
-        	backBtn.setVisible(true);
-        }
+			backBtn.setVisible(true);
+		}
 
-		
 	}
+
 	@FXML
-    void Back(MouseEvent event) {
+	void Back(MouseEvent event) {
 		Stage stage = StageSingleton.getInstance().getStage();
 		stage.setScene(SelectOptionWorkerOrCustomer.scene);
 		stage.show();
-    }
+	}
 
 	private void setUsernameLabel() {
 		usernameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
@@ -341,8 +339,6 @@ public class MarketingManagerController implements Initializable {
 		saleTemplatesTableView.getColumns().add(colBtn);
 
 	}
-
-
 
 	/**
 	 * This method navigates the client to the login page and logging him out. This
@@ -489,14 +485,14 @@ public class MarketingManagerController implements Initializable {
 	 */
 	private Sale createNewSale() {
 		String percentage;
-		//changing date format to be normal.
+		// changing date format to be normal.
 		String startDate = StartDate.getValue().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
 		String endDate = EndDate.getValue().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
 
 		percentage = fixNumberPrefix(txtPercentage.getText());
-		Sale newSale = new Sale("1", startDate, endDate,
-				comboBoxHoursSale.getValue(), txtNameSale.getText(), comboBoxRegions.getValue(), SaleStatus.Template,
-				percentage, txtAreaDescription.getText(), comboBoxType.getValue());
+		Sale newSale = new Sale("1", startDate, endDate, comboBoxHoursSale.getValue(), txtNameSale.getText(),
+				comboBoxRegions.getValue(), SaleStatus.Template, percentage, txtAreaDescription.getText(),
+				comboBoxType.getValue());
 		System.out.println(newSale.getSalePercentage());
 		return newSale;
 	}
@@ -793,7 +789,6 @@ public class MarketingManagerController implements Initializable {
 	 * This method opens new modal with the clicked sale preview, shows the user
 	 * data about the sale template.
 	 */
-
 
 	private void handleSalePreview() {
 //		previewSale
