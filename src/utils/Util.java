@@ -88,7 +88,14 @@ public class Util {
         request.setMethod(Method.PUT);
         request.setBody(userDetails);
         ClientUI.chat.accept(request);// sending the request to the server.
-        StageSingleton.getInstance().getStage().close();
-        System.exit(0);
+        switch (Client.resFromServer.getCode()) {
+        case OK:
+            StageSingleton.getInstance().getStage().close();
+            System.exit(0);
+            break;
+        default:
+            break;
+        }
+
     }
 }

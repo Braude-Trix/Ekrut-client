@@ -327,7 +327,7 @@ public class LoginController implements Initializable{
         }
     }
 
-    private void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
+    public static void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
         switch (worker.getType()) {
             case CEO:
                 new CeoGui().start(stage);
