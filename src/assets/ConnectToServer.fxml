@@ -27,11 +27,11 @@
                         <Font size="30.0" />
                      </font>
                   </Label>
-                  <VBox alignment="CENTER" prefHeight="130.0" prefWidth="301.0">
+                  <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="202.0" prefWidth="260.0">
                      <children>
-                        <HBox alignment="CENTER" prefHeight="33.0" prefWidth="142.0">
+                        <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Label prefHeight="18.0" prefWidth="74.0" text="Enter host:">
+                              <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="18.0" prefWidth="62.0" text="Enter host:">
                                  <HBox.margin>
                                     <Insets right="20.0" />
                                  </HBox.margin>
@@ -46,12 +46,12 @@
                               </TextField>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              <Insets bottom="20.0" right="20.0" top="20.0" />
                            </VBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="25.0" prefWidth="281.0">
+                        <HBox alignment="CENTER">
                            <children>
-                              <Label prefHeight="18.0" prefWidth="75.0" text="Enter port:">
+                              <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="18.0" prefWidth="62.0" text="Enter port:">
                                  <HBox.margin>
                                     <Insets right="20.0" />
                                  </HBox.margin>
@@ -66,22 +66,22 @@
                               </TextField>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              <Insets bottom="20.0" right="20.0" />
                            </VBox.margin>
                         </HBox>
-                        <Button fx:id="connectBtn" focusTraversable="false" mnemonicParsing="false" onAction="#connectToServer" prefHeight="26.0" prefWidth="227.0" text="Connect">
+                        <Button fx:id="connectBtn" focusTraversable="false" mnemonicParsing="false" onAction="#connectToServer" prefHeight="26.0" prefWidth="158.0" text="Connect">
                            <VBox.margin>
-                              <Insets />
+                              <Insets bottom="5.0" left="78.0" />
                            </VBox.margin>
                         </Button>
                         <Label fx:id="ErrorLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="263.0" textFill="#f80303">
                            <VBox.margin>
-                              <Insets bottom="10.0" />
+                              <Insets bottom="10.0" left="22.0" />
                            </VBox.margin>
                         </Label>
                         <Label fx:id="ErrorHelpLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="263.0" textFill="#fc0000">
                            <VBox.margin>
-                              <Insets bottom="10.0" />
+                              <Insets bottom="10.0" left="22.0" />
                            </VBox.margin>
                         </Label>
                      </children>

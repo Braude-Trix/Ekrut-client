@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MyOrdersController">
@@ -24,9 +25,9 @@
       </ImageView>
       <HBox layoutX="23.0" layoutY="96.0" prefHeight="358.0" prefWidth="854.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="23.0">
          <children>
-            <VBox prefHeight="228.0" prefWidth="304.0">
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="306.0" prefWidth="283.0">
                <children>
-                  <Label prefHeight="60.0" prefWidth="262.0" text="Did you receive the order ?&#10;Please confirm">
+                  <Label prefHeight="67.0" prefWidth="262.0" text="Did you receive the order ?&#10;Please confirm">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -41,16 +42,21 @@
                         </ImageView>
                      </graphic>
                   </Label>
-                  <TableView fx:id="tableViewApproveDel" focusTraversable="false" prefHeight="159.0" prefWidth="304.0">
+                  <TableView fx:id="tableViewApproveDel" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="159.0" prefWidth="283.0">
                     <columns>
                       <TableColumn fx:id="idOrderConfirm" prefWidth="75.0" text="Order ID" />
-                      <TableColumn fx:id="execDateConfirm" prefWidth="108.0000228881836" text="Order Date" />
+                      <TableColumn fx:id="execDateConfirm" prefWidth="122.39998626708984" text="Order Date" />
                     </columns>
                   </TableView>
                   <Label fx:id="errorUpdateStatusDB" textFill="RED" visible="false" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" prefHeight="345.0" prefWidth="592.0">
+            <Line endX="153.38577270507812" endY="12.386804580688477" startX="153.38568115234375" startY="298.87969970703125" stroke="#9c9c9c">
+               <HBox.margin>
+                  <Insets left="20.0" top="20.0" />
+               </HBox.margin>
+            </Line>
+            <VBox alignment="CENTER" prefHeight="385.0" prefWidth="553.0">
                <children>
                   <Label alignment="CENTER" prefHeight="32.0" prefWidth="582.0" text="My Orders">
                      <font>
@@ -67,13 +73,13 @@
                         </ImageView>
                      </graphic>
                   </Label>
-                  <TableView fx:id="tableViewOrders" prefHeight="221.0" prefWidth="557.0">
+                  <TableView fx:id="tableViewOrders" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="230.0" prefWidth="511.0">
                      <columns>
                         <TableColumn fx:id="IdOrder" editable="false" prefWidth="83.99999845027924" text="Order ID" />
                         <TableColumn fx:id="typeOrder" editable="false" prefWidth="79.20005798339844" text="Type Order" />
-                        <TableColumn fx:id="execDate" editable="false" prefWidth="115.20001220703125" text="Order Date" />
-                        <TableColumn fx:id="recieveDate" editable="false" prefWidth="110.4000244140625" text="Date Received" />
-                        <TableColumn fx:id="Status" editable="false" prefWidth="139.1999389648438" text="Status" />
+                        <TableColumn fx:id="execDate" editable="false" prefWidth="106.39997863769531" text="Order Date" />
+                        <TableColumn fx:id="recieveDate" editable="false" prefWidth="108.800048828125" text="Date Received" />
+                        <TableColumn fx:id="Status" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="126.400146484375" text="Status" />
                      </columns>
                      <VBox.margin>
                         <Insets left="40.0" />
@@ -82,9 +88,9 @@
                         <Insets />
                      </opaqueInsets>
                   </TableView>
-                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="66.0" prefWidth="550.0">
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="550.0">
                      <children>
-                        <VBox fx:id="ShowPickupCode" alignment="CENTER_LEFT" layoutX="18.0" prefHeight="66.0" prefWidth="542.0" visible="false">
+                        <VBox fx:id="ShowPickupCode" alignment="CENTER_LEFT" layoutX="28.0" prefHeight="66.0" prefWidth="532.0" visible="false">
                            <children>
                               <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="19.0" prefWidth="542.0">
                                  <children>
@@ -116,21 +122,21 @@
                               </Hyperlink>
                            </children>
                         </VBox>
-                        <VBox fx:id="ShowEnterOrderID" layoutX="29.0" layoutY="-1.0" prefHeight="66.0" prefWidth="522.0">
+                        <VBox fx:id="ShowEnterOrderID" layoutX="40.0" layoutY="-1.0" prefHeight="50.0" prefWidth="511.0">
                            <children>
-                              <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="522.0">
+                              <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="504.0">
                                  <children>
-                                    <Label text="Forgot the code for pick up? Enter OrderID:">
+                                    <Label prefHeight="19.0" prefWidth="253.0" text="Forgot the code for pick up? Enter OrderID:">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtOrderID" focusTraversable="false" promptText="Order ID">
+                                    <TextField fx:id="txtOrderID" focusTraversable="false" prefHeight="26.0" prefWidth="146.0" promptText="Order ID">
                                        <HBox.margin>
-                                          <Insets left="20.0" />
+                                          <Insets left="10.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <Button focusTraversable="false" mnemonicParsing="false" onAction="#GetCode" text=" Get Code">
+                                    <Button focusTraversable="false" mnemonicParsing="false" onAction="#GetCode" prefHeight="26.0" prefWidth="80.0" text=" Get Code">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -139,7 +145,7 @@
                               </HBox>
                               <Label fx:id="errorLabel" textFill="RED">
                                  <VBox.margin>
-                                    <Insets left="269.0" />
+                                    <Insets left="264.0" />
                                  </VBox.margin>
                               </Label>
                            </children>
@@ -170,9 +176,9 @@
             <Image url="@Back.png" />
          </image>
       </ImageView>
-      <Button layoutX="829.0" layoutY="447.0" mnemonicParsing="false" onAction="#refreshAllBtn" prefHeight="26.0" prefWidth="23.0">
+      <Button layoutX="837.0" layoutY="450.0" mnemonicParsing="false" onAction="#refreshAllBtn" prefHeight="26.0" prefWidth="23.0" AnchorPane.bottomAnchor="21.399999999999977" AnchorPane.rightAnchor="21.399999999999977">
          <graphic>
-            <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="25.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@reload.png" />
                </image>
@@ -182,5 +188,10 @@
             <Tooltip text="Refresh Orders Table" />
          </tooltip>
       </Button>
+      <Label layoutX="23.0" layoutY="68.0" prefHeight="18.0" prefWidth="786.0" text="*Here you can see all the orders you have placed and in addition you can confirm deliveries you have received">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -42,9 +42,10 @@ public class ConnectToServerController {
     private Label ErrorHelpLabel;
 
     //	start method - starts the first stage.
-    public static void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(ConnectToServerController.class.getResource("/assets/ConnectToServer.fxml"));
         Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/styles/ConnectToServer.css").toExternalForm());
         primaryStage.setTitle("Connect To Server");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);

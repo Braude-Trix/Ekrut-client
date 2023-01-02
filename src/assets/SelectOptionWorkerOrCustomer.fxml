@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SelectOptionWorkerOrCustomer">
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
@@ -32,8 +31,14 @@
                <HBox.margin>
                   <Insets right="30.0" />
                </HBox.margin>
+               <font>
+                  <Font size="16.0" />
+               </font>
             </Button>
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#employeeClicked" prefHeight="40.0" prefWidth="170.0" text="employee" />
+            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#employeeClicked" prefHeight="40.0" prefWidth="170.0" text="employee">
+               <font>
+                  <Font size="16.0" />
+               </font></Button>
          </children>
       </HBox>
       <HBox layoutX="755.0" layoutY="63.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="11.0">
