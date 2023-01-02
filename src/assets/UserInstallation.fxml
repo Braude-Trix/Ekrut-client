@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserInstallationController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserInstallationController">
    <children>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="645.0">
          <children>
@@ -22,8 +22,8 @@
       </HBox>
       <HBox fx:id="HboxConfiguration" layoutX="157.0" layoutY="159.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#EkClicked" prefHeight="30.0" prefWidth="150.0" text="Ek Configuration" />
-            <Button mnemonicParsing="false" onAction="#OLClicked" prefHeight="30.0" prefWidth="150.0" text="OL Configuration">
+            <Button focusTraversable="false" mnemonicParsing="false" onAction="#EkClicked" prefHeight="30.0" prefWidth="150.0" text="Ek Configuration" />
+            <Button focusTraversable="false" mnemonicParsing="false" onAction="#OLClicked" prefHeight="30.0" prefWidth="150.0" text="OL Configuration">
                <HBox.margin>
                   <Insets left="30.0" />
                </HBox.margin>
@@ -38,7 +38,7 @@
                   <Label text="*" textFill="#dc5555" />
                </children>
             </HBox>
-            <ComboBox fx:id="regionComboBoxId" onAction="#RegionComboBoxClicked" prefHeight="26.0" prefWidth="215.0" promptText="Choose A Region">
+            <ComboBox fx:id="regionComboBoxId" focusTraversable="false" onAction="#RegionComboBoxClicked" prefHeight="26.0" prefWidth="215.0" promptText="Choose A Region">
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>
@@ -51,10 +51,13 @@
                         <Label text="*" textFill="#e15959" />
                      </children>
                   </HBox>
-                  <ComboBox fx:id="machineComboboxId" disable="true" prefHeight="26.0" prefWidth="215.0" promptText="Choose A Machine" />
+                  <ComboBox fx:id="machineComboboxId" disable="true" focusTraversable="false" prefHeight="26.0" prefWidth="215.0" promptText="Choose A Machine" />
                </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#installClicked" prefHeight="26.0" prefWidth="215.0" text="Install">
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#installClicked" prefHeight="26.0" prefWidth="215.0" text="Install">
                <VBox.margin>
                   <Insets top="25.0" />
                </VBox.margin>

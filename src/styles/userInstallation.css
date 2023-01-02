@@ -1,32 +1,14 @@
-/*.text-field {
-    -fx-border-radius: 20px;
-    -fx-border-color: grey;
-    -fx-padding: 0.333333em 1em 0.333333em 1em;
-    -fx-background-color: transparent;
-    -fx-pref-height: 0px;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-}
-
-    .text-field:focused {
-        -fx-background-color: transparent;
-        -fx-pref-height: 0px;
-        -fx-translate-y: 0px;
-        -fx-background-color: transparent;
-        -fx-pref-height: 0px;
-    }
-
-*/
 .button {
     -fx-background-color: #ffc39c;
-    -fx-backgroup-radius: 60 60 60 60;
+    -fx-background-radius: 60 60 60 60;
     -fx-background-radius: 15px;
     -fx-text-fill: #000000;
 }
 
-.button:hover {
-    -fx-background-color: #00ff90;
-    -fx-backgroup-radius: 30 30 30 30;
-}
+    .button:hover {
+        -fx-background-color: #00ff90;
+        -fx-background-radius: 30 30 30 30;
+    }
 
 .validation-error {
     -fx-background-color: #FFF0F0;
@@ -53,8 +35,8 @@
 .combo-box {
     -fx-background-color: #ffc39c;
 }
-
+/*
     .combo-box:hover {
         -fx-background-color: #00ff90;
-        -fx-backgroup-radius: 30 30 30 30;
-    }
+    }*/
+

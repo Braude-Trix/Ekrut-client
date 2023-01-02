@@ -88,7 +88,7 @@
                               <Insets left="35.0" top="15.0" />
                            </VBox.margin>
                         </Label>
-                        <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false" onAction="#moveHomePage" prefHeight="30.0" prefWidth="225.0" text="Login">
+                        <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" focusTraversable="false" mnemonicParsing="false" onAction="#moveHomePage" prefHeight="30.0" prefWidth="225.0" text="Login">
                            <VBox.margin>
                               <Insets left="35.0" top="10.0" />
                            </VBox.margin>
@@ -110,7 +110,7 @@
             </VBox>
          </children>
       </VBox>
-      <Button fx:id="exitBtn" layoutX="12.0" layoutY="461.0" mnemonicParsing="false" onAction="#Exit" prefHeight="26.0" prefWidth="66.0" text="Exit" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+      <Button fx:id="exitBtn" focusTraversable="false" layoutX="12.0" layoutY="461.0" mnemonicParsing="false" onAction="#Exit" prefHeight="26.0" prefWidth="66.0" text="Exit" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
       <VBox fx:id="simulationTouch" alignment="CENTER" layoutX="387.0" layoutY="316.0" prefHeight="153.0" prefWidth="514.0" visible="false">
          <children>
             <HBox alignment="CENTER">

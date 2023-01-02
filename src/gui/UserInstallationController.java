@@ -17,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -50,7 +51,8 @@ public class UserInstallationController implements Initializable {
     private ComboBox<String> machineComboboxId;
     
 	private List<Machine> machinesSet;
-	
+
+    
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		machinesSet = new ArrayList<>();
@@ -94,6 +96,7 @@ public class UserInstallationController implements Initializable {
 		ObservableList<Regions> options = FXCollections.observableArrayList(Regions.class.getEnumConstants());
 		regionComboBoxId.getItems().addAll(options);
 		regionComboBoxId.getItems().remove(Regions.All);
+
 	}
 
     @FXML

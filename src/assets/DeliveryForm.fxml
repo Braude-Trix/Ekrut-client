@@ -141,7 +141,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="regionList" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Region" />
+                                    <ComboBox fx:id="regionList" focusTraversable="false" prefHeight="29.0" prefWidth="150.0" promptText="Choose A Region" />
                                     <Label fx:id="errorLabelRegion" textFill="RED" />
                                  </children>
                                  <HBox.margin>
@@ -179,7 +179,7 @@
                <children>
                   <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="502.0">
                      <children>
-                        <Button focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ContinueToOrder" prefHeight="39.0" prefWidth="470.0" text="Continue">
+                        <Button defaultButton="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ContinueToOrder" prefHeight="39.0" prefWidth="470.0" text="Continue">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
