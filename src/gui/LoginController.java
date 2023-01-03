@@ -350,6 +350,7 @@ public class LoginController implements Initializable{
                 (new RegionalDeliveryController()).start(stage);
                 break;
             case ServiceOperator:
+                new ServiceOperatorController().start(stage); // badihi
                 break;
 
         }
