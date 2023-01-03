@@ -49,8 +49,8 @@ public class ConnectToServerController {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setMinHeight(primaryStage.getHeight());
-        primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setMinHeight(scene.getHeight());
+        primaryStage.setMinWidth(scene.getWidth());
         primaryStage.setOnCloseRequest(e -> forcedExit());
     }
 
