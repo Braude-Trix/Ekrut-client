@@ -429,6 +429,7 @@ public class LoginController implements Initializable{
 
         @Override
         public void run() {
+            System.out.println("Another one");
         	//While (true)
             while (!Thread.currentThread().isInterrupted()) {
                 List<Object> paramList = new ArrayList<>();
@@ -473,6 +474,7 @@ public class LoginController implements Initializable{
         public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
             Alert alert = new Alert(alertType); //Information, Error
             alert.setContentText(alertTitle); // Information, Error
+            alert.setHeaderText("New message for you !");
             alert.setContentText(alertMessage);
             alert.show();
         }

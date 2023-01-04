@@ -23,6 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import models.*;
 import utils.Util;
@@ -119,8 +120,8 @@ public class BillWindowController implements Initializable {
     /**
      * function that createAnAlert of javaFX using given alertType, String title of the alert and the alert message
      *
-     * @param alertType - AlertType object of javaFX
-     * @param alertTitle - String alert title
+     * @param alertType    - AlertType object of javaFX
+     * @param alertTitle   - String alert title
      * @param alertMessage - String alert message
      */
     public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
@@ -270,23 +271,117 @@ public class BillWindowController implements Initializable {
     }
 
     private List<ProductInMachine> getUpdatedInventory() {
+        boolean postMsg = false;
+        int currentlyAmount, newAmount;
+        String machineName;
         List<ProductInMachine> updatedMachineList = new ArrayList<>();
         List<ProductInMachine> productsInMachineList = requestMachineProducts(machineId);
         StatusInMachine newStatusInMachine;
         Integer getMachineThreshold = getMachineThreshold();
         ProductInMachine productInMachine;
         for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
-            int newAmount = getProductMachineAmountFromList(productsInMachineList, machineId, Integer.valueOf(productInOrder.getProduct().getProductId())) - productInOrder.getAmount();
+            currentlyAmount = getProductMachineAmountFromList(productsInMachineList, machineId, Integer.valueOf(productInOrder.getProduct().getProductId()));
+            newAmount = currentlyAmount - productInOrder.getAmount();
+            if (currentlyAmount != newAmount)
+                postMsg = true;
             if (newAmount == 0) newStatusInMachine = StatusInMachine.Not_Available;
             else if (newAmount < getMachineThreshold) {
                 newStatusInMachine = StatusInMachine.Below;
             } else {
                 newStatusInMachine = StatusInMachine.Above;
             }
+            machineName = getMachineNameById();
+            updateManagerAboutProductsStatus(postMsg, "Inventory status:\nMachine id: " + machineId.toString() + "\nMachine name: " + machineName + "\nProduct id: " + Integer.valueOf(productInOrder.getProduct().getProductId()) +
+                    "\nProduct name: " + productInOrder.getProduct().getName() + "\nStatus in machine: " + newStatusInMachine.toString() + "\nProduct amount: " + newAmount);
             productInMachine = new ProductInMachine(machineId.toString(), productInOrder.getProduct().getProductId(), newStatusInMachine, newAmount);
             updatedMachineList.add(productInMachine);
         }
         return updatedMachineList;
+    }
+
+    private String getMachineNameById() {
+        List<Object> paramList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/getMachineName");
+        request.setMethod(Method.GET);
+        paramList.add(machineId.toString());
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                break;
+            default:
+                System.out.println("Some error occurred");
+        }
+        return Client.resFromServer.getBody().get(0).toString();
+
+    }
+
+
+    private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
+        List<Object> paramList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/postMsg");
+        request.setMethod(Method.POST);
+        paramList.add(msg);
+        paramList.add(fromCustomerId);
+        paramList.add(toCustomerId);
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                break;
+            default:
+                System.out.println("Some error occurred");
+        }
+    }
+
+    private void updateManagerAboutProductsStatus(boolean postMsg, String message) {
+        if (postMsg) {
+            List<Integer> managersIds = getRegionalManagerIds();
+            for (Integer managerId : managersIds) {
+                writeNewMsgToDB(message, customerId, managerId);
+            }
+        }
+    }
+
+    private Regions getRegionByMachineId() {
+        List<Object> paramList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/requestRegionByMachineId");
+        request.setMethod(Method.GET);
+        paramList.add(machineId);
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                return Regions.valueOf(Client.resFromServer.getBody().get(0).toString());
+            default:
+                System.out.println("Some error occurred");
+        }
+        return null;
+    }
+
+    private List<Integer> getRegionalManagerIds() {
+        List<Integer> managersIds = new ArrayList<>();
+        List<Object> paramList = new ArrayList<>();
+        Request request = new Request();
+        request.setPath("/requestRegionalManagersIds");
+        request.setMethod(Method.GET);
+        paramList.add(getRegionByMachineId());
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);// sending the request to the server.
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                List<Object> result = Client.resFromServer.getBody();
+                for (Object obj : result) {
+                    managersIds.add((Integer) obj);
+                }
+                break;
+            default:
+                System.out.println("Some error occurred");
+        }
+        return managersIds;
     }
 
 
