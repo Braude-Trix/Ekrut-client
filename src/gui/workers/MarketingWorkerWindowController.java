@@ -201,8 +201,9 @@ public class MarketingWorkerWindowController implements Initializable {
 	private Label salePreviewPlaceHolder1;
 	@FXML
 	private Label usernameLabel;
-	@FXML
-	private Label usernameRegionLabel;
+
+    @FXML
+    private Label userRoleLabel;
 
 	@FXML
 	private ImageView backBtn;
@@ -216,12 +217,19 @@ public class MarketingWorkerWindowController implements Initializable {
 	 */
 	public static ObservableList<Sale> readySales = FXCollections.observableArrayList();
 	private Worker worker = (Worker) LoginController.user;
+	public static MarketingWorkerWindowController controller;
+	public static boolean isCEOLogged = false;
+	public static Worker workerAccessByCeo = null;
 
 	/**
 	 * This Method runs first, initializing the scene, sets form,table and buttons.
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		if (isCEOLogged) {
+			logOutBtn.setVisible(false);
+			worker = workerAccessByCeo;
+		}
 		initRunningSalesTable();
 		initReadyForStartSalesTable();
 		addButtonsToReadyToStartTable();
@@ -231,8 +239,7 @@ public class MarketingWorkerWindowController implements Initializable {
 
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 		saleDescriptionTxt1.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
-
-
+		
 	}
 
 	/**
@@ -291,7 +298,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	
 	private void setUsernameLabels() {
 		usernameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
-		usernameRegionLabel.setText(worker.getRegion().toString());
+		userRoleLabel.setText("Marketing Worker: " + worker.getRegion().toString());
 	}
 
 	private void handleSalePreview(String table) {

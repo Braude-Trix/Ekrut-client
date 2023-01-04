@@ -178,6 +178,9 @@ public class MarketingManagerController implements Initializable {
 	private Label usernameLabel;
 	@FXML
 	private ImageView backBtn;
+	
+    @FXML
+    private Button logoutBtn;
 
     @FXML
     private HBox descriptionCounterHbox;
@@ -189,6 +192,8 @@ public class MarketingManagerController implements Initializable {
     private Label descriptionCounterLabel1;
 
 
+    public static MarketingManagerController controller;
+
 	private Worker worker = (Worker) LoginController.user;
 
 	private boolean selectedTypeWithPercentage = false;
@@ -197,12 +202,16 @@ public class MarketingManagerController implements Initializable {
 	 * template sales ObserveableList, this is the list with all the template sales brought from db and showed in the template sales tableview.
 	 */
 	public static ObservableList<Sale> saleTemplateObserableList = FXCollections.observableArrayList();
+	public static boolean isCEOLogged = false;
 
 	/**
 	 * This Method runs first, initializing the scene, sets form,table and buttons.
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		if (isCEOLogged)
+            logoutBtn.setVisible(false);
+		
 		setRegionComboBox();
 		setHoursComboBox();
 		setTypeSaleComboBox();

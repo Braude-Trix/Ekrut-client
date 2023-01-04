@@ -21,7 +21,7 @@ public enum WorkerType implements Serializable {
 
 	public boolean hasRegion() {
 		return (this == RegionalDelivery) || (this == MarketingWorker)
-				|| (this == RegionalManager) || (this == ServiceOperator);
+				|| (this == RegionalManager); //|| (this == ServiceOperator);
 	}
 
 	@Override

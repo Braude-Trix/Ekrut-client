@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="anchorPaneScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.MarketingWorkerWindowController">
@@ -52,11 +51,9 @@
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                  <children>
                                     <Label fx:id="usernameLabel" text="name" textFill="WHITE" />
-                                    <Line endX="-100.00007629394531" endY="14.292893409729004" startX="-100.00010681152344" startY="-1.4142135381698608" stroke="WHITE" />
-                                    <Label fx:id="usernameRegionLabel" text="region" textFill="WHITE" />
                                  </children>
                               </HBox>
-                              <Label text="Marketing Worker" textFill="WHITE" underline="true" />
+                              <Label fx:id="userRoleLabel" text="Marketing Worker" textFill="WHITE" underline="true" />
                            </children>
                         </VBox>
                      </children>

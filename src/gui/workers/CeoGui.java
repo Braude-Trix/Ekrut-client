@@ -28,7 +28,7 @@ import static utils.Util.forcedExit;
  */
 public class CeoGui implements Initializable {
     public static CeoGui controller;
-    public static Worker worker = (Worker) LoginController.user;
+    private Worker worker = (Worker) LoginController.user;
     public static WorkerType chosenWorkerType = models.WorkerType.CEO;
 
     @FXML
@@ -93,7 +93,7 @@ public class CeoGui implements Initializable {
             clearBorderPane();
             marketingWorkersBtn.setDisable(true);
             chosenWorkerType = WorkerType.MarketingWorker;
-            new CeoSelectWorker().loadMyMarketWorkers();
+            new CeoSelectWorker().loadMyWorkers();
         });
 
         operationalWorkersBtn.setOnMouseClicked((event) -> {
@@ -101,7 +101,7 @@ public class CeoGui implements Initializable {
             clearBorderPane();
             operationalWorkersBtn.setDisable(true);
             chosenWorkerType = WorkerType.OperationalWorker;
-            new CeoSelectWorker().loadMyMarketWorkers();
+            new CeoSelectWorker().loadMyWorkers();
         });
 
         serviceOperatorsBtn.setOnMouseClicked((event) -> {
@@ -109,7 +109,7 @@ public class CeoGui implements Initializable {
             clearBorderPane();
             serviceOperatorsBtn.setDisable(true);
             chosenWorkerType = WorkerType.ServiceOperator;
-            new CeoSelectWorker().loadMyMarketWorkers();
+            new CeoSelectWorker().loadMyWorkers();
         });
 
         deliveryOperatorsBtn.setOnMouseClicked((event) -> {
@@ -117,11 +117,16 @@ public class CeoGui implements Initializable {
             clearBorderPane();
             deliveryOperatorsBtn.setDisable(true);
             chosenWorkerType = WorkerType.RegionalDelivery;
-            new CeoSelectWorker().loadMyMarketWorkers();
+            new CeoSelectWorker().loadMyWorkers();
         });
 
         logoutBtn.setOnMouseClicked((event) -> {
-            try {
+        	RegionalManagerGui.isCEOLogged = false;
+        	MarketingManagerController.isCEOLogged = false;
+        	OperationalWorkerGui.isCEOLogged = false;
+        	RegionalDeliveryController.isCEOLogged = false;
+        	MarketingWorkerWindowController.isCEOLogged = false;
+        	try {            	
                 Util.genricLogOut(getClass());
             } catch (Exception e) {
                 throw new RuntimeException(e);

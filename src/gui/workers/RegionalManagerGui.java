@@ -32,12 +32,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Machine;
 import models.Method;
 import models.Regions;
 import models.Request;
 import models.ResponseCode;
 import models.User;
 import models.Worker;
+import models.WorkerType;
 import utils.ColorsAndFonts;
 import utils.Util;
 import utils.WorkerNodesUtils;
@@ -61,7 +63,8 @@ public class RegionalManagerGui implements Initializable {
     public static RegionalManagerGui controller;
     public static Regions region = Regions.North;
     public static boolean isCEOLogged = false;
-    static Worker worker = (Worker) LoginController.user;
+    private Worker worker = (Worker) LoginController.user;
+	//public static Worker workerAccessByCeo = null;
     static final String VALIDATION_ERROR_MSG = "Missing input data, please check your selections";
     static final String NO_DATA_FOUND_ERROR_MSG = "No report was found for specified date\n\t\tPlease change input";
 
@@ -112,6 +115,9 @@ public class RegionalManagerGui implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+		if (isCEOLogged) 
+			logoutBtn.setVisible(false);
+    	
         // setting username and region
         WorkerNodesUtils.setUserName(userNameLabel, worker);
         WorkerNodesUtils.setRole(userRoleLabel, worker.getRegion(), worker.getType());
@@ -153,9 +159,6 @@ public class RegionalManagerGui implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-
-        if (isCEOLogged)
-            logoutBtn.setVisible(false);
     }
 
     private void enableAll() {
@@ -180,11 +183,18 @@ public class RegionalManagerGui implements Initializable {
         private Button saveThresholdButton;
         private Button callWorkerButton;
         private String initialThreshold;
+        
+        // hold in each place in list: {machineId, machineName, machineRegion, machingThreshold}
+        private List<Machine> machinesSet;
+        private Integer currentMachineId;
+        private List<String> workerNames;
+        private List<Worker> workerSet;
 
         private final String MACHINE_THRESHOLD_TITLE = "Set machine's threshold";
         private final String OPERATIONAL_WORKER_TITLE = "Choose operational worker";
         static final String VALIDATION_ERROR_MSG = "No input was changed, please change value before submitting";
         static final String SUCCESSES_MSG = "Your request was saved successfully!";
+        static final String DB_ERROR_MSG = "It seems that there was a problem with DB!";
 
 
         private void loadMachineConf() {
@@ -204,8 +214,9 @@ public class RegionalManagerGui implements Initializable {
             machineSelectLabel.setFont(ColorsAndFonts.CONTENT_FONT);
 
             // Create a combo box
-            List<String> dummyForMachine = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
-            machineComboBox = new ComboBox(FXCollections.observableList(dummyForMachine));
+            machinesSet = new ArrayList<>();
+            //List<String> dummyForMachine = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
+            machineComboBox = new ComboBox<>();//FXCollections.observableList(dummyForMachine));
             machineComboBox.setPromptText("Choose Machine");
             machineSelectVBox.getChildren().addAll(machineSelectLabel, machineComboBox);
 
@@ -225,15 +236,103 @@ public class RegionalManagerGui implements Initializable {
             Separator separator = new Separator();
             separator.setOrientation(Orientation.VERTICAL);
 
-            List<String> dummyForWorkers = Arrays.asList("Avi", "Yossi", "Yuval", "Elad", "Liza");
-            VBox operationalWorkerVBox = getConfigurationVBox(OPERATIONAL_WORKER_TITLE, dummyForWorkers,
-                    "", "Call Worker");
+            //List<String> dummyForWorkers = Arrays.asList("Avi", "Yossi", "Yuval", "Elad", "Liza");
+            workerNames = new ArrayList<>();
+            workerSet = new ArrayList<>();
+            /*VBox operationalWorkerVBox = getConfigurationVBox(OPERATIONAL_WORKER_TITLE, dummyForWorkers,
+                    "", "Call Worker");*/
+            getOperationaWorkersList();
+            VBox operationalWorkerVBox = getConfigurationVBox(OPERATIONAL_WORKER_TITLE, workerNames,
+            "", "Call Worker");
             callWorkerButton.setOnMouseClicked((this::onCallWorker));
 
             configureHbox.getChildren().addAll(thresholdVBox, separator, operationalWorkerVBox);
+            setMachinesNameComboBox(region);
 
             nodes.addAll(machineSelectVBox);
         }
+        
+        private void getOperationaWorkersList() {
+        	List<Object> workerReq = new ArrayList<>();
+        	workerReq.add(WorkerType.OperationalWorker);
+        	Request request = new Request();
+        	request.setPath("/workers/getWorkersbyType");
+        	request.setMethod(Method.GET);
+        	request.setBody(workerReq);
+        	ClientUI.chat.accept(request);
+        	
+        	switch(Client.resFromServer.getCode()) {
+        	case OK:
+        		//bottomBroderVbox.getChildren().add(WorkerNodesUtils.getSuccessLabel(Client.resFromServer.getDescription()));
+        		updateWorkers((Client.resFromServer.getBody()));
+        		break;
+        	default:
+        		bottomBroderVbox.getChildren().add(WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription()));
+        		break;
+        		
+        	}
+        }
+        
+        private void updateWorkers(List<Object> listWorkers) {
+        	workerNames.clear();
+        	workerSet.clear();
+        	if(listWorkers == null) {
+        		return;
+        	}
+        	
+        	for (Object worker : listWorkers) {
+        		if(worker instanceof Worker) {
+        			Worker currentWorker = (Worker) worker;
+        			workerSet.add(currentWorker);
+        			String workerName = currentWorker.getFirstName() + " " + currentWorker.getLastName();
+        			workerNames.add(workerName);
+        		}
+        	}
+        }
+
+    	private void setMachinesNameComboBox(Regions region) {
+    		List<Object> regionReq = new ArrayList<>();
+    		regionReq.add(region);
+    		Request request = new Request();
+    		request.setPath("/machines/getMachine");
+    		request.setMethod(Method.GET);
+    		request.setBody(regionReq);
+    		ClientUI.chat.accept(request);// sending the request to the server.
+
+    		handleResponseGetMachines();
+    	}
+
+    	private void handleResponseGetMachines() {
+    		//Client.resFromServer.setCode(ResponseCode.SERVER_ERROR);
+    		switch (Client.resFromServer.getCode()) {
+    		case OK:
+    			updateMachines(Client.resFromServer.getBody());
+    			break;
+    		default:
+    			bottomBroderVbox.getChildren().add(WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription()));
+    			break;
+    		}
+    	}
+
+    	private void updateMachines(List<Object> listMachine) {
+    		machinesSet.clear();
+    		if (listMachine == null) {
+    			machineComboBox.setDisable(true);
+    			//errLabel = WorkerNodesUtils.getErrorLabel("There are no machines in this region at the moment");
+    			//RegionalManagerGui.controller.bottomBroderVbox.getChildren().add(errLabel);
+    			return;
+    		}
+    		ObservableList<String> options = FXCollections.observableArrayList();
+    		for (Object machine : listMachine) {
+    			if (machine instanceof Machine) {
+    				Machine tempMachine = (Machine) machine;
+    				machinesSet.add(tempMachine);
+    				options.add(tempMachine.getName());
+    			}
+    		}
+    		machineComboBox.getItems().addAll(options);
+    		machineComboBox.setDisable(false);
+    	}
 
         private VBox getConfigurationVBox(String title, List<String> comboboxValues, String initValue, String btnText) {
             VBox vBox = new VBox();
@@ -268,16 +367,30 @@ public class RegionalManagerGui implements Initializable {
             if (oldValue == null) {
                 ObservableList<Node> centerBroder = centerBroderVbox.getChildren();
                 centerBroder.add(configureHbox);
+                for(Machine currentMachine : machinesSet)
+                {
+                	if(currentMachine.getName().equals(newValue)) {
+                		initialThreshold = currentMachine.getThreshold();
+                		currentMachineId = Integer.parseInt(currentMachine.getId());
+                	}
+                }
                 setDefaultComboboxValues();
             } else if (!oldValue.equals(newValue)) { // there was a change in machine
-                setDefaultComboboxValues();
+                for(Machine currentMachine : machinesSet)
+                {
+                	if(currentMachine.getName().equals(newValue)) {
+                		initialThreshold = currentMachine.getThreshold();
+                		currentMachineId = Integer.parseInt(currentMachine.getId());
+                	}
+                }
+            	setDefaultComboboxValues();
                 resetErrorsInForm();
             }
         }
 
         private void setDefaultComboboxValues() {
             // call to db and get InitialThreshold of machineComboBox
-            initialThreshold = "3";
+            //initialThreshold = "3";
             machineThresholdComboBox.getSelectionModel().clearSelection();
             machineThresholdComboBox.getSelectionModel().select(initialThreshold);
 
@@ -293,10 +406,30 @@ public class RegionalManagerGui implements Initializable {
                 machineThresholdComboBox.setStyle(ColorsAndFonts.ERROR_COMBO_BOX_COLOR);
             } else {
                 // call to server to set threshold
-                bottomVbox.add(getSuccessLabel(SUCCESSES_MSG));
+            	setMachineThreshold(currentMachineId, Integer.parseInt(selectedThreshold));
+                //bottomVbox.add(getSuccessLabel(SUCCESSES_MSG));
                 initialThreshold = selectedThreshold;
             }
         }
+        
+    	private void setMachineThreshold(Integer machineId, Integer newThreshold) {
+    		List<Object> thresholdReq = new ArrayList<>();
+    		thresholdReq.add(machineId);
+    		thresholdReq.add(newThreshold);
+    		Request request = new Request();
+    		request.setPath("/machines/setMachineThreshold");
+    		request.setMethod(Method.PUT);
+    		request.setBody(thresholdReq);
+    		ClientUI.chat.accept(request);// sending the request to the server.
+    		switch (Client.resFromServer.getCode()) {
+    		case OK:
+    			bottomBroderVbox.getChildren().add(getSuccessLabel(SUCCESSES_MSG));
+    			break;
+    		default:
+    			bottomBroderVbox.getChildren().add(getErrorLabel(DB_ERROR_MSG));
+    			break;
+    		}	
+    	}
 
         private void onCallWorker(Event event) {
             ObservableList<Node> bottomVbox = bottomBroderVbox.getChildren();

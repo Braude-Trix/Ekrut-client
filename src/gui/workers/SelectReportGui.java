@@ -1,5 +1,7 @@
 package gui.workers;
 
+import client.Client;
+import client.ClientUI;
 import client.RegionalManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +19,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.InventoryReport;
+import models.Machine;
+import models.Method;
 import models.OrdersReport;
+import models.Regions;
+import models.Request;
+import models.ResponseCode;
 import models.UsersReport;
 import utils.ColorsAndFonts;
 import utils.WorkerNodesUtils;
@@ -45,6 +52,10 @@ public class SelectReportGui {
     private ComboBox<String> monthComboBox;
     private List<ComboBox<String>> comboBoxList;
     private Button viewButton;
+    //
+    private Label errLabel;
+    
+    private List<Machine> machinesSet;
 
     private enum ReportType {
         INVENTORY, ORDERS, USERS
@@ -70,8 +81,10 @@ public class SelectReportGui {
         machineSelectLabel.setFont(ColorsAndFonts.CONTENT_FONT);
 
         // Create a combo box
-        List<String> dummyForMachine = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
-        machineComboBox = new ComboBox(FXCollections.observableList(dummyForMachine));
+        machinesSet = new ArrayList<>();
+        //List<String> dummyForMachine = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
+        machineComboBox = new ComboBox();//FXCollections.observableList(dummyForMachine));
+        setMachinesNameComboBox(RegionalManagerGui.region);
         machineComboBox.setPromptText("Choose Machine");
         machineSelectVBox.getChildren().addAll(machineSelectLabel, machineComboBox);
 
@@ -85,6 +98,51 @@ public class SelectReportGui {
 
         nodes.addAll(contentVBox);
     }
+    
+	private void setMachinesNameComboBox(Regions region) {
+		List<Object> regionReq = new ArrayList<>();
+		regionReq.add(region);
+		Request request = new Request();
+		request.setPath("/machines/getMachine");
+		request.setMethod(Method.GET);
+		request.setBody(regionReq);
+		ClientUI.chat.accept(request);// sending the request to the server.
+
+		handleResponseGetMachines();
+	}
+
+	private void handleResponseGetMachines() {
+		//Client.resFromServer.setCode(ResponseCode.SERVER_ERROR);
+		switch (Client.resFromServer.getCode()) {
+		case OK:
+			updateMachines((Client.resFromServer.getBody()));
+			break;
+		default:
+			errLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
+			//RegionalManagerGui.controller.bottomBroderVbox.getChildren().add(errLabel);
+			break;
+		}
+	}
+
+	private void updateMachines(List<Object> listMachine) {
+		machinesSet.clear();
+		if (listMachine == null) {
+			machineComboBox.setDisable(true);
+			errLabel = WorkerNodesUtils.getErrorLabel("There are no machines in this region at the moment");
+			//RegionalManagerGui.controller.bottomBroderVbox.getChildren().add(errLabel);
+			return;
+		}
+		ObservableList<String> options = FXCollections.observableArrayList();
+		for (Object machine : listMachine) {
+			if (machine instanceof Machine) {
+				Machine tempMachine = (Machine) machine;
+				machinesSet.add(tempMachine);
+				options.add(tempMachine.getName());
+			}
+		}
+		machineComboBox.getItems().addAll(options);
+		machineComboBox.setDisable(false);
+	}
 
     void loadOrdersReport() {
         reportType = ReportType.ORDERS;
@@ -162,13 +220,14 @@ public class SelectReportGui {
         viewButton = new Button("View Report");
         viewButton.setPrefSize(200, 30);
         bottomBroderVbox.getChildren().add(viewButton);
+        //bottomBroderVbox.getChildren().add(1, errLabel);
 
         viewButton.setOnMouseClicked((event -> {
             if (bottomBroderVbox.getChildren().size() > 1) { // removing old error label
                 bottomBroderVbox.getChildren().remove(1);
             }
             if (!validateFormValue()) {
-                Label errLabel = WorkerNodesUtils.getErrorLabel(VALIDATION_ERROR_MSG);
+				errLabel = WorkerNodesUtils.getErrorLabel(VALIDATION_ERROR_MSG);
                 bottomBroderVbox.getChildren().add(errLabel);
             } else { // all form data is validated
                 switch (reportType) { // todo: query the DB for report here...
@@ -258,6 +317,15 @@ public class SelectReportGui {
 
     private OrdersReport getDummyOrdersReport() {
         List<Map<String, Integer>> ekOrders = new ArrayList<>();
+        List<Map<String, Integer>> latePickupOrders = new ArrayList<>();
+        /*for (int i=1; i<=15; i++) {
+            Map<String, Integer> ekOrdersDaily = new HashMap<>();
+            ekOrdersDaily.put("L 606", 0);
+            ekOrdersDaily.put("M 101", 0);
+            ekOrdersDaily.put("EM 302" , 0);
+            ekOrders.add(ekOrdersDaily);
+        }*/
+        
         for (int i=1; i<=30; i++) {
             Map<String, Integer> ekOrdersDaily = new HashMap<>();
             ekOrdersDaily.put("L 606", new Random().nextInt(30 + 1));
@@ -266,7 +334,14 @@ public class SelectReportGui {
             ekOrders.add(ekOrdersDaily);
         }
 
-        List<Map<String, Integer>> latePickupOrders = new ArrayList<>();
+       /* for (int i=1; i<=15; i++) {
+            Map<String, Integer> latePickupOrdersDaily = new HashMap<>();
+            latePickupOrdersDaily.put("L 606",0);
+            latePickupOrdersDaily.put("M 101", 0);
+            latePickupOrdersDaily.put("EM 302", 0);
+            latePickupOrders.add(latePickupOrdersDaily);
+        }*/
+        
         for (int i=1; i<=30; i++) {
             Map<String, Integer> latePickupOrdersDaily = new HashMap<>();
             latePickupOrdersDaily.put("L 606", new Random().nextInt(15 + 1));
@@ -274,7 +349,7 @@ public class SelectReportGui {
             latePickupOrdersDaily.put("EM 302", new Random().nextInt(15 + 1));
             latePickupOrders.add(latePickupOrdersDaily);
         }
-
+        
         return new OrdersReport(RegionalManagerGui.region.toString(), monthComboBox.getValue(), yearComboBox.getValue(),
                 ekOrders, latePickupOrders);
     }

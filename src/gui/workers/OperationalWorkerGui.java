@@ -1,9 +1,13 @@
 package gui.workers;
 
+import client.Client;
+import client.ClientUI;
 import client.OperationalWorker;
 import gui.LoginController;
+import gui.NewOrderController.ProductInMachineMonitor;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,14 +27,25 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Machine;
+import models.Method;
+import models.Order;
+import models.Product;
+import models.ProductInMachine;
+import models.ProductInOrder;
+import models.Request;
+import models.StyleConstants;
+import models.StylePaths;
 import models.Worker;
 import utils.ColorsAndFonts;
 import utils.Util;
 import utils.WorkerNodesUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,7 +64,7 @@ public class OperationalWorkerGui implements Initializable {
     public static String chosenRegion;
     public static String chosenMachine;
     public static boolean isCEOLogged = false;
-    Worker worker = (Worker) LoginController.user;
+    private Worker worker = (Worker) LoginController.user;
 
     @FXML
     private ImageView bgImage;
@@ -307,6 +322,11 @@ public class OperationalWorkerGui implements Initializable {
         private ComboBox<String> machineCombobox;
         private Button refreshBtn;
         private Button updateBtn;
+        //private VBox selectionVbox;
+        
+        private List<Object> products;
+        private List<Object> productsAmount;
+        
 
         private void loadMachineInventory() {
             // Replacing background
@@ -463,13 +483,40 @@ public class OperationalWorkerGui implements Initializable {
             productNameColumn.setPrefWidth(150);
             currentAmountColumn.setPrefWidth(150);
         }
+        
+        private ImageView recieveImageForProduct(Product product)
+        {
+        	if (product.getImage() == null)
+        		return null;
+        	Image image = new Image(new ByteArrayInputStream(product.getImage()));
+            ImageView myImage = new ImageView();
+            myImage.setImage(image);
+        	return myImage;
+        }
 
         private void setTableData() { // todo: replace with server data
             productsTable.getItems().clear();
-
-//            machineCombobox.getSelectionModel().getSelectedItem() // selected machine
+            products = new ArrayList<>();
+            productsAmount = new ArrayList<>();
+            getProductsInMachine("1");
             List<ProductInMachineData> productsData = new ArrayList<>();
-            Image img = new Image("/assets/workers/avatar.png", imageColumn.getPrefWidth() - 15, imageColumn.getPrefWidth() - 15,
+            Integer currentAmount = null;
+            for(Object product : products) {
+            	if (product instanceof Product) {
+            		for (Object productInMachine : productsAmount) {
+        				if(((ProductInMachine) productInMachine).getProductId().equals(((Product) product).getProductId())) {
+        					currentAmount = ((ProductInMachine) productInMachine).getAmount();
+        				}
+            		}
+            		Product currentProduct = (Product) product;
+            		ImageView curentProductImg = recieveImageForProduct(currentProduct);
+            		productsData.add(new ProductInMachineData(curentProductImg, currentProduct.getProductId(),
+            				currentProduct.getName(),currentAmount));
+            	}
+            }
+            productsTable.getItems().addAll(productsData);
+//            machineCombobox.getSelectionModel().getSelectedItem() // selected machine
+            /*Image img = new Image("/assets/workers/avatar.png", imageColumn.getPrefWidth() - 15, imageColumn.getPrefWidth() - 15,
                     true, true, true);
             ImageView dummyImage = new ImageView(img);
             ImageView dummyImage1 = new ImageView(img);
@@ -487,9 +534,45 @@ public class OperationalWorkerGui implements Initializable {
             productsData.add(new ProductInMachineData(dummyImage5, "1116", "Avi6", 10));
             productsData.add(new ProductInMachineData(dummyImage6, "1117", "Avi7", 11));
             productsData.add(new ProductInMachineData(dummyImage7, "1118", "Avi8", 12));
-            productsTable.getItems().addAll(productsData);
+            productsTable.getItems().addAll(productsData);*/
         }
-
+        
+        private void getProductsInMachine(String machineId) {
+        	List<Object> productsInMac = new ArrayList<>();
+        	productsInMac.add(machineId);
+        	Request request = new Request();
+        	request.setPath("/machines/requestMachineProductsData");
+        	request.setMethod(Method.GET);
+        	request.setBody(productsInMac);
+        	ClientUI.chat.accept(request);
+        	
+        	switch(Client.resFromServer.getCode()) {
+        	case OK:
+        		products = Client.resFromServer.getBody();
+        		break;
+        	default:
+        		products = null;
+        		productsAmount = null;
+        		return;
+        	}
+        	
+        	List<Object> productsInMacAmount = new ArrayList<>();
+        	productsInMacAmount.add(machineId);
+        	Request request1 = new Request();
+        	request1.setPath("/machines/requestMachineProductsAmount");
+        	request1.setMethod(Method.GET);
+        	request1.setBody(productsInMacAmount);
+        	ClientUI.chat.accept(request1);
+        	
+        	switch(Client.resFromServer.getCode()) {
+        	case OK:
+        		productsAmount = Client.resFromServer.getBody();
+        		break;
+        	default:
+        		break;
+        	}
+        }
+        
         private void onUpdateClick() {
             if (bottomBroderVbox.getChildren().size() >= 2)
                 bottomBroderVbox.getChildren().remove(1);
