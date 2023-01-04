@@ -515,26 +515,6 @@ public class OperationalWorkerGui implements Initializable {
             	}
             }
             productsTable.getItems().addAll(productsData);
-//            machineCombobox.getSelectionModel().getSelectedItem() // selected machine
-            /*Image img = new Image("/assets/workers/avatar.png", imageColumn.getPrefWidth() - 15, imageColumn.getPrefWidth() - 15,
-                    true, true, true);
-            ImageView dummyImage = new ImageView(img);
-            ImageView dummyImage1 = new ImageView(img);
-            ImageView dummyImage2 = new ImageView(img);
-            ImageView dummyImage3 = new ImageView(img);
-            ImageView dummyImage4 = new ImageView(img);
-            ImageView dummyImage5 = new ImageView(img);
-            ImageView dummyImage6 = new ImageView(img);
-            ImageView dummyImage7 = new ImageView(img);
-            productsData.add(new ProductInMachineData(dummyImage, "1111", "Avi1", 5));
-            productsData.add(new ProductInMachineData(dummyImage1, "1112", "Avi2", 6));
-            productsData.add(new ProductInMachineData(dummyImage2, "1113", "Avi3", 7));
-            productsData.add(new ProductInMachineData(dummyImage3, "1114", "Avi4", 8));
-            productsData.add(new ProductInMachineData(dummyImage4, "1115", "Avi5", 9));
-            productsData.add(new ProductInMachineData(dummyImage5, "1116", "Avi6", 10));
-            productsData.add(new ProductInMachineData(dummyImage6, "1117", "Avi7", 11));
-            productsData.add(new ProductInMachineData(dummyImage7, "1118", "Avi8", 12));
-            productsTable.getItems().addAll(productsData);*/
         }
         
         private void getProductsInMachine(String machineId) {

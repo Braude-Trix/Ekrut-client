@@ -256,7 +256,7 @@ public class RegionalManagerGui implements Initializable {
         	List<Object> workerReq = new ArrayList<>();
         	workerReq.add(WorkerType.OperationalWorker);
         	Request request = new Request();
-        	request.setPath("/workers/getWorkersbyType");
+        	request.setPath("/workers/getWorkersByType");
         	request.setMethod(Method.GET);
         	request.setBody(workerReq);
         	ClientUI.chat.accept(request);
