@@ -8,12 +8,7 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
-import gui.workers.CeoGui;
-import gui.workers.MarketingManagerController;
-import gui.workers.MarketingWorkerWindowController;
-import gui.workers.OperationalWorkerGui;
-import gui.workers.RegionalDeliveryController;
-import gui.workers.RegionalManagerGui;
+import gui.workers.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

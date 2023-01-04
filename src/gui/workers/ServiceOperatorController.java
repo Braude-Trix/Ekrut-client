@@ -1,8 +1,11 @@
-package gui;
+package gui.workers;
 
 import client.Client;
 import client.ClientUI;
+import gui.LoginController;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +21,9 @@ import javafx.stage.Stage;
 import models.Method;
 import models.Request;
 import models.User;
+import models.Worker;
 import utils.Util;
+import utils.WorkerNodesUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,11 +38,16 @@ import java.util.ResourceBundle;
 public class ServiceOperatorController implements Initializable {
 
     public static Scene scene;
+    static Worker worker = (Worker) LoginController.user;
+
     @FXML
     private VBox UserData;
 
     @FXML
     private Label NotOnlyDigits;
+
+    @FXML
+    private Label RegionError;
 
     @FXML
     private Label CouldntFineUser;
@@ -46,25 +56,26 @@ public class ServiceOperatorController implements Initializable {
     private TextField IDField;
 
     @FXML
-    private ImageView bgImage;
-
-    @FXML
     private Button checkIdButton;
 
-    @FXML
-    private Button confirmDeliveriesBtn;
-
-    @FXML
-    private Button logoutBtn;
-
-    @FXML
-    private Button pendingDeliveriesBtn;
 
     @FXML
     private Label userNameLabel;
 
     @FXML
     private Label userRank;
+
+    @FXML
+    private ComboBox<String> SelectRegion;
+
+    @FXML
+    void logOutClicked(ActionEvent event) {
+        try {
+            Util.genricLogOut(getClass());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     /**
@@ -75,9 +86,29 @@ public class ServiceOperatorController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-
+        WorkerNodesUtils.setUserName(userNameLabel, worker);
+        WorkerNodesUtils.setRole(userRank, worker.getRegion(), worker.getType());
+        setRegionsOnBox();
         loadScreen();
     }
+
+    private void setRegionsOnBox() {
+        ObservableList<String> options = FXCollections.observableArrayList();
+        options.add("North");
+        options.add("South");
+        options.add("UAE");
+        SelectRegion.getItems().addAll(options);
+    }
+
+    private boolean isValidFillComboBoxes() {
+        if (SelectRegion.getValue() == "Select Region" || SelectRegion.getValue() == "" ||SelectRegion.getValue() == null) {
+            RegionError.setVisible(true);
+            return false;
+        }
+        return true;
+    }
+
+
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/assets/ServiceOperator.fxml"));
 
@@ -104,20 +135,20 @@ public class ServiceOperatorController implements Initializable {
 
     private String getWorkerName()
     {
-        return "Mark Tzukerberg";
+        return (LoginController.user.getFirstName()+" "+LoginController.user.getLastName());
     }
 
-    private String getWorkerRank()
-    {
-        return "CEO OF FACEBOOK";
-    }
-
+//    private String getWorkerRank()
+//    {
+//        return "CEO OF FACEBOOK";
+//    }
+//
 
 
     private void loadScreen()
     {
         userNameLabel.setText(getWorkerName());
-        userRank.setText(getWorkerRank());
+       // userRank.setText(getWorkerRank());
 
         checkIdButton.setOnMouseClicked(event -> IDFieldInserted());
     }
@@ -150,9 +181,12 @@ public class ServiceOperatorController implements Initializable {
 
     private void upgradeToClient(User user,Button button)
     {
+        if(!isValidFillComboBoxes())
+            return;
 
         List<Object> userIdList = new ArrayList<>();
         userIdList.add(user.getId());
+        userIdList.add(SelectRegion.getValue());
         Request request = new Request();
         request.setPath("/upgradeUserToClient");
         request.setMethod(Method.POST);
@@ -164,6 +198,7 @@ public class ServiceOperatorController implements Initializable {
                 successPop(user,"Request Submitted Successfully");
                 button.setDisable(true);
                 List<Object> users = Client.resFromServer.getBody();
+                SelectRegion.setVisible(false);
                 return;
 
             default:
@@ -305,18 +340,17 @@ public class ServiceOperatorController implements Initializable {
         return user;
 
     }
-    private void presentUser()
-    {
-
-    }
 
     private void IDFieldInserted()
     {
+        RegionError.setVisible(false);
+        SelectRegion.setVisible(false);
         User user = getUserAfterValidations();
         if(user == null)
         {
             return;
         }
+
         List<Object> userStatus = findUserStatus(user.getId());
         String status = (String)userStatus.get(0);
         UserData.getChildren().add(new Label("ID: " + user.getId()));
@@ -333,6 +367,7 @@ public class ServiceOperatorController implements Initializable {
         UserData.getChildren().add(new Label(" "));
 
 
+
         if(status.equals("User"))
         {
             Button userButton = new Button("Upgrade To Client");
@@ -344,7 +379,8 @@ public class ServiceOperatorController implements Initializable {
                 UserData.getChildren().add(userButton);
                 return;
             }
-
+            SelectRegion.setValue("Select Region");
+            SelectRegion.setVisible(true);
             UserData.getChildren().add(userButton);
             userButton.setOnMouseClicked(event -> upgradeToClient(user,userButton));
         }

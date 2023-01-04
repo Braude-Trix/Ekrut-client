@@ -3,6 +3,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
@@ -13,9 +14,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ServiceOperatorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.ServiceOperatorController">
    <children>
-      <ImageView fx:id="bgImage" fitHeight="505.0" fitWidth="900.0" layoutX="6.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="bgImage" fitHeight="505.0" fitWidth="900.0" layoutX="-7.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@regionalDeliverySecBackground.jpg" />
          </image>
@@ -64,7 +65,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </Separator>
-                  <Button fx:id="logoutBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Log out" />
+                  <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logOutClicked" prefHeight="30.0" prefWidth="200.0" text="Log out" />
                </children>
                <opaqueInsets>
                   <Insets />
@@ -89,9 +90,11 @@
             <URL value="@../styles/BadButton.css" />
             <URL value="@../styles/worker_main_panel.css" />
          </stylesheets></Button>
-      <Label fx:id="NotOnlyDigits" layoutX="501.0" layoutY="219.0" prefHeight="17.0" prefWidth="113.0" text="digits only noob" visible="false" />
-      <Label fx:id="CouldntFineUser" layoutX="466.0" layoutY="244.0" prefHeight="17.0" prefWidth="113.0" text="user not found" visible="false" />
       <VBox fx:id="UserData" layoutX="400.0" layoutY="164.0" prefHeight="259.0" prefWidth="358.0" />
+      <Label fx:id="NotOnlyDigits" layoutX="505.0" layoutY="137.0" prefHeight="17.0" prefWidth="149.0" text="Insert digits only please." textFill="RED" visible="false" />
+      <Label fx:id="CouldntFineUser" layoutX="513.0" layoutY="137.0" prefHeight="17.0" prefWidth="113.0" text="User did not find." textFill="RED" visible="false" />
+      <ComboBox fx:id="SelectRegion" layoutX="588.0" layoutY="371.0" prefWidth="150.0" promptText="Select Region" visible="false" />
+      <Label fx:id="RegionError" layoutX="609.0" layoutY="415.0" text="Please Select Region" textFill="RED" visible="false" />
    </children>
    <stylesheets>
       <URL value="@../styles/SideButtons.css" />
