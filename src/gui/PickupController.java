@@ -25,10 +25,14 @@ import models.*;
 import utils.Util;
 
 /**
- * @author gal This class describes the functionality of the self-pickup way
- *         selection window.
+ * @author gal
+ * This class describes the functionality of the self-pickup.
+ * Selecting an region and machine for pickup
  */
 public class PickupController implements Initializable {
+	/**
+	 * This field saves the scene of the window that opens for open back this window from others windows
+	 */
 	public static Scene scene = null;
 
 	@FXML
@@ -80,7 +84,6 @@ public class PickupController implements Initializable {
 			try {
 				Util.forcedExit();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -100,29 +103,30 @@ public class PickupController implements Initializable {
 	}
 
 	/**
-	 * This method returns the client to the previous window.
-	 * 
+	 * This method returns the client to the previous window 
+	 * (Main screen of the client in OL configuration)
 	 * @param event, Description: Event - clicking the Back button
-	 * @throws IOException 
 	 */
 	@FXML
-	void Back(MouseEvent event) throws IOException {
+	void Back(MouseEvent event){
 		Stage primaryStage = StageSingleton.getInstance().getStage();
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
-		primaryStage.setTitle("EKrut Main");
-		primaryStage.setScene(scene);
-		primaryStage.centerOnScreen();
-		primaryStage.setResizable(false);
-		primaryStage.show();
-		primaryStage.setMinHeight(primaryStage.getHeight());
-		primaryStage.setMinWidth(primaryStage.getWidth());
+		Parent root;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+			primaryStage.setTitle("EKrut Main");
+			primaryStage.setScene(scene);
+			primaryStage.centerOnScreen();
+			primaryStage.setResizable(false);
+			primaryStage.show();
+			primaryStage.setMinHeight(primaryStage.getHeight());
+			primaryStage.setMinWidth(primaryStage.getWidth());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	/**
-	 * Defines the regions that exist within the displayed combo box.
-	 */
 	private void setRegionComboBox() {
 		ObservableList<Regions> options = FXCollections.observableArrayList(Regions.class.getEnumConstants());
 		regionList.getItems().addAll(options);
@@ -142,11 +146,6 @@ public class PickupController implements Initializable {
 		setMachinesNameComboBox(selectedItem);
 	}
 
-	/**
-	 * Defines the machines are in the same region into a combo box.
-	 * 
-	 * @param region, Describes the selected parameter in the combo box
-	 */
 	private void setMachinesNameComboBox(Regions region) {
 		List<Object> regionReq = new ArrayList<>();
 		regionReq.add(region);
@@ -154,7 +153,7 @@ public class PickupController implements Initializable {
 		request.setPath("/machines/getMachine");
 		request.setMethod(Method.GET);
 		request.setBody(regionReq);
-		ClientUI.chat.accept(request);// sending the request to the server.
+		ClientUI.chat.accept(request);
 
 		handleResponseGetMachines();
 	}
@@ -206,7 +205,11 @@ public class PickupController implements Initializable {
 
 		LoginController.order = new PickupOrder(null, null, 0, getMachineId(), OrderStatus.NotCollected, PickUpMethod.latePickUp, null,
 				LoginController.user.getId(), null);
-		continueNewOrder();
+		try {
+			new NewOrderController().start(StageSingleton.getInstance().getStage());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private String getMachineId() {
@@ -218,22 +221,12 @@ public class PickupController implements Initializable {
 		return null;
 	}
 
-	/**
-	 * This method removes error formatting for normal outputs.
-	 */
 	private void removeErrorStyle() {
 		regionList.getStyleClass().remove("validation-error");
 		machineList.getStyleClass().remove("validation-error");
 		errorLabel.setText("");
 	}
 
-	/**
-	 * This method checks if the client has selected a region and machine correctly.
-	 * If it was not filled in properly, design the place where the choice is
-	 * missing in red. And there is an error message. @return, Description: If the
-	 * combo box was not filled in properly, it returns false. Returns true if
-	 * everything is fine.
-	 */
 	private boolean isValidFillComboBoxes() {
 		if (regionList.getValue() == null) {
 			regionList.getStyleClass().add("validation-error");
@@ -248,28 +241,5 @@ public class PickupController implements Initializable {
 		return true;
 	}
 
-	private void continueNewOrder() {
-		AnchorPane pane;
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource(StylePaths.NEW_ORDER_WINDOW_PATH));
-			pane = loader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		Stage stage = StageSingleton.getInstance().getStage();
-		stage.setTitle(StyleConstants.STAGE_LABEL);
-		stage.setScene(new Scene(pane));
-		stage.centerOnScreen();
-		stage.setResizable(false);
-		stage.setOnCloseRequest(e -> {
-			try {
-				Util.forcedExit();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		});
-	}
+
 }

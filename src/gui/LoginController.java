@@ -8,12 +8,7 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
-import gui.workers.CeoGui;
-import gui.workers.MarketingManagerController;
-import gui.workers.MarketingWorkerWindowController;
-import gui.workers.OperationalWorkerGui;
-import gui.workers.RegionalDeliveryController;
-import gui.workers.RegionalManagerGui;
+import gui.workers.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,15 +37,33 @@ import utils.Util;
 
 /**
  * @author gal
- * This class describes the functionality of the login page
+ * This class describes the functionality of the login page, Including connecting in different configurations,
+ * entering different pages according to the types of user
  */
 public class LoginController implements Initializable{
+    /**
+     * This field describes the user connected at login
+     */
     public static User user = null;
+    
+    /**
+     * This field describes an order object depending on what the user chooses (self-pickup, delivery) or on-site
+     */
     public static Order order = null;
+    
+    /**
+     * This field describes a user who is in the OL configuration and is both a customer and an employee,
+     * the customer's details are saved in position 0 and the employee's details in position 1
+     */
     public static List<Object> customerAndWorker = null;
 
     private String configuration;
+    
     private Stage stage = StageSingleton.getInstance().getStage();
+    
+    /**
+     * This field describes a thread that checks every 10 seconds if a new message has been received for the connected user.
+     */
     public static Thread threadListeningNewMsg;
 
     @FXML
@@ -74,6 +87,9 @@ public class LoginController implements Initializable{
     @FXML
     private Label errorTouch;
 
+    /**
+     * This method initializes data before the screen comes up
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         user = null;
@@ -144,11 +160,6 @@ public class LoginController implements Initializable{
         SelectHomePageToOpen();
     }
 
-    /**
-     * This method sets an appropriate error message.
-     * @param invalidUsername, Description: This parameter is boolean if false does not set an error message associated with it.
-     * @param invalidPassword, Description: This parameter is boolean if false does not set an error message associated with it.
-     */
     private void setErrorLabel(boolean invalidUsername, boolean invalidPassword) {
         if (invalidPassword && invalidUsername) {
             errorLabel.setText("The username and password are incorrect");
@@ -161,26 +172,17 @@ public class LoginController implements Initializable{
         }
     }
 
-    /**
-     * This method removes error formatting for normal outputs.
-     */
     private void removeErrorStyle() {
         txtUsername.getStyleClass().remove("validation-error");
         txtPassword.getStyleClass().remove("validation-error");
         errorLabel.setText("");
     }
 
-    /**
-     * This method opens a customer or employee window depending on the type of user.
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
-     */
     private void SelectHomePageToOpen() throws Exception {
-        //request to user from db
         requestUser();
         if (user == null) {
             return;
         }
-
 
         if (configuration.equals("EK")) {
             requestEKCustomer();
@@ -191,11 +193,11 @@ public class LoginController implements Initializable{
                 EKController EKcon = new EKController();
                 EKcon.start(stage);
             }
-
         }
         else if (configuration.equals("OL")){
             requestOLUser();
         }
+        
         threadListeningNewMsg = new Thread(new getMessages());
         threadListeningNewMsg.start();
 
@@ -206,7 +208,7 @@ public class LoginController implements Initializable{
         request.setPath("/login/getAllSubscriberForFastLogin");
         request.setMethod(Method.GET);
         request.setBody(null);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
         switch (Client.resFromServer.getCode()) {
             case OK:
                 setSubscribers(Client.resFromServer.getBody());
@@ -234,13 +236,12 @@ public class LoginController implements Initializable{
         request.setPath("/login/getUser");
         request.setMethod(Method.GET);
         request.setBody(usernameAndPassword);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
 
         handleResponseGetUser();
     }
 
     private void handleResponseGetUser() {
-//		handle response info:
         switch (Client.resFromServer.getCode()) {
             case OK:
                 user = (User) Client.resFromServer.getBody().get(0);
@@ -261,13 +262,12 @@ public class LoginController implements Initializable{
         request.setPath("/login/getUserForEkConfiguration");
         request.setMethod(Method.GET);
         request.setBody(userDetails);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
 
         handleResponseGetCustomerForEkConfiguration();
     }
 
     private void handleResponseGetCustomerForEkConfiguration() {
-//		handle response info:
         switch (Client.resFromServer.getCode()) {
             case OK:
                 user = (Customer) Client.resFromServer.getBody().get(0);
@@ -292,12 +292,11 @@ public class LoginController implements Initializable{
         request.setPath("/login/getUserForOLConfiguration");
         request.setMethod(Method.GET);
         request.setBody(userDetails);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
         handleResponseGetUserForOLConfiguration();
     }
 
     private void handleResponseGetUserForOLConfiguration() throws Exception {
-//		handle response info:
         switch (Client.resFromServer.getCode()) {
             case OK:
                 setUserWindow(Client.resFromServer.getBody());
@@ -329,6 +328,11 @@ public class LoginController implements Initializable{
         }
     }
 
+    /**
+     * @param stage, Description: This is a singleton stage to display the selected window on it
+     * @param worker, Description: This parameter is the employee returned from the db
+     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     */
     public static void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
         switch (worker.getType()) {
             case CEO:
@@ -350,7 +354,7 @@ public class LoginController implements Initializable{
                 (new RegionalDeliveryController()).start(stage);
                 break;
             case ServiceOperator:
-                new ServiceOperatorController().start(stage); // badihi
+                new ServiceOperatorController().start(stage); 
                 break;
 
         }
@@ -387,7 +391,7 @@ public class LoginController implements Initializable{
         request.setPath("/login/getCustomerById");
         request.setMethod(Method.GET);
         request.setBody(idSubscriber);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
 
         handleResponseGetUserById();
     }
@@ -421,12 +425,20 @@ public class LoginController implements Initializable{
     @FXML
     void requestFocus(MouseEvent event) {
         anchorPane.requestFocus();
-
     }
 
 
+    /**
+     * @author gal
+     * A class that implements a runnable task for retrieving messages from the server.
+     */
     public class getMessages implements Runnable {
 
+    	/**
+         * Sends a request to the server to retrieve messages and displays the received messages in an alert window.
+         * If there are no messages or an error occurs, the appropriate message is printed to the console.
+         * This task is executed every 10 seconds until the thread is interrupted.
+         */
         @Override
         public void run() {
             System.out.println("Another one");
@@ -440,7 +452,7 @@ public class LoginController implements Initializable{
                     return;
                 paramList.add(LoginController.user.getId().toString());
                 request.setBody(paramList);
-                ClientUI.chat.accept(request);// sending the request to the server.
+                ClientUI.chat.accept(request);
                 switch (Client.MsgResFromServer.getCode()) {
                     case OK:
                         StringBuilder msgToClient = new StringBuilder();
@@ -463,7 +475,6 @@ public class LoginController implements Initializable{
                 	System.out.println(e.getMessage());
                     Thread.currentThread().interrupt();
                 } catch (Exception e) {
-                    // handle the exception and stop the thread
                     System.out.println(e.getMessage());
                     Thread.currentThread().interrupt();
                 }
@@ -471,9 +482,10 @@ public class LoginController implements Initializable{
             }
         }
 
-        public void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
-            Alert alert = new Alert(alertType); //Information, Error
-            alert.setContentText(alertTitle); // Information, Error
+
+        private void createAnAlert(Alert.AlertType alertType, String alertTitle, String alertMessage) {
+            Alert alert = new Alert(alertType); 
+            alert.setTitle(alertTitle);
             alert.setHeaderText("New message for you !");
             alert.setContentText(alertMessage);
             alert.show();

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import gui.workers.RegionalDeliveryController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +18,17 @@ import models.Customer;
 import models.Worker;
 import utils.Util;
 
+/**
+ * @author gal
+ * This class describes the functionality of the employee window when it is also a client and is in OL configuration
+ */
 public class SelectOptionWorkerOrCustomer implements Initializable {
+	
+	/**
+	 * This field saves the scene of the window that opens for selecting a customer or employee
+	 */
 	public static Scene scene;
+	
 	private OLController OLcon;
 
     @FXML
@@ -29,11 +37,21 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
     @FXML
     private Button logoutBtn;
 
+	/**
+	 * This method initializes the user name on the given page
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         Util.setNameNavigationBar(labelName);
 	}
 	
+    /**
+	 * This method sets a scene to a given stage.
+	 * 
+	 * @param primaryStage, Description: The stage on which the scene is presented
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/SelectOptionWorkerOrCustomer.fxml"));
 				
@@ -57,24 +75,52 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 		});
 	}
     
+	/**
+	 * This method navigates the client to the login page and logging him out. This
+	 * method runs when the user clicked LogOut.
+	 * 
+	 * @param event, Description: the current event when the click happened.
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
 		Util.genricLogOut(getClass());
     }
 
+
+    /**
+     * This method describes the user's choice to log in as a customer and move to the desired window
+     * @param event, Description: Clicking on the "Customer" button
+     */
     @FXML
-    void customerClicked(ActionEvent event) throws Exception {
+    void customerClicked(ActionEvent event){
     	LoginController.user = (Customer) LoginController.customerAndWorker.get(0);
 		Stage stage = StageSingleton.getInstance().getStage();
 		OLcon = new OLController();	
-		OLcon.start(stage);
+		try {
+			OLcon.start(stage);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
+
+    /**
+     * This method describes the user's choice to log in as a worker and move to the desired window by type of worker
+     * @param event, Description: Clicking on the "Employee" button
+     */
     @FXML
-    void employeeClicked(ActionEvent event) throws Exception {
+    void employeeClicked(ActionEvent event) {
 		Stage stage = StageSingleton.getInstance().getStage();
     	LoginController.user = (Worker) LoginController.customerAndWorker.get(1);
-		LoginController.setWindowByTypeWorker(stage, (Worker) LoginController.customerAndWorker.get(1));
+		try {
+			LoginController.setWindowByTypeWorker(stage, (Worker) LoginController.customerAndWorker.get(1));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 

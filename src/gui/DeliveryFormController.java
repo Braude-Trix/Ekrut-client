@@ -1,6 +1,5 @@
 package gui;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,7 +25,15 @@ import models.PickUpMethod;
 import models.Regions;
 import models.User;
 
+/**
+ * @author gal
+ * This class describes the functionality of the shipping details entry page,
+ * including validation and the option to go back, continue an order or disconnect
+ */
 public class DeliveryFormController implements Initializable { 
+	/**
+	 * This field saves the scene of the window that opens for open back this window from others windows
+	 */
 	public static Scene scene;
     private static final int NUMBER_DIGIT_IN_PHONE_NUMBER = 10;
 
@@ -71,10 +78,12 @@ public class DeliveryFormController implements Initializable {
 	
     @FXML
     private Label labelName;
-    
-      
+        
     private User user;
     
+	/**
+	 *This method describes the initialization of information that will be displayed in the window depending on the client.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         setRegionComboBox();
@@ -83,6 +92,11 @@ public class DeliveryFormController implements Initializable {
         Util.setNameNavigationBar(labelName);
 	}
     
+	/**
+	 * This method describes setting up a new scene.
+	 * @param primaryStage, Description: The stage on which the scene is presented
+	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/DeliveryForm.fxml"));
 				
@@ -100,7 +114,6 @@ public class DeliveryFormController implements Initializable {
 			try {
 				Util.forcedExit();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -112,6 +125,11 @@ public class DeliveryFormController implements Initializable {
 		txtPhoneNumber.setText(user.getPhoneNumber());
 	}
 	
+    /**
+     * This method includes validation of the data entered by the customer 
+     * if everything is correct beyond the order continuation window (item selection)
+     * @param event, Description: Clicking the "continue" button
+     */
     @FXML
     void ContinueToOrder(ActionEvent event) {
     	anchorPane.requestFocus();
@@ -129,33 +147,59 @@ public class DeliveryFormController implements Initializable {
 
     	LoginController.order = new DeliveryOrder(null, null, 0, "1", OrderStatus.WaitingApproveDelivery,  PickUpMethod.delivery, LoginController.user.getId(), txtFirstName.getText(),
     			txtLastName.getText(), txtPhoneNumber.getText(), txtFullAddress.getText(), regionList.getValue(), null, txtPinCode.getText());
+		try {
+			new NewOrderController().start(StageSingleton.getInstance().getStage());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 	
+    /**
+     * This method requires when you click anywhere else on the screen to get the focus.
+     * @param event, Description: The screen is clicked the event is sent
+     */
     @FXML
     void requestFocus(MouseEvent event) {
     	anchorPane.requestFocus();
-
     }
 	
 	
+	/**
+	 * This method navigates the client to the login page and logging him out. This
+	 * method runs when the user clicked LogOut.
+	 * 
+	 * @param event, Description: the current event when the click happened.
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
 		Util.genricLogOut(getClass());
     }
     
+
+    /**
+     * This method describes clicking the back button, returning to the main screen of the OL configuration
+     * @param event, Description: Clicking the "Back" button
+     */
     @FXML
-    void Back(MouseEvent event) throws IOException {
+    void Back(MouseEvent event){
 		Stage primaryStage = StageSingleton.getInstance().getStage();
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
-		primaryStage.setTitle("EKrut Main");
-		primaryStage.setScene(scene);
-		primaryStage.centerOnScreen();
-		primaryStage.setResizable(false);
-		primaryStage.show();
-		primaryStage.setMinHeight(primaryStage.getHeight());
-		primaryStage.setMinWidth(primaryStage.getWidth());
+		Parent root;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+			primaryStage.setTitle("EKrut Main");
+			primaryStage.setScene(scene);
+			primaryStage.centerOnScreen();
+			primaryStage.setResizable(false);
+			primaryStage.show();
+			primaryStage.setMinHeight(primaryStage.getHeight());
+			primaryStage.setMinWidth(primaryStage.getWidth());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     private boolean isBlankTextField(TextField textField, Label errorLabel) {
@@ -167,7 +211,6 @@ public class DeliveryFormController implements Initializable {
     	return false;    	
     }
     
-    //	isOnlyDigits method, checks if a given string contains only numbers. if so - returns true, else return false.
     private boolean isOnlyDigits(String str) {
         for (char c : str.toCharArray()) {
             if (!Character.isDigit(c)) {
@@ -211,7 +254,6 @@ public class DeliveryFormController implements Initializable {
     		errorLabel.setText("A pincode contains only digits");
         	return false;
         }
-       
         return true;
     }
     
@@ -245,6 +287,5 @@ public class DeliveryFormController implements Initializable {
     		return false;
     	}
     	return true;
-    }
-    
+    } 
 }
