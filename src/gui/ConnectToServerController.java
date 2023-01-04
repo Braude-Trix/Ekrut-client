@@ -1,31 +1,26 @@
 package gui;
 
-import client.Client;
 import client.ClientController;
 import client.ClientUI;
 import clientModels.ClientConfiguration;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import models.Method;
-import models.Request;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+/*
+ * This class describes all the functionality in the first screen - the process of connecting to the server
+ * @author gal
+ */
 public class ConnectToServerController {
-	public static UserInstallationController UserCon;
-
+	
     @FXML
     private TextField txtHost;
 
@@ -41,7 +36,13 @@ public class ConnectToServerController {
     @FXML
     private Label ErrorHelpLabel;
 
-    //	start method - starts the first stage.
+    /**
+	 * This method sets a scene to a given stage.
+	 * 
+	 * @param primaryStage, Description: The stage on which the scene is presented
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
     public static void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(ConnectToServerController.class.getResource("/assets/ConnectToServer.fxml"));
         Scene scene = new Scene(root);
@@ -54,14 +55,21 @@ public class ConnectToServerController {
         primaryStage.setOnCloseRequest(e -> forcedExit());
     }
 
-    //	forcedExit method - deals with forced exits - closes the single stage and closes the program.
+    /**
+     * forcedExit method - deals with forced exits - closes the single stage and closes the program.
+     */
     private static void forcedExit() {
         StageSingleton.getInstance().getStage().close();
         System.exit(0);
     }
 
-    //	connectToServer method - checks for valid server input and if valid - tried to connect to the server.
-//	creates new stage using the singletone stage.
+    /**
+     * connectToServer method - checks for valid server input and if valid - tried to connect to the server.
+     * creates new stage using the singletone stage.
+     * @param event, Description: A click on the connect button occurred
+     * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+     */
     @FXML
     void connectToServer(ActionEvent event) throws Exception {
         if (!ValidatingTextField(txtPort, "port"))
@@ -77,42 +85,24 @@ public class ConnectToServerController {
             return;
         }
 
-/*        Stage stage = StageSingleton.getInstance().getStage();
-        AnchorPane root = FXMLLoader.load(getClass().getResource("/assets/NewOrder.fxml"));
-        stage.setTitle("Subscribers Panel");
-        stage.setScene(new Scene(root));
-        stage.centerOnScreen();
-        stage.setResizable(false);
-        stage.show();
-        stage.setMinHeight(stage.getHeight());
-        stage.setMinWidth(stage.getWidth());*/
-
-        UserCon = new UserInstallationController();
+        UserInstallationController UserCon = new UserInstallationController();
 		Stage stage = StageSingleton.getInstance().getStage();
 		UserCon.start(stage);
     }
 
-    //	HandleConnectionError method - deals with invalid connection errors.
     private void HandleConnectionError() {
-
         ErrorLabel.setText("Error: can't connect to the server");
         ErrorHelpLabel.setText("Please check IP and PORT");
-
     }
 
-    //	ValidatingTextField - checks for correct server input and responds with correct error labels.
     private boolean ValidatingTextField(TextField textField, String errorSubject) {
         String str = textField.getText();
-
-        //checks if the port is empty and throws error
         if (txtPort.getText().isEmpty()) {
             ErrorLabel.setText("Error: " + errorSubject + " can't be empty port");
             ErrorHelpLabel.setText("Please try again.");
             textField.setStyle("-fx-text-box-border: #B22222; -fx-focus-color: #B22222;");
             return false;
         }
-
-        //checks if in the text field has a character
         for (char c : str.toCharArray()) {
             if (!Character.isDigit(c)) {
                 ErrorLabel.setText("Error: " + errorSubject + " contains only numbers..");
@@ -121,7 +111,6 @@ public class ConnectToServerController {
                 return false;
             }
         }
-
         ErrorLabel.setText("");
         ErrorHelpLabel.setText("");
         textField.setStyle("-fx-text-box-border: #6e6b6b; -fx-focus-color: #6e6b6b;");

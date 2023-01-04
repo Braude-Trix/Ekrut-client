@@ -1,7 +1,5 @@
 package gui;
 
-
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,13 +24,16 @@ import utils.Util;
 
 /**
  * @author gal
- * This class describes the client home page in OL configuration
+ * This class describes the client home page in OL configuration and the functionality enabled on this page
+ * Functionality - go to the order start page (delivery or pickup), go to the window of my orders
  */
 public class OLController implements Initializable {
-	public MyOrdersController MyOrderCon = null;
-	public DeliveryFormController DeliveryCon = null;
-	public PickupController PickupCon = null;
-
+	private DeliveryFormController DeliveryCon = null;
+	private PickupController PickupCon = null;
+	private Stage stage = StageSingleton.getInstance().getStage();
+	/**
+	 * This field saves the scene of the window that opens for open back this window from others windows
+	 */
 	public static Scene scene;
 
     @FXML
@@ -46,6 +47,7 @@ public class OLController implements Initializable {
     
     @FXML
     private ImageView backImage;
+    
 	/**
 	 *This method describes the initialization of information that will be displayed in the window depending on the client.
 	 */
@@ -82,7 +84,6 @@ public class OLController implements Initializable {
 			try {
 				Util.forcedExit();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -96,32 +97,27 @@ public class OLController implements Initializable {
      */
     @FXML
     void MoveMyOrdersWindow(ActionEvent event) throws Exception {		
-		Stage stage = StageSingleton.getInstance().getStage();
-		MyOrderCon = new MyOrdersController();	
+		MyOrdersController MyOrderCon = new MyOrdersController();	
 		MyOrderCon.start(stage);
     }
-    
-//	forcedExit method - deals with forced exits - closes the single stage and closes the program.
-//	private void forcedExit() {
-//		StageSingleton.getInstance().getStage().close();
-//		System.exit(0);
-//	}
-
-
    
     /**
      * This method describes what happens after clicking the Delivery button.
-     * @param event, Description: Event - clicking the MyOrders button.
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     * In the event that there is a scene of a shipping details filling page, 
+     * it will return the scene and if not, it will open a new scene
+     * @param event, Description: Event - clicking the Delivery button.
      */
     @FXML
-    void MoveDeliveryForm(ActionEvent event) throws Exception {
-		Stage stage = StageSingleton.getInstance().getStage();
-
+    void MoveDeliveryForm(ActionEvent event){
 		if (DeliveryFormController.scene == null)
 		{
 			DeliveryCon = new DeliveryFormController();	
-			DeliveryCon.start(stage);
+			try {
+				DeliveryCon.start(stage);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else
 		{
@@ -133,12 +129,13 @@ public class OLController implements Initializable {
 
     /**
      * This method describes what happens after clicking the Pickup button.
-     * @param event, Description: Event - clicking the MyOrders button.
+     * In the event that there is a scene of a pickup information filling page, 
+     * it will return the scene and if not, it will open a new scene
+     * @param event, Description: Event - clicking the Pickup button.
      * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
      */
     @FXML
     void MovePickupForm(ActionEvent event) throws Exception {
-		Stage stage = StageSingleton.getInstance().getStage();
 		if (PickupController.scene == null) {
 			PickupCon = new PickupController();	
 			PickupCon.start(stage);
@@ -151,21 +148,19 @@ public class OLController implements Initializable {
 
     }
     
-    /**
-     * This method describes what happens after clicking the logout button.
-     * Clicking this button will lead to the login screen.
-     * @param event, Description: Event - clicking the Logout button
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
-     */
+	/**
+	 * This method navigates the client to the login page and logging him out. This
+	 * method runs when the user clicked LogOut.
+	 * 
+	 * @param event, Description: the current event when the click happened.
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
 		Util.genricLogOut(getClass());
     }
 
-	
-	/**
-	 * Defines the amount of notifications waiting for the customer if he has shipments that he has not confirmed the arrival of.
-	 */
 	private void setNotificationForApprovalDelivery(int amount)
 	{
 		errorLabel.setText("");
@@ -178,6 +173,9 @@ public class OLController implements Initializable {
 
 	}
 	
+	/**
+	 * This method shows the amount of notifications a customer has if he has not confirmed the deliveries he made
+	 */
 	void checkDeliveryNotCollected() {
     	List<Object> userDetails = new ArrayList<>();
     	userDetails.add(LoginController.user.getId());
@@ -185,7 +183,7 @@ public class OLController implements Initializable {
         request.setPath("/user/myOrders/deliveryNotCollected");
         request.setMethod(Method.GET);
         request.setBody(userDetails);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
         
     	switch (Client.resFromServer.getCode()) {
         case OK:
@@ -198,9 +196,13 @@ public class OLController implements Initializable {
     	
 	}
 	
+    /**
+     * In the OL configuration on the main screen as a default the back button does not appear,
+     * If the customer enters and is also an employee, he will have an option to go to a window of choosing between an employee and a customer
+     * @param event, Description: Pressing the back button
+     */
     @FXML
     void Back(MouseEvent event) {
-		Stage stage = StageSingleton.getInstance().getStage();
 		stage.setScene(SelectOptionWorkerOrCustomer.scene);
 		stage.show();
     }
