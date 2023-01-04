@@ -36,6 +36,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -178,6 +179,16 @@ public class MarketingManagerController implements Initializable {
 	@FXML
 	private ImageView backBtn;
 
+    @FXML
+    private HBox descriptionCounterHbox;
+
+    @FXML
+    private Label descriptionCounterLabel;
+
+    @FXML
+    private Label descriptionCounterLabel1;
+
+
 	private Worker worker = (Worker) LoginController.user;
 
 	private boolean selectedTypeWithPercentage = false;
@@ -201,7 +212,32 @@ public class MarketingManagerController implements Initializable {
 		setBackBtnIfExist();
 		addButtonsToSaleTemplatesTable();
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
+		setTextFormatterForTextAreaDescription();
 
+	}
+
+private void setTextFormatterForTextAreaDescription() {
+	descriptionCounterHbox.setVisible(true);
+	
+	TextFormatter<String> textFormatter = new TextFormatter<>(change -> 
+    change.getControlNewText().length() <= 255 ? change : null);
+	
+	txtAreaDescription.setTextFormatter(textFormatter);
+	//descriptionCounterLabel
+	txtAreaDescription.textProperty().addListener((observable, oldValue, newValue) -> {
+	    int count = newValue.length();
+	    descriptionCounterLabel.setText(String.format("%d", count));
+	    if(count>200) {
+	    	descriptionCounterLabel.setStyle("-fx-text-fill: red;");
+	    	descriptionCounterLabel1.setStyle("-fx-text-fill: red;");
+	    }
+	    else {
+	    	descriptionCounterLabel.setStyle("-fx-text-fill: black;");
+	    	descriptionCounterLabel1.setStyle("-fx-text-fill: black;");
+
+	    }
+	});
+		
 	}
 
 	/**
@@ -416,6 +452,7 @@ public class MarketingManagerController implements Initializable {
 		requestAddingNewSaleTemplate(newSaleTemplate);
 		// TODO: add newSaleTemplate to DB
 		creatingNewSale.setVisible(false);
+		//descriptionCounterHbox.setVisible(false);
 		plannedSalesBorderPane.setVisible(true);
 		useSaleTemplateMenuBtn.setDisable(true);
 		createSaleTemplateMenuBtn.setDisable(false);
@@ -522,7 +559,9 @@ public class MarketingManagerController implements Initializable {
 	}
 
 	private String fixNumberPrefix(String percentageString) {
-		if (percentageString != null) {
+		if (percentageString != null && !percentageString.equals("")) {
+			System.out.println("debug");
+			System.out.println("percer"+percentageString+"1");
 			int percentageNum = Integer.parseInt(percentageString);
 			percentageString = String.valueOf(percentageNum);
 		}
