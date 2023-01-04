@@ -1,5 +1,7 @@
 package gui.workers;
 
+import client.Client;
+import client.ClientUI;
 import client.RegionalManager;
 import gui.LoginController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -30,7 +32,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Method;
 import models.Regions;
+import models.Request;
+import models.ResponseCode;
+import models.User;
 import models.Worker;
 import utils.ColorsAndFonts;
 import utils.Util;
@@ -42,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static utils.Util.forcedExit;
 import static utils.WorkerNodesUtils.getErrorLabel;
@@ -52,8 +59,7 @@ import static utils.WorkerNodesUtils.getSuccessLabel;
  */
 public class RegionalManagerGui implements Initializable {
     public static RegionalManagerGui controller;
-    public static Regions region = Regions.North; // todo: replace this with db
-    public static String userName = "Ben"; // todo: replace this with db
+    public static Regions region = Regions.North;
     public static boolean isCEOLogged = false;
     static Worker worker = (Worker) LoginController.user;
     static final String VALIDATION_ERROR_MSG = "Missing input data, please check your selections";
@@ -357,8 +363,6 @@ public class RegionalManagerGui implements Initializable {
             confirmedColumn = new TableColumn<>("Confirmed");
             // Adding columns to accountsTable
             accountsTable.getColumns().addAll(nameColumn, idColumn, phoneColumn, emailColumn, confirmedColumn);
-            configureTableData();
-            setTableData();
 
             // Adding Labels, accountsTable to accountsTableVBox
             accountsTableVBox.getChildren().addAll(firstTableLabel, secondTableLabel, accountsTable);
@@ -382,6 +386,10 @@ public class RegionalManagerGui implements Initializable {
             // Adding the buttons to buttonsHBox
             buttonsHBox.getChildren().addAll(saveButton, refreshButton);
             bottomBroderVbox.getChildren().add(buttonsHBox);
+
+            // table data configuration and setting
+            configureTableData();
+            setTableData();
         }
 
         private void configureTableData() {
@@ -414,13 +422,20 @@ public class RegionalManagerGui implements Initializable {
             });
         }
 
-        private void setTableData() { // todo: replace with server data
+        private void setTableData() {
             List<PendingAccountData> pendingAccountData = new ArrayList<>();
-            pendingAccountData.add(new PendingAccountData("yossi", "1234", "87594343", "avi@gmail.com"));
-            pendingAccountData.add(new PendingAccountData("yossi1", "12345", "87594344", "avi1@gmail.com"));
-            pendingAccountData.add(new PendingAccountData("yossi2", "12346", "87594345", "avi2@gmail.com"));
-            pendingAccountData.add(new PendingAccountData("yossi3", "12347", "87594346", "avi3@gmail.com"));
-            accountsTable.getItems().addAll(pendingAccountData);
+            List<User> pendingUsers = new ArrayList<>();
+            requestPendingUsers(pendingUsers);
+
+            for (User user : pendingUsers) {
+                PendingAccountData accountData = new PendingAccountData(
+                        user.getFirstName() + " " + user.getLastName(),
+                        user.getId().toString(),
+                        user.getPhoneNumber(),
+                        user.getEmail());
+                pendingAccountData.add(accountData);
+            }
+            accountsTable.setItems(FXCollections.observableList(pendingAccountData));
         }
 
         public class PendingAccountData {
@@ -454,25 +469,25 @@ public class RegionalManagerGui implements Initializable {
         }
 
         private void onSave() {
-            // todo: make a server call and request for change accounts to be approved
+            cleanMessageLabel();
+
+            List<Integer> confirmedIds = confirmedAccounts.stream()
+                    .map(PendingAccountData::getId)
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            requestUpdatePendingUsers(confirmedIds);
+
             accountsTable.getItems().removeAll(confirmedAccounts);
             confirmedAccounts.clear();
             accountsTable.refresh();
-            cleanMessageLabel();
-
-            boolean responseIsOk = true;
-            if (responseIsOk) {
-                addMessageLabel("The chosen pending accounts are confirmed", false);
-            } else {
-                addMessageLabel("There was an error while trying to confirm accounts", true);
-            }
+            setTableData();
         }
 
         private void onRefresh() {
-            // todo: make a server call and request for new pending accounts to be approved
             accountsTable.refresh();
             confirmedAccounts.clear();
             cleanMessageLabel();
+            setTableData();
         }
 
         private void addMessageLabel(String msg, boolean isError) {
@@ -488,6 +503,38 @@ public class RegionalManagerGui implements Initializable {
         private void cleanMessageLabel() {
             if (bottomBroderVbox.getChildren().size() > 1) {
                 bottomBroderVbox.getChildren().remove(1);
+            }
+        }
+
+        private void requestPendingUsers(List<User> userList) {
+            Request request = new Request();
+            request.setPath("users/allPendingUsers");
+            request.setMethod(Method.GET);
+            request.setBody(null);
+            ClientUI.chat.accept(request); // sending the request to the server.
+            if (Client.resFromServer.getCode() == ResponseCode.OK) {
+                List<Object> body = Client.resFromServer.getBody();
+                if (body == null)
+                    body = new ArrayList<>();
+                userList.addAll(body.stream()
+                        .map(userObject -> (User) userObject)
+                        .collect(Collectors.toList()));
+            } else {
+                addMessageLabel(Client.resFromServer.getDescription(), true);
+            }
+        }
+
+        private void requestUpdatePendingUsers(List<Integer> confirmedIds) {
+            List<Object> confirmedObjIds = new ArrayList<>(confirmedIds);
+            Request request = new Request();
+            request.setPath("users/upgradeToCostumer");
+            request.setMethod(Method.POST);
+            request.setBody(confirmedObjIds);
+            ClientUI.chat.accept(request); // sending the request to the server.
+            if (Client.resFromServer.getCode() == ResponseCode.OK) {
+                addMessageLabel("The chosen pending accounts are confirmed", false);
+            } else {
+                addMessageLabel(Client.resFromServer.getDescription(), true);
             }
         }
     }
