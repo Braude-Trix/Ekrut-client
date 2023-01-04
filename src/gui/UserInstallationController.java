@@ -17,7 +17,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -28,13 +27,25 @@ import models.Regions;
 import models.Request;
 
 
+/**
+ * This class describes the process of installing the system with all the details required for its installation
+ * Choosing a configuration, and if EK is chosen, choosing a desired machine
+ * @author gal
+ */
 public class UserInstallationController implements Initializable {
-	public static LoginController LoginCon;
+	/**
+	 * This field describes the machine on which the system was updated if we are in the EK configuration
+	 */
 	public static Machine machine = null;
+	
+	/**
+	 * Describes the installation configuration on the system (EK or OL)
+	 */
 	public static String configuration = null;
 
     @FXML
     private Label title;
+    
     @FXML
     private VBox VboxAfterClickedEk;
     
@@ -53,6 +64,9 @@ public class UserInstallationController implements Initializable {
 	private List<Machine> machinesSet;
 
     
+	/**
+	 * This method initializes data before the screen comes up
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		machinesSet = new ArrayList<>();
@@ -60,6 +74,13 @@ public class UserInstallationController implements Initializable {
 	}
 	
 	
+    /**
+	 * This method sets a scene to a given stage.
+	 * 
+	 * @param primaryStage, Description: The stage on which the scene is presented
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/UserInstallation.fxml"));
@@ -81,6 +102,11 @@ public class UserInstallationController implements Initializable {
         System.exit(0);
     }
 	
+    /**
+     * Clicking on this button describes choosing the EK installation configuration 
+     * and therefore requires choosing a machine on which the system will work.
+     * @param event, Description: Clicking on the EK configuration button
+     */
     @FXML
     void EkClicked(ActionEvent event) {
     	HboxConfiguration.setVisible(false);
@@ -96,17 +122,29 @@ public class UserInstallationController implements Initializable {
 		ObservableList<Regions> options = FXCollections.observableArrayList(Regions.class.getEnumConstants());
 		regionComboBoxId.getItems().addAll(options);
 		regionComboBoxId.getItems().remove(Regions.All);
-
 	}
 
+    /**
+     * This method click describes the OL configuration. And beyond the appropriate login window.
+     * @param event, Description: Clicking on the OL configuration button
+     */
     @FXML
-    void OLClicked(ActionEvent event) throws Exception {
+    void OLClicked(ActionEvent event){
     	configuration = "OL";
-		LoginCon = new LoginController();
+    	LoginController LoginCon = new LoginController();
 		Stage stage = StageSingleton.getInstance().getStage();
-		LoginCon.start(stage);
+		try {
+			LoginCon.start(stage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
+    /**
+     * This method describes clicking on a region value in the combobox 
+     * and changing the machines that are in the combobox of machines according to the selected region.
+     * @param event, Description: Clicking on a value in the region combobox.
+     */
     @FXML
     void RegionComboBoxClicked(ActionEvent event) {
     	machineComboboxId.getItems().clear();
@@ -121,8 +159,7 @@ public class UserInstallationController implements Initializable {
 		request.setPath("/machines/getMachine");
 		request.setMethod(Method.GET);
 		request.setBody(regionReq);
-		ClientUI.chat.accept(request);// sending the request to the server.
-
+		ClientUI.chat.accept(request);
 		handleResponseGetMachines();
 	}
 
@@ -157,17 +194,27 @@ public class UserInstallationController implements Initializable {
 		machineComboboxId.setDisable(false);
 	}
 	
+
+    /**
+     * This method describes a final installation in EK configuration after selecting a suitable machine and region.
+     * @param event, Description: The install button was pressed.
+     */
     @FXML
-    void installClicked(ActionEvent event) throws Exception {
+    void installClicked(ActionEvent event){
 		removeErrorStyle();
 		if (!isValidFillComboBoxes()) {
 			return;
 		}
 		
 		machine = getMachine();
-		LoginCon = new LoginController();
+		LoginController LoginCon = new LoginController();
 		Stage stage = StageSingleton.getInstance().getStage();
-		LoginCon.start(stage);		
+		try {
+			LoginCon.start(stage);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
     }
     
 	private boolean isValidFillComboBoxes() {

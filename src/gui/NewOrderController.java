@@ -661,6 +661,37 @@ public class NewOrderController implements Initializable {
             });
         }
     }
+    
+	/**
+	 * This method describes setting up a new scene.
+	 * 
+	 * @param primaryStage, Description: The stage on which the scene is presented
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
+    public void start(Stage primaryStage) throws Exception {
+		AnchorPane pane;
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource(StylePaths.NEW_ORDER_WINDOW_PATH));
+			pane = loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		Stage stage = StageSingleton.getInstance().getStage();
+		stage.setTitle(StyleConstants.STAGE_LABEL);
+		stage.setScene(new Scene(pane));
+		stage.centerOnScreen();
+		stage.setResizable(false);
+		stage.setOnCloseRequest(e -> {
+			try {
+				Util.forcedExit();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		});
+	}
 
 }
 

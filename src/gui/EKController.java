@@ -33,12 +33,18 @@ import utils.Utils;
 
 /**
  * @author gal
- * This class describes the client home page in EK configuration
+ * This class describes the client home page in EK configuration and the functionality enabled on the home screen in this window
  */
-
 public class EKController implements Initializable {
+	/**
+	 * This field saves the scene of the window that opens for open back this window from others windows
+	 */
 	public static Scene scene;
-    public static boolean EKReplace = false;
+    /**
+     * This field describes when we are in this window and when we are not for a thread
+     * that describes a window of time allowed without any activity on this page
+     */
+    public static boolean EKPageReplace = false;
 
     @FXML
     private Label errorLabel;
@@ -61,13 +67,17 @@ public class EKController implements Initializable {
     @FXML
     private Label labelName;
     
+    /**
+	 * This method initializes data before the screen comes up
+     */
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
         Util.setNameNavigationBar(labelName);
-        EKReplace = false;
+        EKPageReplace = false;
         Thread timeOutThread = new Thread(new TimeOutControllerEkMain());
         timeOutThread.start();
 	}
+    
 	/**
 	 * This method describes setting up a new scene.
 	 * @param primaryStage, Description: The stage on which the scene is presented
@@ -90,21 +100,22 @@ public class EKController implements Initializable {
 			try {
 				Util.forcedExit();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
 	}
 	
-    /**
-     * This method describes what happens after clicking the logout button.
-     * Clicking this button will lead to the login screen.
-     * @param event, Description: Event - clicking the Logout button
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
-     */
+	/**
+	 * This method navigates the client to the login page and logging him out. This
+	 * method runs when the user clicked LogOut.
+	 * 
+	 * @param event, Description: the current event when the click happened.
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-    	EKReplace = true;
+    	EKPageReplace = true;
 		Util.genricLogOut(getClass());
 
     }
@@ -154,11 +165,20 @@ public class EKController implements Initializable {
     	txtPickupCode.setText("");
     }
     
+    /**
+     * This method describes a transition to the window of starting an order
+     * @param event, Description: Clicking the "create new order" button
+     */
     @FXML
     void createNewOrder(ActionEvent event) {
     	LoginController.order = new Order(null, null, 0, UserInstallationController.machine.getId(), OrderStatus.Collected,
     			PickUpMethod.selfPickUp, LoginController.user.getId());
-    	EKReplace = true;
+    	EKPageReplace = true;
+		try {
+			new NewOrderController().start(StageSingleton.getInstance().getStage());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
     
     /**
@@ -180,19 +200,24 @@ public class EKController implements Initializable {
     	anchorPane.requestFocus();
     }
     
-    /**
-     * This method removes error formatting for normal outputs.
-     */
     private void removeErrorStyle() {
     	txtPickupCode.getStyleClass().remove("validation-error");
     	errorLabel.setText("");
     }
     
-    
+    /**
+     * A class that implements a runnable task for detecting and handling a time out event.
+     * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
+     */
     static class TimeOutControllerEkMain implements Runnable {
         private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
+        /**
+         * Detects and handles a time out event.
+         * This task is executed every 10 seconds until the thread is interrupted or the `EKPageReplace` flag is set to `true`.
+         * If a time out event occurs, the log out process is initiated.
+         */
         @Override
         public void run() {
             while (true) {
@@ -213,7 +238,7 @@ public class EKController implements Initializable {
                     }
                     return;
                 }
-                if(EKReplace) {
+                if(EKPageReplace) {
                     System.out.println("Thread closed");
                     return;
                 }
@@ -224,7 +249,8 @@ public class EKController implements Initializable {
                 }
             }
         }
-        public void handleAnyClick() {
+        
+        private void handleAnyClick() {
             StageSingleton.getInstance().getStage().getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>(){
                 @Override
                 public void handle(MouseEvent mouseEvent) {
