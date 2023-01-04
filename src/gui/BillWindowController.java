@@ -271,7 +271,7 @@ public class BillWindowController implements Initializable {
     }
 
     private List<ProductInMachine> getUpdatedInventory() {
-        boolean postMsg = false;
+        boolean postMsg;
         int currentlyAmount, newAmount;
         String machineName;
         List<ProductInMachine> updatedMachineList = new ArrayList<>();
@@ -280,9 +280,10 @@ public class BillWindowController implements Initializable {
         Integer getMachineThreshold = getMachineThreshold();
         ProductInMachine productInMachine;
         for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
+            postMsg = false;
             currentlyAmount = getProductMachineAmountFromList(productsInMachineList, machineId, Integer.valueOf(productInOrder.getProduct().getProductId()));
             newAmount = currentlyAmount - productInOrder.getAmount();
-            if (currentlyAmount != newAmount)
+            if (currentlyAmount > getMachineThreshold && newAmount < getMachineThreshold && machineId != 1)
                 postMsg = true;
             if (newAmount == 0) newStatusInMachine = StatusInMachine.Not_Available;
             else if (newAmount < getMachineThreshold) {
