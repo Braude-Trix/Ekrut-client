@@ -267,7 +267,20 @@
                                     </VBox>
                                  </children>
                               </HBox>
-                              <HBox prefHeight="86.0" prefWidth="628.0">
+                              <HBox fx:id="descriptionCounterHbox">
+                                 <children>
+                                    <Label fx:id="descriptionCounterLabel" text="0" />
+                                    <Label fx:id="descriptionCounterLabel1" text="/255">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="490.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox prefHeight="78.0" prefWidth="628.0">
                                  <children>
                                     <Label prefHeight="17.0" prefWidth="322.0" text="Enter A Description:">
                                        <HBox.margin>
@@ -284,7 +297,7 @@
                                     </TextArea>
                                  </children>
                                  <padding>
-                                    <Insets top="20.0" />
+                                    <Insets top="2.0" />
                                  </padding>
                               </HBox>
                            </children>

@@ -7,9 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import javax.swing.text.StyleConstants;
-
 import client.Client;
 import client.ClientUI;
 import javafx.collections.FXCollections;
@@ -41,7 +38,13 @@ import models.PickUpMethod;
 import models.Request;
 import utils.Util;
 
-
+/**
+ * @author gal
+ *This class describes the orders window of the connected customer,
+ *including the functionality of displaying the table with the data of the customer's orders. 
+ *Allows you to see shipments that have not yet been approved by the customer and approve them.
+ *Allows you to see the code of an order that is for self-collection.
+ */
 public class MyOrdersController implements Initializable {
 
 	@FXML
@@ -103,11 +106,15 @@ public class MyOrdersController implements Initializable {
     
     private List<MyOrders> listMyOrders;
     private List<MyOrders> listDeliveryNotCollected;
-    ObservableList<MyOrders> orderObser;
+    private ObservableList<MyOrders> orderObser;
     
     @FXML
     private AnchorPane anchorPane;
     
+	/**
+	 * This method describes the initialization of information that will be
+	 * displayed in the window depending on the client.
+	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		listMyOrders = new ArrayList<>();
@@ -119,6 +126,11 @@ public class MyOrdersController implements Initializable {
         Util.setNameNavigationBar(labelName);
 	}
 	
+	/**
+	 * This method describes setting up a new scene.
+	 * @param primaryStage, Description: The stage on which the scene is presented
+	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/MyOrders.fxml"));			
 		Scene scene = new Scene(root);
@@ -134,13 +146,17 @@ public class MyOrdersController implements Initializable {
 			try {
 				Util.forcedExit();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
 	}
 
 
+    /**
+     * This method describes clicking a refresh button, clicking this button refreshes the data of customer orders
+     * if the data has changed since the last time it was loaded.
+     * @param event
+     */
     @FXML
     void refreshAllBtn(ActionEvent event) {
     	orderObser.clear();
@@ -160,7 +176,6 @@ public class MyOrdersController implements Initializable {
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                        	//need to change status in db and in table
                         	errorUpdateStatusDB.setVisible(false);
                         	String date = LocalDate.now().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
                         	if (isChangeStatusDeliveryOrderInDB(getTableView().getItems().get(getIndex()).getOrderId(),date)) {
@@ -190,24 +205,42 @@ public class MyOrdersController implements Initializable {
 
     }
 
+	/**
+	 * This method describes what happens after clicking the logout button. Clicking
+	 * this button will lead to the login screen.
+	 * 
+	 * @param event, Description: Event - clicking the Logout button
+	 * @throws Exception, Description: An exception will be thrown if there is a
+	 *                    problem with the window that opens
+	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
 		Util.genricLogOut(getClass());
     }
 
+	/**
+	 * This method returns the client to the previous window 
+	 * (Main screen of the client in OL configuration)
+	 * @param event, Description: Event - clicking the Back button
+	 */
     @FXML
-    void Back(MouseEvent event) throws Exception {
+    void Back(MouseEvent event){
 		Stage primaryStage = StageSingleton.getInstance().getStage();
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
-		primaryStage.setTitle("EKrut Main");
-		primaryStage.setScene(scene);
-		primaryStage.centerOnScreen();
-		primaryStage.setResizable(false);
-		primaryStage.show();
-		primaryStage.setMinHeight(primaryStage.getHeight());
-		primaryStage.setMinWidth(primaryStage.getWidth());
+		Parent root;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
+			primaryStage.setTitle("EKrut Main");
+			primaryStage.setScene(scene);
+			primaryStage.centerOnScreen();
+			primaryStage.setResizable(false);
+			primaryStage.show();
+			primaryStage.setMinHeight(primaryStage.getHeight());
+			primaryStage.setMinWidth(primaryStage.getWidth());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     private void setCellFactoryOfTables() {
@@ -236,7 +269,7 @@ public class MyOrdersController implements Initializable {
         request.setPath("/order/deliveryOrder/changeStatusAndDateReceived");
         request.setMethod(Method.PUT);
         request.setBody(objects);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
         return isSetStatusDelivery();
     }
     
@@ -260,7 +293,7 @@ public class MyOrdersController implements Initializable {
         request.setPath("/user/myOrders");
         request.setMethod(Method.GET);
         request.setBody(userId);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
     	
         handleRsponseGetMyOrders();
     	 
@@ -361,6 +394,11 @@ public class MyOrdersController implements Initializable {
 		tableViewApproveDel.setPlaceholder(tableViewApproveLabel);
     }
     
+    /**
+     * This method performs validation and confirms that the order id is indeed correct, 
+     * if so it presents the customer with the code for pickup based on the order id entered
+     * @param event, Description: Clicking the "Get Code" button
+     */
     @FXML
     void GetCode(ActionEvent event) {
     	removeErrorStyle();
@@ -382,7 +420,7 @@ public class MyOrdersController implements Initializable {
         request.setPath("/order/pickupOrder/getPickupCode");
         request.setMethod(Method.GET);
         request.setBody(orderId);
-        ClientUI.chat.accept(request);// sending the request to the server.
+        ClientUI.chat.accept(request);
         
         handleGetPickupCodeFromServer();
     }
@@ -419,7 +457,6 @@ public class MyOrdersController implements Initializable {
     private boolean isExistPickupOrderID(TextField textField) {
     	String orderID = textField.getText();
     	for (MyOrders order : listMyOrders) {
-    		//status need change 
     		if (orderID.equals(order.getOrderId())){
     			if (order.getPickUpMethod() == PickUpMethod.latePickUp) {
     				if ( order.getStatus() == OrderStatus.NotCollected) {
@@ -441,12 +478,21 @@ public class MyOrdersController implements Initializable {
     	txtOrderID.getStyleClass().add("validation-error");
     }
     
+    /**
+     * This method describes clicking on the hyperlink after a pickup code has been displayed, 
+     * allows you to re-enter a pickup code
+     * @param event, Description: Clicking on a hyperlink that allows you to enter an additional code
+     */
     @FXML
     void returnToEnterAnotherOrderId(MouseEvent event) {
     	ShowEnterOrderID.setVisible(true);
     	ShowPickupCode.setVisible(false);
     }
     
+    /**
+     * This method requires when you click anywhere else on the screen to get the focus.
+     * @param event, Description: The screen is clicked the event is sent
+     */
     @FXML
     void requestFocus(MouseEvent event) {
     	anchorPane.requestFocus();
