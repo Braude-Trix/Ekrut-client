@@ -47,8 +47,17 @@ import models.SaleStatus;
 import models.Worker;
 import utils.Util;
 
+/**
+ * This class represents the side of Marketing Workers in our program.
+ * this class is the controller of the MarketingWorkerWindow.fxml, it fills the sales tables with data from the server
+ * and adds functionality to all it buttons. 
+ *
+ */
 public class MarketingWorkerWindowController implements Initializable {
 
+	/**
+	 * previewSale is a static object with the type Sale, represents the current clicked sale and the one sale needed to be previewed in the sale preview section.
+	 */
 	public static Sale previewSale;
 
 	@FXML
@@ -198,10 +207,19 @@ public class MarketingWorkerWindowController implements Initializable {
 	@FXML
 	private ImageView backBtn;
 
+	/**
+	 * runningSales ObserveableList, this is the list with all the running sales brought from db and showed in the running sales tableview.
+	 */
 	public static ObservableList<Sale> runningSales = FXCollections.observableArrayList();
+	/**
+	 * readySales ObserveableList, this is the list with all the ready sales brought from db and showed in the ready sales tableview.
+	 */
 	public static ObservableList<Sale> readySales = FXCollections.observableArrayList();
 	private Worker worker = (Worker) LoginController.user;
 
+	/**
+	 * This Method runs first, initializing the scene, sets form,table and buttons.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initRunningSalesTable();
@@ -214,7 +232,6 @@ public class MarketingWorkerWindowController implements Initializable {
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 		saleDescriptionTxt1.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 
-		// handleSalePreview();
 
 	}
 
@@ -250,6 +267,9 @@ public class MarketingWorkerWindowController implements Initializable {
 
 	}
 
+	/**
+	 * This method turns the "Back" button visible when a user has two different logins (worker and customer)
+	 */
 	private void setBackBtnIfExists() {
 		if (LoginController.customerAndWorker != null) {
 			backBtn.setVisible(true);
@@ -257,6 +277,10 @@ public class MarketingWorkerWindowController implements Initializable {
 
 	}
 
+	/**
+	 * This method is the actual back button, shoots onAction and changes the stage to be the selection page.
+	 * @param event - the current event when clicking.
+	 */
 	@FXML
 	void Back(MouseEvent event) {
 		Stage stage = StageSingleton.getInstance().getStage();
@@ -264,6 +288,7 @@ public class MarketingWorkerWindowController implements Initializable {
 		stage.show();
 	}
 
+	
 	private void setUsernameLabels() {
 		usernameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
 		usernameRegionLabel.setText(worker.getRegion().toString());
@@ -401,6 +426,11 @@ public class MarketingWorkerWindowController implements Initializable {
 
 	}
 
+	/**
+	 * This method requests the running sales data from the server.
+	 * creates a request object with body={Region of worker, Sale stats - Running}
+	 * Request Method - Get, Request Path - /sales
+	 */
 	public void requestRunningSales() {
 		List<Object> body = new ArrayList<>();
 		// TODO: set region to be worker's region.
@@ -439,6 +469,11 @@ public class MarketingWorkerWindowController implements Initializable {
 		}
 	}
 
+	/**
+	 * This method requests the ready sales data from the server.
+	 * creates a request object with body={Region of worker, Sale stats - Ready}
+	 * Request Method - Get, Request Path - /sales
+	 */
 	public void requestReadySales() {
 		List<Object> body = new ArrayList<>();
 		Regions currentWorkerRegion = worker.getRegion();
@@ -515,6 +550,13 @@ public class MarketingWorkerWindowController implements Initializable {
 
 	}
 
+	/**
+	 * This method requests to change sale status (Ready->Running) from the server.
+	 * creates a request object with body={Sale id, Sale status - Running}
+	 * Request Method - Put, Request Path - /sales
+	 *
+	 * @param sale - represents the current sale data where the button "start" was clicked.
+	 */
 	public void requestSaleStart(Sale sale) {
 		List<Object> body = new ArrayList<>();
 
@@ -543,10 +585,19 @@ public class MarketingWorkerWindowController implements Initializable {
 		}
 	}
 
+	/**
+	 * This method returns the previewSale variable.
+	 * @return Sale previewSale
+	 */
 	public Sale getSalePreview() {
 		return previewSale;
 	}
 
+	/**
+	 * This method sets the preview sale section to be filled with the clicked sale inside running sales table data.
+	 * This method shoots onAction of any row from table clicked.
+	 * @param event - the current event's data whenever the user clicked any row of the table
+	 */
 	@FXML
 	void runningSaleTableRowClicked(MouseEvent event) {
 		try {
@@ -568,12 +619,21 @@ public class MarketingWorkerWindowController implements Initializable {
 		}
 	}
 
+	/**
+	 * This method refreshes the table by refilling it.
+	 * @param event - current event when user clicks refresh
+	 */
 	@FXML
 	void clickRefreshBtn(ActionEvent event) {
 		initReadyForStartSalesTable();
 		initRunningSalesTable();
 	}
 
+	/**
+	 * This method sets the preview sale section to be filled with the clicked sale inside ready sales table data.
+	 * This method shoots onAction of any row from table clicked.
+	 * @param event - the current event's data whenever the user clicked any row of the table
+	 */
 	@FXML
 	void readyForStartSaleTableRowClicked(MouseEvent event) {
 		try {
@@ -592,6 +652,11 @@ public class MarketingWorkerWindowController implements Initializable {
 		}
 	}
 
+	/**
+	 * This method logs out the user.
+	 * @param event - current event when clicked
+	 * @throws Exception
+	 */
 	@FXML
 	void logOut(ActionEvent event) throws Exception {
 		Util.genricLogOut(getClass());

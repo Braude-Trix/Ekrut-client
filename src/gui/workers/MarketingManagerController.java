@@ -58,10 +58,15 @@ import models.Worker;
 import utils.Util;
 
 /**
- * @author sharon
+ * This class represents the side of Marketing Managers in our program.
+ * this class is the controller of the MarketingManagerWindow.fxml, it fills the sales template table with data from the server
+ * and adds functionality to all it buttons. 
  *
  */
 public class MarketingManagerController implements Initializable {
+	/**
+	 * previewSale is a static object with the type Sale, represents the current clicked sale and the one sale needed to be previewed in the sale preview section.
+	 */
 	public static Sale previewSale;
 
 	@FXML
@@ -176,6 +181,10 @@ public class MarketingManagerController implements Initializable {
 	private Worker worker = (Worker) LoginController.user;
 
 	private boolean selectedTypeWithPercentage = false;
+	
+	/**
+	 * template sales ObserveableList, this is the list with all the template sales brought from db and showed in the template sales tableview.
+	 */
 	public static ObservableList<Sale> saleTemplateObserableList = FXCollections.observableArrayList();
 
 	/**
@@ -207,8 +216,6 @@ public class MarketingManagerController implements Initializable {
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/table_style.css").toExternalForm());
-		// scene.getStylesheets().add(getClass().getResource("/styles/SideButtons.css").toExternalForm());
-		// scene.getStylesheets().add(getClass().getResource("/styles/MainButtons.css").toExternalForm());
 
 		primaryStage.setTitle("Marketing Manager");
 		primaryStage.setScene(scene);
@@ -424,6 +431,11 @@ public class MarketingManagerController implements Initializable {
 
 	}
 
+
+	/**
+	 * This method refreshes the table by refilling it.
+	 * @param event - current event when user clicks refresh
+	 */
 	@FXML
 	void clickRefreshBtn(ActionEvent event) {
 		initSaleTemplateTable();
@@ -448,7 +460,12 @@ public class MarketingManagerController implements Initializable {
 
 	}
 
-	// TODO:
+	
+	/**
+	 * This method requests the template sales data from the server.
+	 * creates a request object with body={Region = All, Sale status - Template}
+	 * Request Method - Get, Request Path - /sales
+	 */
 	public void requestSaleTemplates() {
 		List<Object> body = new ArrayList<>();
 
@@ -463,6 +480,13 @@ public class MarketingManagerController implements Initializable {
 
 	}
 
+	/**
+	 * This method requests to change sale status (Template->Ready) from the server.
+	 * creates a request object with body={Sale id, Sale status - Ready}
+	 * Request Method - Put, Request Path - /sales
+	 *
+	 * @param sale - represents the current sale data where the button "Initiate" was clicked.
+	 */
 	public void requestSaleInitiate(Sale sale) {
 		List<Object> body = new ArrayList<>();
 
