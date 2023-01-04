@@ -75,6 +75,7 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
     }
 
     private void initVars() {
+        order = BillWindowController.restoreOrder;
         if (order.getPickUpMethod() == PickUpMethod.delivery) {
             deliveryAddress = ((DeliveryOrder) order).getFullAddress();
         }
