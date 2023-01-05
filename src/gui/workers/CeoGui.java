@@ -123,9 +123,11 @@ public class CeoGui implements Initializable {
         logoutBtn.setOnMouseClicked((event) -> {
         	RegionalManagerGui.isCEOLogged = false;
         	MarketingManagerController.isCEOLogged = false;
+        	
         	OperationalWorkerGui.isCEOLogged = false;
         	RegionalDeliveryController.isCEOLogged = false;
         	MarketingWorkerWindowController.isCEOLogged = false;
+        	ServiceOperatorController.isCEOLogged = false;
         	try {            	
                 Util.genricLogOut(getClass());
             } catch (Exception e) {

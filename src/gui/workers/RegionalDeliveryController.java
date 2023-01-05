@@ -88,9 +88,10 @@ public class RegionalDeliveryController implements Initializable {
 
     private Worker worker = (Worker) LoginController.user;
     private Integer myId = worker.getId();
-    private String staticRegion = worker.getRegion().toString();
+    private String staticRegion; 
     public static RegionalDeliveryController controller;
     public static boolean isCEOLogged = false;
+	public static Worker workerAccessByCeo = null;
 
     @FXML
     private Label mainTitleLabel;
@@ -431,12 +432,15 @@ public class RegionalDeliveryController implements Initializable {
      * @param resourceBundle
      */
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        WorkerNodesUtils.setUserName(userNameLabel, worker);
+        if (isCEOLogged) {
+            logoutBtn.setVisible(false);
+            worker = workerAccessByCeo;
+        }
+        staticRegion = worker.getRegion().toString();
+    	WorkerNodesUtils.setUserName(userNameLabel, worker);
         WorkerNodesUtils.setRole(userRoleLabel, worker.getRegion(), worker.getType());
         logoutBtn.setOnMouseClicked((event) -> System.out.println(event.getSource().toString()));
 
-        if (isCEOLogged)
-            logoutBtn.setVisible(false);
     }
 
 

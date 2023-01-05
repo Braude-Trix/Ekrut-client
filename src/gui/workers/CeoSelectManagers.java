@@ -165,7 +165,6 @@ public class CeoSelectManagers {
                 RegionalManagerGui.region = Regions.UAE;
                 break;
             case MARKET:
-                // todo: sync with marketing manager
                 break;
         }
     }

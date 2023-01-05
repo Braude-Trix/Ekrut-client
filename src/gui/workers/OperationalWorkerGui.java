@@ -64,6 +64,7 @@ public class OperationalWorkerGui implements Initializable {
     public static String chosenMachine;
     public static boolean isCEOLogged = false;
     private Worker worker = (Worker) LoginController.user;
+	public static Worker workerAccessByCeo = null;
 
     @FXML
     private ImageView bgImage;
@@ -102,7 +103,12 @@ public class OperationalWorkerGui implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // setting username
+
+        if (isCEOLogged) {
+            logoutBtn.setVisible(false);
+            worker = workerAccessByCeo;
+        }
+    	// setting username
         WorkerNodesUtils.setUserName(userNameLabel, worker);
         WorkerNodesUtils.setRole(userRoleLabel, worker.getType());
 
@@ -125,9 +131,6 @@ public class OperationalWorkerGui implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-
-        if (isCEOLogged)
-            logoutBtn.setVisible(false);
     }
 
     private void enableAll() {

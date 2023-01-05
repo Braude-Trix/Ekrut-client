@@ -147,9 +147,8 @@ public class CeoSelectWorker {
             marketWorkerRegionCol.setCellValueFactory(new PropertyValueFactory<>("region"));
     }
 
-    private void setTableData() { // todo: replace with server data
+    private void setTableData() { 
         List<WorkersData> workerData = new ArrayList<>();
-        // todo: do a switch for CeoGui.workerType enum to go to specific DB from server
         for(Worker worker : workerSet) {
     		workerData.add(new WorkersData(worker));
         }
@@ -174,14 +173,12 @@ public class CeoSelectWorker {
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
                 openWorkerPopup("/assets/workers/RegionalDeliveryHomePage_Default.fxml");
-                //openWorkerPopup(); todo: sync with DB
                 break;
             case MarketingWorker:
             	openWorkerPopup("/assets/workers/MarketingWorkerWindow.fxml");
-                //openWorkerPopup(); todo: sync with DB
                 break;
             case ServiceOperator:
-                //openWorkerPopup(); todo: sync with DB
+            	openWorkerPopup("/assets/ServiceOperator.fxml");
                 break;
             case OperationalWorker:
                 openWorkerPopup("/assets/workers/OperationalWorkerHomePage_Default.fxml");
@@ -209,7 +206,7 @@ public class CeoSelectWorker {
         }
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
-        //setTitleForScene()
+
         popupDialog.setX(Ceo.primaryStage.getX() + 75);
         popupDialog.setY(Ceo.primaryStage.getY() + 75);
         popupDialog.setResizable(false);
@@ -220,26 +217,30 @@ public class CeoSelectWorker {
     private void setInitValuesInWorkerPopup() {
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
-                // todo: sync with delivery worker
+
                 RegionalDeliveryController.isCEOLogged = true;
+                RegionalDeliveryController.workerAccessByCeo = selectedWorker.worker;
                 popupDialog.setTitle("CEO - Delivery operator");
                 break;
             case ServiceOperator:
-                // todo: sync with service
+
+            	ServiceOperatorController.isCEOLogged = true;
+            	ServiceOperatorController.workerAccessByCeo = selectedWorker.worker;
             	popupDialog.setTitle("CEO - Service operator");
                 break;
             case MarketingWorker:
-                // todo: sync with marketing
+
             	MarketingWorkerWindowController.isCEOLogged = true;
             	MarketingWorkerWindowController.workerAccessByCeo = selectedWorker.worker;
             	popupDialog.setTitle("CEO - Marketing worker");
                 break;
             case OperationalWorker:
                 OperationalWorkerGui.isCEOLogged = true;
+                OperationalWorkerGui.workerAccessByCeo = selectedWorker.worker;
                 popupDialog.setTitle("CEO - Operational worker");
                 break;
             default:
-                System.out.println("oh nooooo!");
+                System.out.println("workerType was not defined");
         }
     }
 
@@ -247,14 +248,11 @@ public class CeoSelectWorker {
         // get the controller of the right worker
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
-                // todo: sync with delivery worker
                 RegionalDeliveryController.controller = loader.getController();
                 break;
             case ServiceOperator:
-                // todo: sync with service
                 break;
             case MarketingWorker:
-                // todo: sync with marketing
             	MarketingWorkerWindowController.controller = loader.getController();
                 break;
             case OperationalWorker:
@@ -262,7 +260,7 @@ public class CeoSelectWorker {
                 break;
 
             default:
-                System.out.println("oh nooooo!");
+                System.out.println("workerType was not defined");
         }
     }
 
