@@ -4,10 +4,8 @@ import client.Client;
 import client.ClientUI;
 import client.OperationalWorker;
 import gui.LoginController;
-import gui.NewOrderController.ProductInMachineMonitor;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,19 +25,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.Machine;
+import models.InventoryFillTask;
 import models.Method;
-import models.Order;
 import models.Product;
 import models.ProductInMachine;
-import models.ProductInOrder;
+import models.Regions;
 import models.Request;
-import models.StyleConstants;
-import models.StylePaths;
+import models.ResponseCode;
+import models.TaskStatus;
+import models.User;
 import models.Worker;
 import utils.ColorsAndFonts;
 import utils.Util;
@@ -50,8 +47,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static utils.Util.forcedExit;
 import static utils.Utils.isBlank;
@@ -61,7 +60,7 @@ import static utils.Utils.isBlank;
  */
 public class OperationalWorkerGui implements Initializable {
     public static OperationalWorkerGui controller;
-    public static String chosenRegion;
+    public static Regions chosenRegion;
     public static String chosenMachine;
     public static boolean isCEOLogged = false;
     private Worker worker = (Worker) LoginController.user;
@@ -143,15 +142,15 @@ public class OperationalWorkerGui implements Initializable {
     }
 
     private class MyTasks {
-        private TableView<MyTaskData> openedTasksTable;
-        private TableColumn<MyTaskData, String> dateColumn;
-        private TableColumn<MyTaskData, String> regionColumn;
-        private TableColumn<MyTaskData, String> machineIdColumn;
-        private TableColumn<MyTaskData, String> machineNameColumn;
-        private TableColumn<MyTaskData, String> statusColumn;
+        private TableView<InventoryFillTask> openedTasksTable;
+        private TableColumn<InventoryFillTask, String> dateColumn;
+        private TableColumn<InventoryFillTask, String> regionColumn;
+        private TableColumn<InventoryFillTask, String> machineIdColumn;
+        private TableColumn<InventoryFillTask, String> machineNameColumn;
+        private TableColumn<InventoryFillTask, String> statusColumn;
         private Button goToButton;
         private Button closeTaskButton;
-        private MyTaskData selectedTask;
+        private InventoryFillTask selectedTask;
 
         private void loadMyTasks() {
             chosenRegion = null;
@@ -174,7 +173,7 @@ public class OperationalWorkerGui implements Initializable {
             Label aboveTableLabel = WorkerNodesUtils.getCenteredContentLabel("choose a task to work on");
 
             // Creating TableView tasksTable
-            openedTasksTable = WorkerNodesUtils.getTableView(MyTaskData.class);
+            openedTasksTable = WorkerNodesUtils.getTableView(InventoryFillTask.class);
 
             // Creating columns
             dateColumn = new TableColumn<>("Creation Date");
@@ -185,8 +184,6 @@ public class OperationalWorkerGui implements Initializable {
             // Adding columns to accountsTable
             openedTasksTable.getColumns().addAll(dateColumn, regionColumn, machineIdColumn,
                     machineNameColumn, statusColumn);
-            configureTableData();
-            setTableData();
 
             // Adding Labels, tasksTable to accountsTableVBox
             tasksTableVBox.getChildren().addAll(aboveTableLabel, openedTasksTable);
@@ -206,23 +203,22 @@ public class OperationalWorkerGui implements Initializable {
             closeTaskButton.setOnMouseClicked(event -> onCloseTaskClick());
 
             bottomBroderVbox.getChildren().addAll(goToButton, closeTaskButton);
+
+            configureTableData();
+            setTableData();
         }
 
         private void configureTableData() {
-            dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+            dateColumn.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
             regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
             machineIdColumn.setCellValueFactory(new PropertyValueFactory<>("machineId"));
             machineNameColumn.setCellValueFactory(new PropertyValueFactory<>("machineName"));
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         }
 
-        private void setTableData() { // todo: replace with server data
-            List<MyTaskData> tasksData = new ArrayList<>();
-
-            tasksData.add(new MyTaskData("10/11/2222", "North", "1234", "L 606", true));
-            tasksData.add(new MyTaskData("11/11/2222", "North", "3333", "M 2909", false));
-            tasksData.add(new MyTaskData("12/11/2222", "UAE", "4444", "EF 301", false));
-            tasksData.add(new MyTaskData("13/11/2222", "South", "5555", "P 404", true));
+        private void setTableData() {
+            List<InventoryFillTask> tasksData = new ArrayList<>();
+            requestOpenedTasks(tasksData);
             openedTasksTable.getItems().addAll(tasksData);
         }
 
@@ -233,14 +229,14 @@ public class OperationalWorkerGui implements Initializable {
                         goToButton.setDisable(false);
                     selectedTask = newSelection;
 
-                    closeTaskButton.setVisible(selectedTask.getIsInProgress());
+                    closeTaskButton.setVisible(selectedTask.getStatus() == TaskStatus.IN_PROGRESS);
                 }
             });
         }
 
         private void onGoToClick() {
-            chosenRegion = selectedTask.region;
-            chosenMachine = selectedTask.machineName;
+            chosenRegion = selectedTask.getRegion();
+            chosenMachine = selectedTask.getMachineName();
 
             enableAll();
             clearBorderPane();
@@ -266,45 +262,24 @@ public class OperationalWorkerGui implements Initializable {
             bottomBroderVbox.getChildren().add(msgLabel);
         }
 
-        public class MyTaskData {
-            private final String date;
-            private final String region;
-            private final String machineId;
-            private final String machineName;
-            private final String status;
-            private final boolean isInProgress;
-
-            public MyTaskData(String date, String region, String machineId, String machineName, boolean isInProgress) {
-                this.date = date;
-                this.region = region;
-                this.machineId = machineId;
-                this.machineName = machineName;
-                this.isInProgress = isInProgress;
-                status = isInProgress ? "In Progress" : "Open";
-            }
-
-            public String getDate() {
-                return date;
-            }
-
-            public String getRegion() {
-                return region;
-            }
-
-            public String getMachineId() {
-                return machineId;
-            }
-
-            public String getMachineName() {
-                return machineName;
-            }
-
-            public String getStatus() {
-                return status;
-            }
-
-            public boolean getIsInProgress() {
-                return isInProgress;
+        private void requestOpenedTasks(List<InventoryFillTask> tasks) {
+            Request request = new Request();
+            request.setPath("/operationalWorker/getOpenedTasks");
+            request.setMethod(Method.GET);
+            List<Object> assignedWorker = new ArrayList<>();
+            assignedWorker.add(worker.getId());
+            request.setBody(assignedWorker);
+            ClientUI.chat.accept(request); // sending the request to the server.
+            if (Client.resFromServer.getCode() == ResponseCode.OK) {
+                List<Object> body = Client.resFromServer.getBody();
+                if (body == null)
+                    body = new ArrayList<>();
+                tasks.addAll(body.stream()
+                        .map(userObject -> (InventoryFillTask) userObject)
+                        .collect(Collectors.toList()));
+            } else {
+                Label msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
+                bottomBroderVbox.getChildren().add(msgLabel);
             }
         }
     }
@@ -456,7 +431,7 @@ public class OperationalWorkerGui implements Initializable {
          */
         private void setViewFromTaskView() {
             if (chosenRegion != null && chosenMachine != null) {
-                regionCombobox.getSelectionModel().select(chosenRegion);
+                regionCombobox.getSelectionModel().select(chosenRegion.toString());
                 machineCombobox.getSelectionModel().select(chosenMachine);
                 onRefreshClick();
             }
@@ -484,12 +459,14 @@ public class OperationalWorkerGui implements Initializable {
             currentAmountColumn.setPrefWidth(150);
         }
         
-        private ImageView recieveImageForProduct(Product product)
+        private ImageView receiveImageForProduct(Product product)
         {
         	if (product.getImage() == null)
         		return null;
         	Image image = new Image(new ByteArrayInputStream(product.getImage()));
             ImageView myImage = new ImageView();
+            myImage.setFitWidth(imageColumn.getPrefWidth() - 15);
+            myImage.setFitHeight(imageColumn.getPrefWidth() - 15);
             myImage.setImage(image);
         	return myImage;
         }
@@ -509,8 +486,8 @@ public class OperationalWorkerGui implements Initializable {
         				}
             		}
             		Product currentProduct = (Product) product;
-            		ImageView curentProductImg = recieveImageForProduct(currentProduct);
-            		productsData.add(new ProductInMachineData(curentProductImg, currentProduct.getProductId(),
+            		ImageView currentProductImg = receiveImageForProduct(currentProduct);
+            		productsData.add(new ProductInMachineData(currentProductImg, currentProduct.getProductId(),
             				currentProduct.getName(),currentAmount));
             	}
             }

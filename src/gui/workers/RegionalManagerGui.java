@@ -47,7 +47,6 @@ import utils.WorkerNodesUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -241,7 +240,7 @@ public class RegionalManagerGui implements Initializable {
             workerSet = new ArrayList<>();
             /*VBox operationalWorkerVBox = getConfigurationVBox(OPERATIONAL_WORKER_TITLE, dummyForWorkers,
                     "", "Call Worker");*/
-            getOperationaWorkersList();
+            getOperationalWorkersList();
             VBox operationalWorkerVBox = getConfigurationVBox(OPERATIONAL_WORKER_TITLE, workerNames,
             "", "Call Worker");
             callWorkerButton.setOnMouseClicked((this::onCallWorker));
@@ -252,7 +251,7 @@ public class RegionalManagerGui implements Initializable {
             nodes.addAll(machineSelectVBox);
         }
         
-        private void getOperationaWorkersList() {
+        private void getOperationalWorkersList() {
         	List<Object> workerReq = new ArrayList<>();
         	workerReq.add(WorkerType.OperationalWorker);
         	Request request = new Request();
@@ -641,7 +640,7 @@ public class RegionalManagerGui implements Initializable {
 
         private void requestPendingUsers(List<User> userList) {
             Request request = new Request();
-            request.setPath("users/allPendingUsers");
+            request.setPath("/users/allPendingUsers");
             request.setMethod(Method.GET);
             request.setBody(null);
             ClientUI.chat.accept(request); // sending the request to the server.
@@ -660,7 +659,7 @@ public class RegionalManagerGui implements Initializable {
         private void requestUpdatePendingUsers(List<Integer> confirmedIds) {
             List<Object> confirmedObjIds = new ArrayList<>(confirmedIds);
             Request request = new Request();
-            request.setPath("users/upgradeToCostumer");
+            request.setPath("/users/upgradeToCostumer");
             request.setMethod(Method.POST);
             request.setBody(confirmedObjIds);
             ClientUI.chat.accept(request); // sending the request to the server.
