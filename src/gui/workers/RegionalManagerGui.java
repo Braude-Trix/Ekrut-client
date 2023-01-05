@@ -272,6 +272,16 @@ public class RegionalManagerGui implements Initializable {
         	}
         }
         
+        private Integer getWorkerIdByName(String workerName) {
+        	Integer workerId = null;
+        	String workerFirstName = workerName.split(" ")[0];
+        	for (Worker worker : workerSet) {
+        		if(worker.getFirstName().equals(workerFirstName))
+        			workerId = worker.getId();
+        	}
+        	return workerId;
+        }
+        
         private void updateWorkers(List<Object> listWorkers) {
         	workerNames.clear();
         	workerSet.clear();
@@ -430,6 +440,7 @@ public class RegionalManagerGui implements Initializable {
     		}	
     	}
 
+    	
         private void onCallWorker(Event event) {
             ObservableList<Node> bottomVbox = bottomBroderVbox.getChildren();
             resetErrorsInForm();
@@ -439,10 +450,31 @@ public class RegionalManagerGui implements Initializable {
                 bottomVbox.add(getErrorLabel(VALIDATION_ERROR_MSG));
                 operationalWorkerComboBox.setStyle(ColorsAndFonts.ERROR_COMBO_BOX_COLOR);
             } else {
+            	if(sendOperationalWorkerTask(operationalWorkerComboBox.getValue(), currentMachineId))
                 // call to server to set new call for specified worker
-                bottomVbox.add(getSuccessLabel(SUCCESSES_MSG));
+            		bottomVbox.add(getSuccessLabel(SUCCESSES_MSG));
+            	else
+            		bottomVbox.add(getErrorLabel(DB_ERROR_MSG));
             }
         }
+    	
+    	private boolean sendOperationalWorkerTask(String workerName, Integer machineId){
+    		Integer workerId = getWorkerIdByName(workerName);
+    		List<Object> workerTask = new ArrayList<>();
+    		workerTask.add(workerId);
+    		workerTask.add(machineId);
+    		Request request = new Request();
+    		request.setPath("/workers/setOpenTask");
+    		request.setMethod(Method.PUT);
+    		request.setBody(workerTask);
+    		ClientUI.chat.accept(request);
+    		switch(Client.resFromServer.getCode()) {
+    		case OK:
+    			return true;
+    		default:
+    			return false;
+    		}
+    	}
 
         private void resetErrorsInForm() {
             ObservableList<Node> bottomVbox = bottomBroderVbox.getChildren();
