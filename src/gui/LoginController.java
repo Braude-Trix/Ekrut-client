@@ -441,8 +441,6 @@ public class LoginController implements Initializable{
          */
         @Override
         public void run() {
-            System.out.println("Another one");
-        	//While (true)
             while (!Thread.currentThread().isInterrupted()) {
                 List<Object> paramList = new ArrayList<>();
                 Request request = new Request();
@@ -471,11 +469,8 @@ public class LoginController implements Initializable{
                 }
                 try {
                     Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                	System.out.println(e.getMessage());
-                    Thread.currentThread().interrupt();
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                	System.out.println(e.getMessage());
                     Thread.currentThread().interrupt();
                 }
                 Client.MsgResFromServer = null;

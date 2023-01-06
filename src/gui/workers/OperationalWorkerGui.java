@@ -38,8 +38,8 @@ import models.ProductInMachine;
 import models.Regions;
 import models.Request;
 import models.ResponseCode;
+import models.StatusInMachine;
 import models.TaskStatus;
-import models.User;
 import models.Worker;
 import utils.ColorsAndFonts;
 import utils.Util;
@@ -49,9 +49,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -287,27 +286,6 @@ public class OperationalWorkerGui implements Initializable {
             }
             bottomBroderVbox.getChildren().add(msgLabel);
         }
-
-        private void requestOpenedTasks(List<InventoryFillTask> tasks) {
-            Request request = new Request();
-            request.setPath("/operationalWorker/getOpenedTasks");
-            request.setMethod(Method.GET);
-            List<Object> assignedWorker = new ArrayList<>();
-            assignedWorker.add(worker.getId());
-            request.setBody(assignedWorker);
-            ClientUI.chat.accept(request); // sending the request to the server.
-            if (Client.resFromServer.getCode() == ResponseCode.OK) {
-                List<Object> body = Client.resFromServer.getBody();
-                if (body == null)
-                    body = new ArrayList<>();
-                tasks.addAll(body.stream()
-                        .map(userObject -> (InventoryFillTask) userObject)
-                        .collect(Collectors.toList()));
-            } else {
-                Label msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
-                bottomBroderVbox.getChildren().add(msgLabel);
-            }
-        }
     }
 
     private class MachineInventory {
@@ -323,11 +301,11 @@ public class OperationalWorkerGui implements Initializable {
         private ComboBox<String> machineCombobox;
         private Button refreshBtn;
         private Button updateBtn;
-        //private VBox selectionVbox;
-        
-        private List<Object> products;
-        private List<Object> productsAmount;
-        
+        private List<Product> products = new ArrayList<>();
+        private List<ProductInMachine> productsAmount = new ArrayList<>();
+        private List<InventoryFillTask> tasksData;
+        private int chosenMachineThreshold;
+
 
         private void loadMachineInventory() {
             // Replacing background
@@ -373,7 +351,7 @@ public class OperationalWorkerGui implements Initializable {
             machineCombobox.valueProperty().addListener((obs, oldItem, newItem) -> onMachineSelect(oldItem, newItem));
             machineVbox.getChildren().addAll(machineLabel, machineCombobox);
 
-            loadAllRelevantMachinesAndRegions();
+            loadAllRelevantRegions();
             regionMachineHbox.getChildren().addAll(regionVbox, machineVbox);
 
             // creating refresh btn for refreshing table according to selections
@@ -432,15 +410,20 @@ public class OperationalWorkerGui implements Initializable {
                 machineCombobox.setStyle(ColorsAndFonts.ERROR_COMBO_BOX_COLOR);
             } else {
                 resetErrorsInForm();
+                chosenMachineThreshold = getMachineThreshold();
                 setTableData();
                 productsTable.setVisible(true);
                 updateBtn.setVisible(true);
             }
-
         }
 
         private void setDefaultMachineComboboxValues() {
-            // call to db and get list of machines with opened tasks in selected region
+            List<String> machines = tasksData.stream()
+                    .filter(inventoryFillTask -> inventoryFillTask.getRegion().toString().equals(regionCombobox.getValue()))
+                    .map(InventoryFillTask::getMachineName)
+                    .collect(Collectors.toList());
+            machineCombobox.getItems().clear();
+            machineCombobox.getItems().addAll(machines);
             machineCombobox.getSelectionModel().clearSelection();
         }
 
@@ -463,14 +446,16 @@ public class OperationalWorkerGui implements Initializable {
             }
         }
 
-        private void loadAllRelevantMachinesAndRegions() {
-            // todo: DB values here
-            List<String> dummyForRegion = Arrays.asList("North", "South", "UAE");
+        private void loadAllRelevantRegions() {
+            tasksData = new ArrayList<>();
+            requestOpenedTasks(tasksData);
+            List<String> regions = tasksData.stream()
+                    .map(InventoryFillTask::getRegion)
+                    .map(Enum::toString)
+                    .collect(Collectors.toList());
+
             regionCombobox.getItems().clear();
-            regionCombobox.getItems().addAll(dummyForRegion);
-            List<String> dummyForMachine = Arrays.asList("L 606", "M 2909", "EF 301", "P 404", "P 405");
-            machineCombobox.getItems().clear();
-            machineCombobox.getItems().addAll(dummyForMachine);
+            regionCombobox.getItems().addAll(regions);
         }
 
         private void configureTableData() {
@@ -484,9 +469,32 @@ public class OperationalWorkerGui implements Initializable {
             productNameColumn.setPrefWidth(150);
             currentAmountColumn.setPrefWidth(150);
         }
+
+        private Integer getSelectedMachineId() {
+            for (InventoryFillTask task : tasksData) {
+                if (task.getMachineName().equals(machineCombobox.getValue()) &&
+                        task.getRegion().toString().equals(regionCombobox.getValue())) {
+                    return task.getMachineId();
+                }
+            }
+            return null;
+        }
+
+        private InventoryFillTask getSelectedTaskIfStatusIsOpened() {
+            List<InventoryFillTask> openedTasksData = tasksData.stream()
+                    .filter(task -> task.getStatus().equals(TaskStatus.OPENED))
+                    .collect(Collectors.toList());
+
+            for (InventoryFillTask task : openedTasksData) {
+                if (task.getMachineName().equals(machineCombobox.getValue()) &&
+                        task.getRegion().toString().equals(regionCombobox.getValue())) {
+                    return task;
+                }
+            }
+            return null;
+        }
         
-        private ImageView receiveImageForProduct(Product product)
-        {
+        private ImageView receiveImageForProduct(Product product) {
         	if (product.getImage() == null)
         		return null;
         	Image image = new Image(new ByteArrayInputStream(product.getImage()));
@@ -497,25 +505,23 @@ public class OperationalWorkerGui implements Initializable {
         	return myImage;
         }
 
-        private void setTableData() { // todo: replace with server data
+        private void setTableData() {
             productsTable.getItems().clear();
-            products = new ArrayList<>();
-            productsAmount = new ArrayList<>();
-            getProductsInMachine("1");
+            Integer chosenMachineId = getSelectedMachineId();
+            if (chosenMachineId != null) {
+                getProductsInMachine(chosenMachineId.toString());
+            }
             List<ProductInMachineData> productsData = new ArrayList<>();
             Integer currentAmount = null;
-            for(Object product : products) {
-            	if (product instanceof Product) {
-            		for (Object productInMachine : productsAmount) {
-        				if(((ProductInMachine) productInMachine).getProductId().equals(((Product) product).getProductId())) {
-        					currentAmount = ((ProductInMachine) productInMachine).getAmount();
-        				}
-            		}
-            		Product currentProduct = (Product) product;
-            		ImageView currentProductImg = receiveImageForProduct(currentProduct);
-            		productsData.add(new ProductInMachineData(currentProductImg, currentProduct.getProductId(),
-            				currentProduct.getName(),currentAmount));
-            	}
+            for (Product product : products) {
+                for (ProductInMachine productInMachine : productsAmount) {
+                    if(productInMachine.getProductId().equals(product.getProductId())) {
+                        currentAmount = productInMachine.getAmount();
+                    }
+                }
+                ImageView currentProductImg = receiveImageForProduct(product);
+                productsData.add(new ProductInMachineData(
+                        currentProductImg, product.getProductId(), product.getName(), currentAmount));
             }
             productsTable.getItems().addAll(productsData);
         }
@@ -528,16 +534,16 @@ public class OperationalWorkerGui implements Initializable {
         	request.setMethod(Method.GET);
         	request.setBody(productsInMac);
         	ClientUI.chat.accept(request);
-        	
-        	switch(Client.resFromServer.getCode()) {
-        	case OK:
-        		products = Client.resFromServer.getBody();
-        		break;
-        	default:
-        		products = null;
-        		productsAmount = null;
-        		return;
-        	}
+
+            if (Client.resFromServer.getCode() == ResponseCode.OK) {
+                List<Object> body = Client.resFromServer.getBody();
+                if (body != null)
+                    products = body.stream()
+                            .map(productObject -> (Product) productObject)
+                            .collect(Collectors.toList());
+            } else {
+                return;
+            }
         	
         	List<Object> productsInMacAmount = new ArrayList<>();
         	productsInMacAmount.add(machineId);
@@ -546,20 +552,37 @@ public class OperationalWorkerGui implements Initializable {
         	request1.setMethod(Method.GET);
         	request1.setBody(productsInMacAmount);
         	ClientUI.chat.accept(request1);
-        	
-        	switch(Client.resFromServer.getCode()) {
-        	case OK:
-        		productsAmount = Client.resFromServer.getBody();
-        		break;
-        	default:
-        		break;
-        	}
+
+            if (Client.resFromServer.getCode() == ResponseCode.OK) {
+                List<Object> body = Client.resFromServer.getBody();
+                if (body != null)
+                    productsAmount = body.stream()
+                            .map(productObject -> (ProductInMachine) productObject)
+                            .collect(Collectors.toList());
+            }
+        }
+
+        private int getMachineThreshold() {
+            int threshold = -1;
+            List<Object> paramList = new ArrayList<>();
+            Request request = new Request();
+            request.setPath("/getMachineThreshold");
+            request.setMethod(Method.GET);
+            paramList.add(getSelectedMachineId());
+            request.setBody(paramList);
+            ClientUI.chat.accept(request);// sending the request to the server.
+            if (Client.resFromServer.getCode() == ResponseCode.OK) {
+                threshold = (Integer) Client.resFromServer.getBody().get(0);
+            } else {
+                System.out.println("Some error while retrieving machine threshold");
+            }
+            return threshold;
         }
         
         private void onUpdateClick() {
             if (bottomBroderVbox.getChildren().size() >= 2)
                 bottomBroderVbox.getChildren().remove(1);
-            Label msgLabel;
+            Label msgLabel = new Label();
 
             // if validations of input new amount is failing
             String validationResult = validateAmountIsLargerAndChanged();
@@ -569,17 +592,69 @@ public class OperationalWorkerGui implements Initializable {
                 msgLabel = WorkerNodesUtils.getCenteredContentLabel("The new total amount is above the " +
                         "machine capacity.\n\t\t  Please decrease total amount");
             } else { // validations of input new amount is ok
-                // if request is ok
-                boolean responseStatus = true;
-                if (responseStatus) {
-                    msgLabel = WorkerNodesUtils.getCenteredContentLabel("Machine inventory was updated successfully");
-                } else { // if some error
-                    msgLabel = WorkerNodesUtils.getCenteredContentLabel("Machine inventory couldn't update, Server error occurred");
+                postFillInventory();
+
+                if (Client.resFromServer.getCode() == ResponseCode.OK) {
+                    msgLabel = WorkerNodesUtils.getCenteredContentLabel(Client.resFromServer.getDescription());
+                    // updating task status to IN_PROGRESS
+                    InventoryFillTask task = getSelectedTaskIfStatusIsOpened();
+                    if (task != null) { // if task is not IN_PROGRESS
+                        task.setStatus(TaskStatus.IN_PROGRESS);
+                        if (!postNewTaskStatus(task)) // if setting was failed
+                            msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
+                    }
+                } else {
+                    msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
                 }
             }
             bottomBroderVbox.getChildren().add(msgLabel);
-            // todo: change status of task form opened to in progress to enable in tasks form finishing the task
-            // todo: reload new table content
+            chosenMachineThreshold = getMachineThreshold();
+            setTableData();
+        }
+
+        private List<ProductInMachine> getOnlyChangedProductsInMachine() {
+            List<ProductInMachine> newProductsInMachine = new ArrayList<>();
+            List<ProductInMachineData> onlyChangedProducts = productsTable.getItems().stream()
+                    .filter(productInMachineData ->
+                            !Objects.equals(productInMachineData.currentAmount,
+                                    Integer.valueOf(productInMachineData.newAmount.getText())))
+                    .collect(Collectors.toList());
+
+            for (ProductInMachineData item : onlyChangedProducts) {
+                String machineId = Objects.requireNonNull(getSelectedMachineId()).toString();
+                String productId = item.getId();
+                StatusInMachine statusInMachine;
+                int amount = Integer.parseInt(item.newAmount.getText());
+                if (amount >= getMachineThreshold())
+                    statusInMachine = StatusInMachine.Above;
+                else if (amount == 0)
+                    statusInMachine = StatusInMachine.Not_Available;
+                else
+                    statusInMachine = StatusInMachine.Below;
+                ProductInMachine newProduct = new ProductInMachine(machineId, productId, statusInMachine, amount);
+                newProductsInMachine.add(newProduct);
+            }
+            return newProductsInMachine;
+        }
+
+        private void postFillInventory() {
+            List<Object> newProductsInMachine = new ArrayList<>(getOnlyChangedProductsInMachine());
+            Request request = new Request();
+            request.setPath("/operationalWorker/fillInventory");
+            request.setMethod(Method.POST);
+            request.setBody(newProductsInMachine);
+            ClientUI.chat.accept(request);
+        }
+
+        private boolean postNewTaskStatus(InventoryFillTask task) {
+            List<Object> tasks = new ArrayList<>();
+            tasks.add(task);
+            Request request = new Request();
+            request.setPath("/operationalWorker/setInventoryTask");
+            request.setMethod(Method.PUT);
+            request.setBody(tasks);
+            ClientUI.chat.accept(request);
+            return Client.resFromServer.getCode() == ResponseCode.OK;
         }
 
         private String validateAmountIsLargerAndChanged() {
@@ -688,6 +763,27 @@ public class OperationalWorkerGui implements Initializable {
                     }
                 });
             }
+        }
+    }
+
+    private void requestOpenedTasks(List<InventoryFillTask> tasks) {
+        Request request = new Request();
+        request.setPath("/operationalWorker/getOpenedTasks");
+        request.setMethod(Method.GET);
+        List<Object> assignedWorker = new ArrayList<>();
+        assignedWorker.add(worker.getId());
+        request.setBody(assignedWorker);
+        ClientUI.chat.accept(request); // sending the request to the server.
+        if (Client.resFromServer.getCode() == ResponseCode.OK) {
+            List<Object> body = Client.resFromServer.getBody();
+            if (body == null)
+                body = new ArrayList<>();
+            tasks.addAll(body.stream()
+                    .map(taskObject -> (InventoryFillTask) taskObject)
+                    .collect(Collectors.toList()));
+        } else {
+            Label msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
+            bottomBroderVbox.getChildren().add(msgLabel);
         }
     }
 
