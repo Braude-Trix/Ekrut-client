@@ -165,6 +165,13 @@ public class BillWindowController implements Initializable {
         request.setMethod(Method.POST);
         UUID uuid = UUID.randomUUID();
         String orderId = uuid.toString();
+        if (NewOrderController.user instanceof Customer) {
+            CustomerType customerType = ((Customer) NewOrderController.user).getType();
+            if (customerType == CustomerType.Client)
+                orderId = "0" + orderId;
+            else if (customerType == CustomerType.Subscriber)
+                orderId = "1" + orderId;
+        }
         NewOrderController.previousOrder.setOrderId(orderId);
         orderList.add(NewOrderController.previousOrder);
         request.setBody(orderList);
