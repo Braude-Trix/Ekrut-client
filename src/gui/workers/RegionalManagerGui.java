@@ -477,9 +477,9 @@ public class RegionalManagerGui implements Initializable {
             } else {
             	if(sendOperationalWorkerTask(operationalWorkerComboBox.getValue(), currentMachineId))
                 // call to server to set new call for specified worker
-            		bottomVbox.add(getSuccessLabel(SUCCESSES_MSG));
+            		bottomVbox.add(getSuccessLabel(Client.resFromServer.getDescription()));
             	else
-            		bottomVbox.add(getErrorLabel(DB_ERROR_MSG));
+            		bottomVbox.add(getErrorLabel(Client.resFromServer.getDescription()));
             }
         }
     	
@@ -665,6 +665,9 @@ public class RegionalManagerGui implements Initializable {
                     .map(Integer::parseInt)
                     .collect(Collectors.toList());
             requestUpdatePendingUsers(confirmedIds);
+            for (Integer id : confirmedIds) {
+            	writeNewMsgToDB("You have been upgraded to 'Customer'. Please logout and login again.", worker.getId(), id);
+            }
 
             accountsTable.getItems().removeAll(confirmedAccounts);
             confirmedAccounts.clear();
@@ -692,6 +695,24 @@ public class RegionalManagerGui implements Initializable {
         private void cleanMessageLabel() {
             if (bottomBroderVbox.getChildren().size() > 1) {
                 bottomBroderVbox.getChildren().remove(1);
+            }
+        }
+        
+        private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
+            List<Object> paramList = new ArrayList<>();
+            Request request = new Request();
+            request.setPath("/postMsg");
+            request.setMethod(Method.POST);
+            paramList.add(msg);
+            paramList.add(fromCustomerId);
+            paramList.add(toCustomerId);
+            request.setBody(paramList);
+            ClientUI.chat.accept(request);// sending the request to the server.
+            switch (Client.resFromServer.getCode()) {
+                case OK:
+                    break;
+                default:
+                    System.out.println("Some error occurred");
             }
         }
 
