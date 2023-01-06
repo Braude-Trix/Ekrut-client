@@ -205,8 +205,8 @@ public class MarketingWorkerWindowController implements Initializable {
     @FXML
     private Label userRoleLabel;
 
-	@FXML
-	private ImageView backBtn;
+    @FXML
+	 private Button backBtn;
 
 	/**
 	 * runningSales ObserveableList, this is the list with all the running sales brought from db and showed in the running sales tableview.
@@ -289,7 +289,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	 * @param event - the current event when clicking.
 	 */
 	@FXML
-	void Back(MouseEvent event) {
+	void Back(ActionEvent event) {
 		Stage stage = StageSingleton.getInstance().getStage();
 		stage.setScene(SelectOptionWorkerOrCustomer.scene);
 		stage.show();

@@ -176,8 +176,10 @@ public class MarketingManagerController implements Initializable {
 	private Label salePreviewPlaceHolder;
 	@FXML
 	private Label usernameLabel;
-	@FXML
-	private ImageView backBtn;
+	
+	 @FXML
+	 private Button backBtn;
+
 	
     @FXML
     private Button logoutBtn;
@@ -282,13 +284,18 @@ private void setTextFormatterForTextAreaDescription() {
 
 	private void setBackBtnIfExist() {
 		if (LoginController.customerAndWorker != null) {
+			System.out.println("the user is both");
 			backBtn.setVisible(true);
 		}
 
 	}
-
+	
+	/**
+	 * This method is the actual back button, shoots onAction and changes the stage to be the selection page.
+	 * @param event - the current event when clicking.
+	 */
 	@FXML
-	void Back(MouseEvent event) {
+	void Back(ActionEvent event) {
 		Stage stage = StageSingleton.getInstance().getStage();
 		stage.setScene(SelectOptionWorkerOrCustomer.scene);
 		stage.show();
