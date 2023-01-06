@@ -2,6 +2,9 @@ package gui.workers;
 
 import client.Ceo;
 import gui.LoginController;
+import gui.SelectOptionWorkerOrCustomer;
+import gui.StageSingleton;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -63,6 +66,8 @@ public class CeoGui implements Initializable {
 
     @FXML
     VBox topBorderVBox;
+    @FXML
+	 private Button backBtn;
 
     @FXML
     private Label userRoleLabel;
@@ -134,8 +139,26 @@ public class CeoGui implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-    }
+		setBackBtnIfExists();
 
+    }
+    private void setBackBtnIfExists() {
+		if (LoginController.customerAndWorker != null) {
+			backBtn.setVisible(true);
+		}
+
+	}
+
+    /**
+	 * This method is the actual back button, shoots onAction and changes the stage to be the selection page.
+	 * @param event - the current event when clicking.
+	 */
+	@FXML
+	void back(ActionEvent event) {
+		Stage stage = StageSingleton.getInstance().getStage();
+		stage.setScene(SelectOptionWorkerOrCustomer.scene);
+		stage.show();
+	}
     private void enableAll() {
         managersBtn.setDisable(false);
         marketingWorkersBtn.setDisable(false);
