@@ -444,8 +444,11 @@ public class BillWindowController implements Initializable {
         BillReplaced = true;
         Parent root;
         Stage primaryStage = StageSingleton.getInstance().getStage();
-        if (restoreOrder.getPickUpMethod() == PickUpMethod.delivery || restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
+        if (restoreOrder.getPickUpMethod() == PickUpMethod.delivery || restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
+        	DeliveryFormController.scene = null;
+        	PickupController.scene = null;
             root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+        }
         else {
             root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
         }
