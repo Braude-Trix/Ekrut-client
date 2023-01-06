@@ -4,9 +4,12 @@ import client.Client;
 import client.ClientUI;
 import client.OperationalWorker;
 import gui.LoginController;
+import gui.SelectOptionWorkerOrCustomer;
+import gui.StageSingleton;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -92,6 +95,8 @@ public class OperationalWorkerGui implements Initializable {
 
     @FXML
     private Label userRoleLabel;
+    @FXML
+    private Button backBtn;
 
     /**
      * Initializing Operational Worker window
@@ -131,7 +136,25 @@ public class OperationalWorkerGui implements Initializable {
                 throw new RuntimeException(e);
             }
         });
+		setBackBtnIfExist();
+
     }
+    private void setBackBtnIfExist() {
+		if (LoginController.customerAndWorker != null) {
+			backBtn.setVisible(true);
+		}
+
+	}
+    /**
+	 * This method is the actual back button, shoots onAction and changes the stage to be the selection page.
+	 * @param event - the current event when clicking.
+	 */
+	@FXML
+	void back(ActionEvent event) {
+		Stage stage = StageSingleton.getInstance().getStage();
+		stage.setScene(SelectOptionWorkerOrCustomer.scene);
+		stage.show();
+	}
 
     private void enableAll() {
         myTasksBtn.setDisable(false);

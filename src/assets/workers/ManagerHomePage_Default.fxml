@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" stylesheets="@../../styles/worker_side_panel.css" xmlns="http://javafx.com/javafx/8.0.351" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.RegionalManagerGui">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" stylesheets="@../../styles/worker_side_panel.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.RegionalManagerGui">
    <children>
       <ImageView fx:id="bgImage" fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -91,6 +91,7 @@
                      </padding>
                   </Separator>
                   <Button fx:id="logoutBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Log out" />
+                  <Button fx:id="backBtn" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="200.0" text="Switch Customer/Worker" visible="false" />
                </children>
                <opaqueInsets>
                   <Insets />

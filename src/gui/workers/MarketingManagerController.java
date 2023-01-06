@@ -284,7 +284,6 @@ private void setTextFormatterForTextAreaDescription() {
 
 	private void setBackBtnIfExist() {
 		if (LoginController.customerAndWorker != null) {
-			System.out.println("the user is both");
 			backBtn.setVisible(true);
 		}
 

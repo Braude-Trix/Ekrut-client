@@ -4,6 +4,8 @@ package gui.workers;
 import client.Client;
 import client.ClientUI;
 import gui.LoginController;
+import gui.SelectOptionWorkerOrCustomer;
+import gui.StageSingleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -97,6 +99,10 @@ public class RegionalDeliveryController implements Initializable {
     private Label mainTitleLabel;
     @FXML
     private Label sideTitleLabel;
+
+    @FXML
+    private Button backBtn;
+
 
 
     @FXML
@@ -440,8 +446,27 @@ public class RegionalDeliveryController implements Initializable {
     	WorkerNodesUtils.setUserName(userNameLabel, worker);
         WorkerNodesUtils.setRole(userRoleLabel, worker.getRegion(), worker.getType());
         logoutBtn.setOnMouseClicked((event) -> System.out.println(event.getSource().toString()));
+		setBackBtnIfExist();
+
 
     }
+    private void setBackBtnIfExist() {
+		if (LoginController.customerAndWorker != null) {
+			backBtn.setVisible(true);
+		}
+
+	}
+    /**
+	 * This method is the actual back button, shoots onAction and changes the stage to be the selection page.
+	 * @param event - the current event when clicking.
+	 */
+	@FXML
+	void back(ActionEvent event) {
+		Stage stage = StageSingleton.getInstance().getStage();
+		stage.setScene(SelectOptionWorkerOrCustomer.scene);
+		stage.show();
+	}
+
 
 
     private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {

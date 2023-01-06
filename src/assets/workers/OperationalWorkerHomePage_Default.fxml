@@ -79,6 +79,7 @@
                      </padding>
                   </Separator>
                   <Button fx:id="logoutBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Log out" />
+                  <Button fx:id="backBtn" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="200.0" text="Switch Customer/Worker" visible="false" />
                </children>
                <opaqueInsets>
                   <Insets />
