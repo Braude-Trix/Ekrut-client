@@ -1,6 +1,8 @@
 package gui.workers;
 
 import client.Ceo;
+import client.Client;
+import client.ClientUI;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -17,7 +19,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import models.Method;
 import models.Regions;
+import models.Request;
+import models.Worker;
+import models.WorkerType;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
@@ -30,17 +36,16 @@ import java.util.List;
 public class CeoSelectWorker {
 
     static Stage popupDialog;
-    private static String chosenID;
-    private static String chosenName;
-    private static String chosenRegion;
     private TableView<WorkersData> workersTable;
     private TableColumn<WorkersData, String> marketWorkerIDCol;
     private TableColumn<WorkersData, String> marketWorkerNameCol;
     private TableColumn<WorkersData, String> marketWorkerRegionCol;
     private Button goToButton;
     private WorkersData selectedWorker;
+    
+    private List<Worker> workerSet;
 
-    void loadMyMarketWorkers() {
+    void loadMyWorkers() {
         // Replacing background
         WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", CeoGui.controller.bgImage);
 
@@ -86,6 +91,8 @@ public class CeoSelectWorker {
         // if we are on DELIVERY or MARKETING worker we add region
         if (CeoGui.chosenWorkerType.hasRegion())
             workersTable.getColumns().addAll(marketWorkerRegionCol);
+        workerSet = new ArrayList<>();
+        workerSet = getWorkersList(CeoGui.chosenWorkerType);
         configureTableData();
         setTableData();
 
@@ -103,6 +110,35 @@ public class CeoSelectWorker {
         goToButton.setOnMouseClicked(event -> onGoToClick());
         CeoGui.controller.bottomBroderVbox.getChildren().add(goToButton);
     }
+    
+    private List<Worker> getWorkersList(WorkerType workerType) {
+    	List<Worker> workerslist = new ArrayList<>();
+    	
+    	List<Object> workerReq = new ArrayList<>();
+    	workerReq.add(workerType);
+    	Request request = new Request();
+    	request.setPath("/workers/getWorkersByType");
+    	request.setMethod(Method.GET);
+    	request.setBody(workerReq);
+    	ClientUI.chat.accept(request);
+    	
+    	switch(Client.resFromServer.getCode()) {
+    	case OK:
+    		List<Object> myWorkers = Client.resFromServer.getBody();
+    		if (myWorkers == null)
+    			return null;
+        	for (Object worker : myWorkers) {
+        		if(worker instanceof Worker) {
+        			Worker currentWorker = (Worker) worker;
+        			workerslist.add(currentWorker);
+        		}
+        	}
+        	return workerslist;
+    	default:
+    		return null;
+    		
+    	}
+    }
 
     private void configureTableData() {
         marketWorkerIDCol.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -111,19 +147,10 @@ public class CeoSelectWorker {
             marketWorkerRegionCol.setCellValueFactory(new PropertyValueFactory<>("region"));
     }
 
-    private void setTableData() { // todo: replace with server data
+    private void setTableData() { 
         List<WorkersData> workerData = new ArrayList<>();
-        // todo: do a switch for CeoGui.workerType enum to go to specific DB from server
-        if (CeoGui.chosenWorkerType.hasRegion()) {
-            workerData.add(new WorkersData("318882800", "Elad", Regions.North));
-            workerData.add(new WorkersData("123456789", "David", Regions.South));
-            workerData.add(new WorkersData("987654321", "Snake", Regions.North));
-            workerData.add(new WorkersData("818181810", "Liquid", Regions.UAE));
-        } else {
-            workerData.add(new WorkersData("318882800", "Ratchet"));
-            workerData.add(new WorkersData("123456789", "Link"));
-            workerData.add(new WorkersData("987654321", "Yu"));
-            workerData.add(new WorkersData("818181810", "Gon"));
+        for(Worker worker : workerSet) {
+    		workerData.add(new WorkersData(worker));
         }
         workersTable.getItems().addAll(workerData);
     }
@@ -141,23 +168,17 @@ public class CeoSelectWorker {
     }
 
     private void onGoToClick() {
-        chosenID = selectedWorker.id;
-        chosenName = selectedWorker.name;
-        if (CeoGui.chosenWorkerType.hasRegion()) {
-            chosenRegion = selectedWorker.region;
-        }
 
         // choosing which work space we open
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
                 openWorkerPopup("/assets/workers/RegionalDeliveryHomePage_Default.fxml");
-                //openWorkerPopup(); todo: sync with DB
                 break;
             case MarketingWorker:
-                //openWorkerPopup(); todo: sync with DB
+            	openWorkerPopup("/assets/workers/MarketingWorkerWindow.fxml");
                 break;
             case ServiceOperator:
-                //openWorkerPopup(); todo: sync with DB
+            	openWorkerPopup("/assets/ServiceOperator.fxml");
                 break;
             case OperationalWorker:
                 openWorkerPopup("/assets/workers/OperationalWorkerHomePage_Default.fxml");
@@ -185,7 +206,7 @@ public class CeoSelectWorker {
         }
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
-        //setTitleForScene()
+
         popupDialog.setX(Ceo.primaryStage.getX() + 75);
         popupDialog.setY(Ceo.primaryStage.getY() + 75);
         popupDialog.setResizable(false);
@@ -196,20 +217,30 @@ public class CeoSelectWorker {
     private void setInitValuesInWorkerPopup() {
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
-                // todo: sync with delivery worker
+
                 RegionalDeliveryController.isCEOLogged = true;
+                RegionalDeliveryController.workerAccessByCeo = selectedWorker.worker;
+                popupDialog.setTitle("CEO - Delivery operator");
                 break;
             case ServiceOperator:
-                // todo: sync with service
+
+            	ServiceOperatorController.isCEOLogged = true;
+            	ServiceOperatorController.workerAccessByCeo = selectedWorker.worker;
+            	popupDialog.setTitle("CEO - Service operator");
                 break;
             case MarketingWorker:
-                // todo: sync with marketing
+
+            	MarketingWorkerWindowController.isCEOLogged = true;
+            	MarketingWorkerWindowController.workerAccessByCeo = selectedWorker.worker;
+            	popupDialog.setTitle("CEO - Marketing worker");
                 break;
             case OperationalWorker:
                 OperationalWorkerGui.isCEOLogged = true;
+                OperationalWorkerGui.workerAccessByCeo = selectedWorker.worker;
+                popupDialog.setTitle("CEO - Operational worker");
                 break;
             default:
-                System.out.println("oh nooooo!");
+                System.out.println("workerType was not defined");
         }
     }
 
@@ -217,45 +248,41 @@ public class CeoSelectWorker {
         // get the controller of the right worker
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
-                // todo: sync with delivery worker
                 RegionalDeliveryController.controller = loader.getController();
                 break;
             case ServiceOperator:
-                // todo: sync with service
                 break;
             case MarketingWorker:
-                // todo: sync with marketing
+            	MarketingWorkerWindowController.controller = loader.getController();
                 break;
             case OperationalWorker:
                 OperationalWorkerGui.controller = loader.getController();
                 break;
 
             default:
-                System.out.println("oh nooooo!");
+                System.out.println("workerType was not defined");
         }
     }
 
     // a class to hold the workers information
     public static class WorkersData {
-
+    	
+    	private final Worker worker;
         private final String id;
         private final String name;
         private final String region;
 
         // constructor for workers without a specific region
         // like service or operational workers
-        public WorkersData(String id, String name) {
-            this.id = id;
-            this.name = name;
-            this.region = null;
-        }
-
-        // constructor for workers with a specific region
-        // marketing and delivery workers
-        public WorkersData(String id, String name, Regions regionType) {
-            this.id = id;
-            this.name = name;
-            this.region = regionType.name();
+        
+        public WorkersData(Worker worker) {
+        	this.worker = worker;
+        	id = worker.getId().toString();
+        	name = worker.getFirstName() + " " + worker.getLastName();
+        	if(worker.getRegion() != null)
+        		region = worker.getRegion().name();
+        	else
+        		region = null;
         }
 
         public String getId() {
@@ -268,6 +295,10 @@ public class CeoSelectWorker {
 
         public String getRegion() {
             return region;
+        }
+        
+        public Worker getWorker() {
+        	return worker;
         }
     }
 }

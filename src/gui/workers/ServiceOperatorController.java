@@ -39,6 +39,8 @@ public class ServiceOperatorController implements Initializable {
 
     public static Scene scene;
     static Worker worker = (Worker) LoginController.user;
+    public static Worker workerAccessByCeo = null;
+    public static boolean isCEOLogged = false;
 
     @FXML
     private VBox UserData;
@@ -57,7 +59,9 @@ public class ServiceOperatorController implements Initializable {
 
     @FXML
     private Button checkIdButton;
-
+    
+    @FXML
+    private Button logoutBtn;
 
     @FXML
     private Label userNameLabel;
@@ -86,10 +90,16 @@ public class ServiceOperatorController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
+    	// fisher added -> if CEO clicked to view this worker's window
+    	// we remove logOut button and set current Worker as the one we get from CEO gui
+    	if(isCEOLogged) {
+			logoutBtn.setVisible(false);
+			worker = workerAccessByCeo;
+    	}
         WorkerNodesUtils.setUserName(userNameLabel, worker);
         WorkerNodesUtils.setRole(userRank, worker.getRegion(), worker.getType());
         setRegionsOnBox();
-        loadScreen();
+        checkIdButton.setOnMouseClicked(event -> IDFieldInserted());
     }
 
     private void setRegionsOnBox() {
@@ -132,26 +142,6 @@ public class ServiceOperatorController implements Initializable {
         });
     }
 
-
-    private String getWorkerName()
-    {
-        return (LoginController.user.getFirstName()+" "+LoginController.user.getLastName());
-    }
-
-//    private String getWorkerRank()
-//    {
-//        return "CEO OF FACEBOOK";
-//    }
-//
-
-
-    private void loadScreen()
-    {
-        userNameLabel.setText(getWorkerName());
-       // userRank.setText(getWorkerRank());
-
-        checkIdButton.setOnMouseClicked(event -> IDFieldInserted());
-    }
 
     private boolean isPending(Integer id)
     {

@@ -16,9 +16,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Regions;
+import models.Worker;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Gui controller for CEO selecting managers window
@@ -31,6 +33,9 @@ public class CeoSelectManagers {
     private Button managerUAEBtn;
     private Button managerMarketingBtn;
     private static ManagerType managerType;
+    private List<Worker> managerList;
+    private List<Worker> MakretManagerList;
+    private Worker selectedWorker;
 
     private enum ManagerType {
         NORTH, SOUTH, UAE, MARKET
@@ -85,12 +90,16 @@ public class CeoSelectManagers {
         managerUAEBtn = WorkerNodesUtils.createWide200Button("Regional Manager UAE");
         managerUAEBtn.setOnMouseClicked(event -> {
             managerType = ManagerType.UAE;
+            
             goToRegionManager();
         });
 
         managerMarketingBtn = WorkerNodesUtils.createWide200Button("Marketing Manager");
         //managerMarketingBtn.setOnMouseClicked(event -> onGoToMarket());
-        managerMarketingBtn.setOnMouseClicked(event -> System.out.println(event.getSource().toString()));
+        managerMarketingBtn.setOnMouseClicked(event -> {
+        	managerType = ManagerType.MARKET;
+        	goToMarketingManager();
+        });
 
         // adding buttons to 2nd HBox
         uaeAndMarketingHBox.getChildren().addAll(managerUAEBtn, managerMarketingBtn);
@@ -100,6 +109,10 @@ public class CeoSelectManagers {
 
         // add VBox to centerBroderVbox
         nodes.addAll(managersBtnVBox);
+    }
+    
+    private void goToMarketingManager() {
+    	openMangerPopup("/assets/workers/MarketingManagerWindow.fxml");
     }
 
     private void goToRegionManager() {
@@ -134,9 +147,11 @@ public class CeoSelectManagers {
 
     private void setInitValuesInManagerPopup() {
         if (managerType == ManagerType.MARKET) {
-            // todo: sync with marketing manager
+            MarketingManagerController.isCEOLogged = true;
+            popupDialog.setTitle("CEO - Marketing Manager");
         } else {
             RegionalManagerGui.isCEOLogged = true;
+            popupDialog.setTitle("CEO - Regional Manager");
         }
 
         switch (managerType) {
@@ -150,7 +165,6 @@ public class CeoSelectManagers {
                 RegionalManagerGui.region = Regions.UAE;
                 break;
             case MARKET:
-                // todo: sync with marketing manager
                 break;
         }
     }
@@ -158,7 +172,7 @@ public class CeoSelectManagers {
     private void setControllerManagerPopup(FXMLLoader loader) {
         // in case of any regional manger, get RegionalGui.controller
         if (managerType == ManagerType.MARKET) {
-            // todo: sync with marketing manager
+            MarketingManagerController.controller = loader.getController();
         } else
             RegionalManagerGui.controller = loader.getController();
     }
