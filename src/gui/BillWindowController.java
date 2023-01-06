@@ -532,7 +532,7 @@ public class BillWindowController implements Initializable {
                     return;
                 }
                 if (BillReplaced) {
-                    System.out.println("Thread closed");
+                    System.out.println("Thread closed from " + getClass().toString());
                     return;
                 }
                 try {
