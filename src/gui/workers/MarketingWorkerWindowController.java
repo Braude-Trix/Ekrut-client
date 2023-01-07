@@ -229,13 +229,14 @@ public class MarketingWorkerWindowController implements Initializable {
 		if (isCEOLogged) {
 			logOutBtn.setVisible(false);
 			worker = workerAccessByCeo;
-		}
+		} else
+			setBackBtnIfExists();
+
 		initRunningSalesTable();
 		initReadyForStartSalesTable();
 		addButtonsToReadyToStartTable();
 		initButtons();
 		setUsernameLabels();
-		setBackBtnIfExists();
 
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 		saleDescriptionTxt1.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");

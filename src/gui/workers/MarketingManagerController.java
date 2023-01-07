@@ -213,14 +213,15 @@ public class MarketingManagerController implements Initializable {
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		if (isCEOLogged)
             logoutBtn.setVisible(false);
-		
+		else
+			setBackBtnIfExist();
+
 		setRegionComboBox();
 		setHoursComboBox();
 		setTypeSaleComboBox();
 		setDatePicker();
 		initSaleTemplateTable();
 		setUsernameLabel();
-		setBackBtnIfExist();
 		addButtonsToSaleTemplatesTable();
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 		setTextFormatterForTextAreaDescription();

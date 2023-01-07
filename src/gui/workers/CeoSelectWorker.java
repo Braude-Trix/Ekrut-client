@@ -1,8 +1,8 @@
 package gui.workers;
 
-import client.Ceo;
 import client.Client;
 import client.ClientUI;
+import gui.StageSingleton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -20,7 +20,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Method;
-import models.Regions;
 import models.Request;
 import models.Worker;
 import models.WorkerType;
@@ -189,9 +188,10 @@ public class CeoSelectWorker {
     }
 
     private void openWorkerPopup(String fxmlPath) {
+        Stage primaryStage = StageSingleton.getInstance().getStage();
         popupDialog = new Stage();
         popupDialog.initModality(Modality.APPLICATION_MODAL);
-        popupDialog.initOwner(Ceo.primaryStage);
+        popupDialog.initOwner(primaryStage);
 
         AnchorPane anchorPane;
         try {
@@ -207,8 +207,8 @@ public class CeoSelectWorker {
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
 
-        popupDialog.setX(Ceo.primaryStage.getX() + 75);
-        popupDialog.setY(Ceo.primaryStage.getY() + 75);
+        popupDialog.setX(primaryStage.getX() + 75);
+        popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);
         popupDialog.show();
     }

@@ -1,6 +1,6 @@
 package gui.workers;
 
-import client.Ceo;
+import gui.StageSingleton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -120,9 +120,10 @@ public class CeoSelectManagers {
     }
 
     private void openMangerPopup(String fxmlPath) {
+        Stage primaryStage = StageSingleton.getInstance().getStage();
         popupDialog = new Stage();
         popupDialog.initModality(Modality.APPLICATION_MODAL);
-        popupDialog.initOwner(Ceo.primaryStage);
+        popupDialog.initOwner(primaryStage);
 
         AnchorPane anchorPane;
         try {
@@ -139,8 +140,8 @@ public class CeoSelectManagers {
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
 
-        popupDialog.setX(Ceo.primaryStage.getX() + 75);
-        popupDialog.setY(Ceo.primaryStage.getY() + 75);
+        popupDialog.setX(primaryStage.getX() + 75);
+        popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);
         popupDialog.show();
     }

@@ -1,6 +1,5 @@
 package gui.workers;
 
-import client.Ceo;
 import gui.LoginController;
 import gui.SelectOptionWorkerOrCustomer;
 import gui.StageSingleton;
@@ -179,7 +178,6 @@ public class CeoGui implements Initializable {
      * @param primaryStage - Singleton in our program
      */
     public void start(Stage primaryStage) {
-        Ceo.primaryStage = primaryStage;
         AnchorPane anchorPane;
         try {
             FXMLLoader loader = new FXMLLoader();

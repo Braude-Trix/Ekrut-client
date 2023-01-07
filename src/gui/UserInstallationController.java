@@ -84,10 +84,10 @@ public class UserInstallationController implements Initializable {
 	public void start(Stage primaryStage) throws Exception {
 		
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/UserInstallation.fxml"));
-				
+
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/userInstallation.css").toExternalForm());
-		primaryStage.setTitle("Install Window");
+		primaryStage.setTitle("Installation Window");
 		primaryStage.setScene(scene);
 		primaryStage.centerOnScreen();
 		primaryStage.setResizable(false);

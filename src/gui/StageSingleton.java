@@ -3,7 +3,7 @@ package gui;
 import javafx.stage.Stage;
 
 public class StageSingleton {
-//stage singletone class, implements the Singletone design pattern - working with only one stage as main stage.
+// stage singleton class, implements the Singleton design pattern - working with only one stage as main stage.
 
 	private static StageSingleton single_instance = null;
 	private Stage primaryStage;
@@ -28,5 +28,4 @@ public class StageSingleton {
 	public Stage getStage() {
 		return this.primaryStage;
 	}
-
 }
