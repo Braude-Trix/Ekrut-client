@@ -490,7 +490,7 @@ public class RegionalManagerGui implements Initializable {
     		workerTask.add(machineId);
     		Request request = new Request();
     		request.setPath("/workers/setOpenTask");
-    		request.setMethod(Method.PUT);
+    		request.setMethod(Method.POST);
     		request.setBody(workerTask);
     		ClientUI.chat.accept(request);
     		switch(Client.resFromServer.getCode()) {

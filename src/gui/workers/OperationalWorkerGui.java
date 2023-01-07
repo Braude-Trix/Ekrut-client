@@ -273,18 +273,70 @@ public class OperationalWorkerGui implements Initializable {
             if (bottomBroderVbox.getChildren().size() >= 3)
                 bottomBroderVbox.getChildren().remove(2);
             Label msgLabel;
+            selectedTask.setStatus(TaskStatus.CLOSED);
+            Integer managerID;
+            if(getRegionalIdByRegion(selectedTask.getRegion())) {
+            	managerID = (Integer) Client.resFromServer.getBody().get(0);
+            }
+            else {
+            	msgLabel = WorkerNodesUtils.getCenteredContentLabel(Client.resFromServer.getDescription());
+            	bottomBroderVbox.getChildren().add(msgLabel);
+            	return;
+            }
             // todo: call to server and change status to closed
             // if request is ok
-            boolean responseStatus = true;
-            if (responseStatus) {
+            if (postNewTaskStatus(selectedTask)) {
                 msgLabel = WorkerNodesUtils.getCenteredContentLabel("Task for machine " +
                         selectedTask.getMachineName() + " was closed successfully");
                 openedTasksTable.getItems().remove(selectedTask);
+                writeNewMsgToDB("Task for machine: " + selectedTask.getMachineName() + "\nis done by Operational worker: " + 
+                worker.getFirstName() + " " + worker.getLastName()
+                		, worker.getId(), managerID);
             } else { // if some error
                 msgLabel = WorkerNodesUtils.getCenteredContentLabel("Task for machine " +
                         selectedTask.getMachineName() + " couldn't close, Server error occurred");
             }
             bottomBroderVbox.getChildren().add(msgLabel);
+        }
+        
+        private boolean getRegionalIdByRegion(Regions taskRegion) {
+        	List<Object> getIdRegion = new ArrayList<>();
+        	getIdRegion.add(taskRegion);
+        	Request request = new Request();
+        	request.setPath("/workers/getRegionalManagerIdByRegion");
+        	request.setMethod(Method.GET);
+        	request.setBody(getIdRegion);
+        	ClientUI.chat.accept(request);
+        	return Client.resFromServer.getCode() == ResponseCode.OK;
+        }
+        
+        private boolean postNewTaskStatus(InventoryFillTask task) {
+            List<Object> tasks = new ArrayList<>();
+            tasks.add(task);
+            Request request = new Request();
+            request.setPath("/operationalWorker/setInventoryTask");
+            request.setMethod(Method.PUT);
+            request.setBody(tasks);
+            ClientUI.chat.accept(request);
+            return Client.resFromServer.getCode() == ResponseCode.OK;
+        }
+        
+        private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
+            List<Object> paramList = new ArrayList<>();
+            Request request = new Request();
+            request.setPath("/postMsg");
+            request.setMethod(Method.POST);
+            paramList.add(msg);
+            paramList.add(fromCustomerId);
+            paramList.add(toCustomerId);
+            request.setBody(paramList);
+            ClientUI.chat.accept(request);// sending the request to the server.
+            switch (Client.resFromServer.getCode()) {
+                case OK:
+                    break;
+                default:
+                    System.out.println("Some error occurred");
+            }
         }
     }
 
