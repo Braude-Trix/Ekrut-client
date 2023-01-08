@@ -2,7 +2,6 @@ package gui.workers;
 
 import client.Client;
 import client.ClientUI;
-import client.RegionalManager;
 import gui.LoginController;
 import gui.SelectOptionWorkerOrCustomer;
 import gui.StageSingleton;
@@ -122,6 +121,8 @@ public class RegionalManagerGui implements Initializable {
 
 		if (isCEOLogged) 
 			logoutBtn.setVisible(false);
+        else
+            setBackBtnIfExist();
     	
         // setting username and region
         WorkerNodesUtils.setUserName(userNameLabel, worker);
@@ -164,7 +165,6 @@ public class RegionalManagerGui implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-        setBackBtnIfExist();
     }
 
     private void setBackBtnIfExist() {
@@ -754,7 +754,6 @@ public class RegionalManagerGui implements Initializable {
      * @param primaryStage - Singleton stage
      */
     public void start(Stage primaryStage) {
-        RegionalManager.primaryStage = primaryStage;
         AnchorPane anchorPane;
         try {
             FXMLLoader loader = new FXMLLoader();

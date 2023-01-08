@@ -2,7 +2,7 @@ package gui.workers;
 
 import client.Client;
 import client.ClientUI;
-import client.RegionalManager;
+import gui.StageSingleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +24,6 @@ import models.Method;
 import models.OrdersReport;
 import models.Regions;
 import models.Request;
-import models.ResponseCode;
 import models.UsersReport;
 import utils.ColorsAndFonts;
 import utils.WorkerNodesUtils;
@@ -248,9 +247,10 @@ public class SelectReportGui {
     }
 
     private void openReportPopup(String fxmlPath) {
+        Stage primaryStage = StageSingleton.getInstance().getStage();
         popupDialog = new Stage();
         popupDialog.initModality(Modality.APPLICATION_MODAL);
-        popupDialog.initOwner(RegionalManager.primaryStage);
+        popupDialog.initOwner(primaryStage);
 
         AnchorPane anchorPane;
         try {

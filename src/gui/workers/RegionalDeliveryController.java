@@ -441,12 +441,13 @@ public class RegionalDeliveryController implements Initializable {
         if (isCEOLogged) {
             logoutBtn.setVisible(false);
             worker = workerAccessByCeo;
-        }
+        } else
+            setBackBtnIfExist();
+
         staticRegion = worker.getRegion().toString();
     	WorkerNodesUtils.setUserName(userNameLabel, worker);
         WorkerNodesUtils.setRole(userRoleLabel, worker.getRegion(), worker.getType());
         logoutBtn.setOnMouseClicked((event) -> System.out.println(event.getSource().toString()));
-		setBackBtnIfExist();
 
 
     }

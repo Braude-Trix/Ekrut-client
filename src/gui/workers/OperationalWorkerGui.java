@@ -2,7 +2,6 @@ package gui.workers;
 
 import client.Client;
 import client.ClientUI;
-import client.OperationalWorker;
 import gui.LoginController;
 import gui.SelectOptionWorkerOrCustomer;
 import gui.StageSingleton;
@@ -21,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,7 +29,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import models.InventoryFillTask;
 import models.Method;
@@ -194,8 +196,21 @@ public class OperationalWorkerGui implements Initializable {
             VBox.setVgrow(tasksTableVBox, Priority.ALWAYS);
             tasksTableVBox.setPadding(new Insets(20, 0, 5, 0));
 
+            HBox titleHBox = new HBox();
+            titleHBox.setPadding(new Insets(0, 32, 0, 26));
+            titleHBox.setAlignment(Pos.CENTER);
             // Creating Labels for instructions
-            Label aboveTableLabel = WorkerNodesUtils.getCenteredContentLabel("choose a task to work on");
+            Label aboveTableLabel = WorkerNodesUtils.getCenteredContentLabel("Choose a task to work on");
+
+            Region regionBetweenSpacer = new Region();
+            HBox.setHgrow(regionBetweenSpacer, Priority.ALWAYS);
+
+            // Creating 'refresh' table button
+            Button refreshButton = new Button("Refresh");
+            refreshButton.setPrefHeight(30);
+            refreshButton.setMaxHeight(refreshButton.getPrefHeight());
+            refreshButton.setOnMouseClicked(event -> onRefreshClick());
+            titleHBox.getChildren().addAll(aboveTableLabel, regionBetweenSpacer, refreshButton);
 
             // Creating TableView tasksTable
             openedTasksTable = WorkerNodesUtils.getTableView(InventoryFillTask.class);
@@ -211,7 +226,7 @@ public class OperationalWorkerGui implements Initializable {
                     machineNameColumn, statusColumn);
 
             // Adding Labels, tasksTable to accountsTableVBox
-            tasksTableVBox.getChildren().addAll(aboveTableLabel, openedTasksTable);
+            tasksTableVBox.getChildren().addAll(titleHBox, openedTasksTable);
             nodes.addAll(tasksTableVBox);
             setOnCellClicked();
 
@@ -244,7 +259,12 @@ public class OperationalWorkerGui implements Initializable {
         private void setTableData() {
             List<InventoryFillTask> tasksData = new ArrayList<>();
             requestOpenedTasks(tasksData);
+            openedTasksTable.getItems().clear();
             openedTasksTable.getItems().addAll(tasksData);
+        }
+
+        private void onRefreshClick() {
+            setTableData();
         }
 
         private void setOnCellClicked() {
@@ -352,6 +372,7 @@ public class OperationalWorkerGui implements Initializable {
         private ComboBox<String> regionCombobox;
         private ComboBox<String> machineCombobox;
         private Button refreshBtn;
+        private HBox instructionsHBox;
         private Button updateBtn;
         private List<Product> products = new ArrayList<>();
         private List<ProductInMachine> productsAmount = new ArrayList<>();
@@ -429,8 +450,22 @@ public class OperationalWorkerGui implements Initializable {
                     currentAmountColumn, newAmountColumn);
             configureTableData();
 
-            // Adding Labels, tasksTable to accountsTableVBox
-            inventoryTableVBox.getChildren().addAll(selectionVbox, productsTable);
+            // color instructions
+            instructionsHBox = new HBox();
+            instructionsHBox.setVisible(false);
+            instructionsHBox.setSpacing(5);
+            instructionsHBox.setAlignment(Pos.TOP_LEFT);
+            instructionsHBox.setPadding(new Insets(0, 0, 0, 22));
+            Label red = new Label("Unavailable");
+            Label yellow = new Label("Below threshold");
+            Circle redCircle = new Circle(8, 8, 8);
+            redCircle.setFill(javafx.scene.paint.Color.rgb(255,153,102));
+            Circle yellowCircle = new Circle(8, 8, 8);
+            yellowCircle.setFill(javafx.scene.paint.Color.rgb(255,204,0));
+            instructionsHBox.getChildren().addAll(redCircle, red, yellowCircle, yellow);
+
+            // Adding Labels, tasksTable, instructionsHBox to accountsTableVBox
+            inventoryTableVBox.getChildren().addAll(selectionVbox, productsTable, instructionsHBox);
             nodes.addAll(inventoryTableVBox);
 
             // Creating 'update' for finishing filling inventory button
@@ -465,6 +500,7 @@ public class OperationalWorkerGui implements Initializable {
                 chosenMachineThreshold = getMachineThreshold();
                 setTableData();
                 productsTable.setVisible(true);
+                instructionsHBox.setVisible(true);
                 updateBtn.setVisible(true);
             }
         }
@@ -575,9 +611,26 @@ public class OperationalWorkerGui implements Initializable {
                 productsData.add(new ProductInMachineData(
                         currentProductImg, product.getProductId(), product.getName(), currentAmount));
             }
+            setTableColorRows();
             productsTable.getItems().addAll(productsData);
         }
-        
+
+        private void setTableColorRows() {
+            productsTable.setRowFactory(tv -> new TableRow<ProductInMachineData>() {
+                @Override
+                public void updateItem(ProductInMachineData item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null) {
+                        setStyle("");
+                    } else if (item.currentAmount == 0) {
+                        setStyle("-fx-background-color: rgb(255,153,102);");
+                    } else if (item.currentAmount < chosenMachineThreshold) {
+                        setStyle("-fx-background-color: rgb(255,204,0);");
+                    }
+                }
+            });
+        }
+
         private void getProductsInMachine(String machineId) {
         	List<Object> productsInMac = new ArrayList<>();
         	productsInMac.add(machineId);
@@ -658,10 +711,10 @@ public class OperationalWorkerGui implements Initializable {
                 } else {
                     msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
                 }
+                chosenMachineThreshold = getMachineThreshold();
+                setTableData();
             }
             bottomBroderVbox.getChildren().add(msgLabel);
-            chosenMachineThreshold = getMachineThreshold();
-            setTableData();
         }
 
         private List<ProductInMachine> getOnlyChangedProductsInMachine() {
@@ -844,7 +897,6 @@ public class OperationalWorkerGui implements Initializable {
      * @param primaryStage - Singleton stage
      */
     public void start(Stage primaryStage) {
-        OperationalWorker.primaryStage = primaryStage;
         AnchorPane anchorPane;
         try {
             FXMLLoader loader = new FXMLLoader();
