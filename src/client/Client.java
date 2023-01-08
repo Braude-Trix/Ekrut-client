@@ -8,6 +8,7 @@ import gui.workers.CeoSelectManagers;
 import gui.workers.CeoSelectWorker;
 import gui.workers.SelectReportGui;
 import javafx.application.Platform;
+import models.Request;
 import models.Response;
 import ocsf.client.AbstractClient;
 
@@ -53,15 +54,17 @@ public class Client extends AbstractClient {
 	 * @param msg The message from the server.
 	 */
 	public void handleMessageFromServer(Object msg) {
-
-		//////
-		List<Object> listObject = ((Response)msg).getBody();
-		if(listObject != null && listObject.get(0) instanceof String && listObject.get(0).toString().equals("Msg"))
-			MsgResFromServer = (Response)msg;
-		else
-			resFromServer = (Response) msg;
+		Response response = (Response) msg;
+		List<Object> listObject = response.getBody();
+		if(listObject != null && listObject.get(0) instanceof String && listObject.get(0).toString().equals("Msg")) {
+			MsgResFromServer = response;
+			System.out.printf("[Messages] Got status %s as response from Server%n", response.getCode());
+		}
+		else {
+			resFromServer = response;
+			System.out.printf("Got status %s as response from Server%n", response.getCode());
+		}
 		awaitResponse = false;
-		System.out.println("Got response from server");
 	}
 
 	/**
@@ -76,7 +79,9 @@ public class Client extends AbstractClient {
 			awaitResponse = true;
 
 			sendToServer(message);
-			System.out.println("Sent Request To Server");
+			Request request = (Request) message;
+			String req_type = String.format("Sent %s Request of %s To Server", request.getMethod(), request.getPath());
+			System.out.println(req_type);
 			// wait for response
 			while (awaitResponse) {
 				try {

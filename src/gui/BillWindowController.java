@@ -23,7 +23,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import logic.Messages;
 import models.*;
 import utils.Util;
@@ -425,6 +428,18 @@ public class BillWindowController implements Initializable {
         popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
         popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
         popupDialog.show();
+        playThanksForBuyingVoice();
+    }
+
+    private void playThanksForBuyingVoice() {
+        String audioFile = Objects.requireNonNull(getClass().getResource("/assets/sounds/thanks.mp3")).toString();
+        Media media = new Media(audioFile);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.totalDurationProperty().addListener((observable, oldDuration, newDuration) -> {
+            if (newDuration.greaterThan(Duration.ONE)) {
+                mediaPlayer.play();
+            }
+        });
     }
 
     private void returnToMainPage() throws IOException {

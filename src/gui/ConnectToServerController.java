@@ -13,6 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import logic.EndOfMonthTask;
+
 import java.io.IOException;
 
 /*
@@ -78,12 +80,15 @@ public class ConnectToServerController {
         ClientConfiguration clientConfig = new ClientConfiguration(txtHost.getText(),
                 Integer.parseInt(txtPort.getText()));
         try {
-            //try connect to server
+            //try to connect to server
             ClientUI.chat = new ClientController(clientConfig.getHost(), clientConfig.getPort());
         } catch (Exception e) {
             HandleConnectionError();
             return;
         }
+        // starting reports creation thread
+        Thread reportsThread = new Thread(new EndOfMonthTask());
+        reportsThread.start();
 
         UserInstallationController UserCon = new UserInstallationController();
 		Stage stage = StageSingleton.getInstance().getStage();
