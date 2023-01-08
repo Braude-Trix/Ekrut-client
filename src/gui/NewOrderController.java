@@ -108,9 +108,9 @@ public class NewOrderController implements Initializable {
         Parent root;
         Stage primaryStage = StageSingleton.getInstance().getStage();
         if (LoginController.order.getPickUpMethod() == PickUpMethod.delivery || LoginController.order.getPickUpMethod() == PickUpMethod.latePickUp)
-            root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/assets/fxmls/OLMain.fxml"));
         else{
-            root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/assets/fxmls/EKMain.fxml"));
         }
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
@@ -119,8 +119,6 @@ public class NewOrderController implements Initializable {
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setMinHeight(primaryStage.getHeight());
-        primaryStage.setMinWidth(primaryStage.getWidth());
     }
 
 

@@ -181,7 +181,7 @@ public class CeoGui implements Initializable {
         AnchorPane anchorPane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/assets/workers/CeoHomePage_Default.fxml"));
+            loader.setLocation(getClass().getResource("/assets/workers/fxmls/CeoHomePage_Default.fxml"));
             anchorPane = loader.load();
             CeoGui.controller = loader.getController();
         } catch (IOException e) {

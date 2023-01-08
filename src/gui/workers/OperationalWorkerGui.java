@@ -33,6 +33,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import logic.Messages;
 import models.InventoryFillTask;
 import models.Method;
 import models.Product;
@@ -309,7 +310,7 @@ public class OperationalWorkerGui implements Initializable {
                 msgLabel = WorkerNodesUtils.getCenteredContentLabel("Task for machine " +
                         selectedTask.getMachineName() + " was closed successfully");
                 openedTasksTable.getItems().remove(selectedTask);
-                writeNewMsgToDB("Task for machine: " + selectedTask.getMachineName() + "\nis done by Operational worker: " + 
+                Messages.writeNewMsgToDB("Task for machine: " + selectedTask.getMachineName() + "\nis done by Operational worker: " +
                 worker.getFirstName() + " " + worker.getLastName()
                 		, worker.getId(), managerID);
             } else { // if some error
@@ -339,24 +340,6 @@ public class OperationalWorkerGui implements Initializable {
             request.setBody(tasks);
             ClientUI.chat.accept(request);
             return Client.resFromServer.getCode() == ResponseCode.OK;
-        }
-        
-        private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
-            List<Object> paramList = new ArrayList<>();
-            Request request = new Request();
-            request.setPath("/postMsg");
-            request.setMethod(Method.POST);
-            paramList.add(msg);
-            paramList.add(fromCustomerId);
-            paramList.add(toCustomerId);
-            request.setBody(paramList);
-            ClientUI.chat.accept(request);// sending the request to the server.
-            switch (Client.resFromServer.getCode()) {
-                case OK:
-                    break;
-                default:
-                    System.out.println("Some error occurred");
-            }
         }
     }
 
@@ -900,7 +883,7 @@ public class OperationalWorkerGui implements Initializable {
         AnchorPane anchorPane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/assets/workers/OperationalWorkerHomePage_Default.fxml"));
+            loader.setLocation(getClass().getResource("/assets/workers/fxmls/OperationalWorkerHomePage_Default.fxml"));
             anchorPane = loader.load();
             OperationalWorkerGui.controller = loader.getController();
         } catch (IOException e) {

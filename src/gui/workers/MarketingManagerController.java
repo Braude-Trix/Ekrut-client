@@ -260,7 +260,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/MarketingManagerWindow.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/MarketingManagerWindow.fxml"));
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/table_style.css").toExternalForm());

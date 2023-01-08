@@ -1,5 +1,6 @@
 package utils;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -7,9 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import models.Regions;
 import models.Worker;
 import models.WorkerType;
@@ -110,5 +113,21 @@ public final class WorkerNodesUtils {
         button.setMaxSize(button.getPrefWidth(), button.getPrefHeight());
         button.setText(btnName);
         return button;
+    }
+
+    static class Delta {
+        double x, y;
+    }
+    public static void setStageMovable(Stage stage) {
+        final Delta dragDelta = new Delta();
+        stage.getScene().setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = stage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = stage.getY() - mouseEvent.getScreenY();
+        });
+        stage.getScene().setOnMouseDragged(mouseEvent -> {
+            stage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            stage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
     }
 }

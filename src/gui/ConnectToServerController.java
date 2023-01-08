@@ -44,7 +44,7 @@ public class ConnectToServerController {
 	 *                    problem with the window that opens
 	 */
     public static void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(ConnectToServerController.class.getResource("/assets/ConnectToServer.fxml"));
+        Parent root = FXMLLoader.load(ConnectToServerController.class.getResource("/assets/fxmls/ConnectToServer.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Connect To Server");
         primaryStage.setScene(scene);

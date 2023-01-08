@@ -16,7 +16,7 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="950.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@NewOrder.jpg" />
+            <Image url="@../NewOrder.jpg" />
          </image>
       </ImageView>
       <VBox alignment="CENTER" layoutX="295.0" prefHeight="419.0" prefWidth="307.0">
@@ -45,7 +45,7 @@
                            <children>
                               <ImageView fitHeight="36.0" fitWidth="36.0">
                                  <image>
-                                    <Image url="@checked.png" />
+                                    <Image url="@../checked.png" />
                                  </image>
                               </ImageView>
                               <Label prefHeight="58.0" prefWidth="259.0" text="Approved! please wait while EK-op is &#10;bringing you your product" textFill="#0bb733">
@@ -103,7 +103,7 @@
          <children>
             <ImageView fitHeight="36.0" fitWidth="36.0">
                <image>
-                  <Image url="@avaaarrrr.png" />
+                  <Image url="@../avaaarrrr.png" />
                </image>
             </ImageView>
             <Label fx:id="labelName">

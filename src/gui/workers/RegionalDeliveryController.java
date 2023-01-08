@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import logic.Messages;
 import models.*;
 import utils.Util;
 import utils.WorkerNodesUtils;
@@ -115,15 +116,13 @@ public class RegionalDeliveryController implements Initializable {
      */
     public void start(Stage primaryStage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/RegionalDeliveryHomePage_Default.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/RegionalDeliveryHomePage_Default.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Regional Manager");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setMinHeight(primaryStage.getHeight());
-        primaryStage.setMinWidth(primaryStage.getWidth());
         primaryStage.setOnCloseRequest(e -> {
             try {
                 forcedExit();
@@ -468,26 +467,6 @@ public class RegionalDeliveryController implements Initializable {
 		stage.show();
 	}
 
-
-
-    private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/postMsg");
-        request.setMethod(Method.POST);
-        paramList.add(msg);
-        paramList.add(fromCustomerId);
-        paramList.add(toCustomerId);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println("Some error occurred");
-        }
-    }
-
     private void updateOrderStatus(String orderId, OrderStatus orderStatus) {
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
@@ -521,7 +500,7 @@ public class RegionalDeliveryController implements Initializable {
                     LocalDate newDeliveryDate = date.plusDays(7);
                     String formattedDate = newDeliveryDate.format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
                     msg = StyleConstants.HEADER_MSG_TO_CLIENT + orderId + StyleConstants.AFTER_HEADER_MSG_TO_CLIENT + formattedDate + StyleConstants.FOOTER_HEADER_MSG_TO_CLIENT + deliveryAddress;
-                    writeNewMsgToDB(msg, myId, requestCustomerId(orderId));
+                    Messages.writeNewMsgToDB(msg, myId, requestCustomerId(orderId));
                     PendingDeliveryTableListToRemove.add(PendingDeliveryTable);
                 }
             }

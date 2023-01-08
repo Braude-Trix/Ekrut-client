@@ -84,7 +84,7 @@ public class EKController implements Initializable {
 	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/EKMain.fxml"));
 				
 		Scene scene = new Scene(root);
 		this.scene = scene;

@@ -20,7 +20,7 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Tavlaot.jpg" />
+            <Image url="@../Tavlaot.jpg" />
          </image>
       </ImageView>
       <HBox layoutX="23.0" layoutY="96.0" prefHeight="358.0" prefWidth="854.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="23.0">
@@ -37,7 +37,7 @@
                      <graphic>
                         <ImageView fitHeight="40.0" fitWidth="40.0">
                            <image>
-                              <Image url="@delivery-status.png" />
+                              <Image url="@../delivery-status.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -68,7 +68,7 @@
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0">
                            <image>
-                              <Image url="@shopping.png" />
+                              <Image url="@../shopping.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -160,7 +160,7 @@
          <children>
             <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@avaaarrrr.png" />
+                  <Image url="@../avaaarrrr.png" />
                </image>
             </ImageView>
             <Label fx:id="labelName">
@@ -173,14 +173,14 @@
       </HBox>
       <ImageView fitHeight="45.0" fitWidth="200.0" onMouseClicked="#Back" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0">
          <image>
-            <Image url="@Back.png" />
+            <Image url="@../Back.png" />
          </image>
       </ImageView>
       <Button layoutX="837.0" layoutY="450.0" mnemonicParsing="false" onAction="#refreshAllBtn" prefHeight="26.0" prefWidth="23.0" AnchorPane.bottomAnchor="21.399999999999977" AnchorPane.rightAnchor="21.399999999999977">
          <graphic>
             <ImageView fitHeight="25.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@reload.png" />
+                  <Image url="@../reload.png" />
                </image>
             </ImageView>
          </graphic>

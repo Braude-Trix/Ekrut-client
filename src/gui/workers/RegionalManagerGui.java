@@ -34,6 +34,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import logic.Messages;
 import models.Machine;
 import models.Method;
 import models.Regions;
@@ -666,7 +667,7 @@ public class RegionalManagerGui implements Initializable {
                     .collect(Collectors.toList());
             requestUpdatePendingUsers(confirmedIds);
             for (Integer id : confirmedIds) {
-            	writeNewMsgToDB("You have been upgraded to 'Customer'. Please logout and login again.", worker.getId(), id);
+                Messages.writeNewMsgToDB("You have been upgraded to 'Customer'. Please logout and login again.", worker.getId(), id);
             }
 
             accountsTable.getItems().removeAll(confirmedAccounts);
@@ -695,24 +696,6 @@ public class RegionalManagerGui implements Initializable {
         private void cleanMessageLabel() {
             if (bottomBroderVbox.getChildren().size() > 1) {
                 bottomBroderVbox.getChildren().remove(1);
-            }
-        }
-        
-        private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
-            List<Object> paramList = new ArrayList<>();
-            Request request = new Request();
-            request.setPath("/postMsg");
-            request.setMethod(Method.POST);
-            paramList.add(msg);
-            paramList.add(fromCustomerId);
-            paramList.add(toCustomerId);
-            request.setBody(paramList);
-            ClientUI.chat.accept(request);// sending the request to the server.
-            switch (Client.resFromServer.getCode()) {
-                case OK:
-                    break;
-                default:
-                    System.out.println("Some error occurred");
             }
         }
 
@@ -757,7 +740,7 @@ public class RegionalManagerGui implements Initializable {
         AnchorPane anchorPane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/assets/workers/ManagerHomePage_Default.fxml"));
+            loader.setLocation(getClass().getResource("/assets/workers/fxmls/ManagerHomePage_Default.fxml"));
             anchorPane = loader.load();
             RegionalManagerGui.controller = loader.getController();
         } catch (IOException e) {

@@ -23,18 +23,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import logic.Messages;
 import models.*;
 import utils.Util;
 import utils.Utils;
-
-import static utils.Util.forcedExit;
 
 /**
  * class that represents the bill window controller
  */
 public class BillWindowController implements Initializable {
+    public static Stage popupDialog;
 
     public static Order restoreOrder;
 
@@ -325,30 +324,11 @@ public class BillWindowController implements Initializable {
 
     }
 
-
-    private void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/postMsg");
-        request.setMethod(Method.POST);
-        paramList.add(msg);
-        paramList.add(fromCustomerId);
-        paramList.add(toCustomerId);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println("Some error occurred");
-        }
-    }
-
     private void updateManagerAboutProductsStatus(boolean postMsg, String message) {
         if (postMsg) {
             List<Integer> managersIds = getRegionalManagerIds();
             for (Integer managerId : managersIds) {
-                writeNewMsgToDB(message, customerId, managerId);
+                Messages.writeNewMsgToDB(message, customerId, managerId);
             }
         }
     }
@@ -436,15 +416,15 @@ public class BillWindowController implements Initializable {
             return;
         }
         restoreOrder = null;
-        Stage stage = new Stage();
-        stage.setTitle(StyleConstants.ORDER_CONFIRMATION_TITLE_LABEL);
-        stage.setScene(new Scene(pane));
-        stage.centerOnScreen();
-        stage.setMinHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
-        stage.setMinWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-        stage.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-        stage.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
-        stage.show();
+        popupDialog = new Stage();
+        popupDialog.setTitle(StyleConstants.ORDER_CONFIRMATION_TITLE_LABEL);
+        popupDialog.setScene(new Scene(pane));
+        popupDialog.centerOnScreen();
+        popupDialog.setMinHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
+        popupDialog.setMinWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
+        popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
+        popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
+        popupDialog.show();
     }
 
     private void returnToMainPage() throws IOException {
@@ -454,10 +434,10 @@ public class BillWindowController implements Initializable {
         if (restoreOrder.getPickUpMethod() == PickUpMethod.delivery || restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
         	DeliveryFormController.scene = null;
         	PickupController.scene = null;
-            root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/assets/fxmls/OLMain.fxml"));
         }
         else {
-            root = FXMLLoader.load(getClass().getResource("/assets/EKMain.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/assets/fxmls/EKMain.fxml"));
         }
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
@@ -466,8 +446,6 @@ public class BillWindowController implements Initializable {
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setMinHeight(primaryStage.getHeight());
-        primaryStage.setMinWidth(primaryStage.getWidth());
     }
 
     /**
