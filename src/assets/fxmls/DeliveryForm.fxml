@@ -19,7 +19,7 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@deliveryForm.jpeg" />
+            <Image url="@../deliveryForm.jpeg" />
          </image>
       </ImageView>
       <VBox layoutX="1.0" layoutY="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="494.0" prefWidth="900.0" AnchorPane.leftAnchor="5.0">
@@ -219,7 +219,7 @@
          <children>
             <ImageView fitHeight="34.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@avaaarrrr.png" />
+                  <Image url="@../avaaarrrr.png" />
                </image>
             </ImageView>
             <Label fx:id="labelName">
@@ -247,7 +247,7 @@
       </Label>
       <ImageView fitHeight="45.0" fitWidth="200.0" onMouseClicked="#Back" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0">
          <image>
-            <Image url="@Back.png" />
+            <Image url="@../Back.png" />
          </image>
       </ImageView>
    </children>

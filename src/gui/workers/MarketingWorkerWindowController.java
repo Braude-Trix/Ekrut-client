@@ -229,13 +229,14 @@ public class MarketingWorkerWindowController implements Initializable {
 		if (isCEOLogged) {
 			logOutBtn.setVisible(false);
 			worker = workerAccessByCeo;
-		}
+		} else
+			setBackBtnIfExists();
+
 		initRunningSalesTable();
 		initReadyForStartSalesTable();
 		addButtonsToReadyToStartTable();
 		initButtons();
 		setUsernameLabels();
-		setBackBtnIfExists();
 
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 		saleDescriptionTxt1.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
@@ -251,7 +252,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	 */
 	public void start(Stage primaryStage) throws Exception {
 
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/MarketingWorkerWindow.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/MarketingWorkerWindow.fxml"));
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/MarketingWorkerCss.css").toExternalForm());
 		scene.getStylesheets().add(getClass().getResource("/styles/table_style.css").toExternalForm());

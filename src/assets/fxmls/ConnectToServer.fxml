@@ -14,11 +14,11 @@
 
 <VBox xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ConnectToServerController">
    <children>
-      <AnchorPane stylesheets="@../styles/ConnectToServer.css">
+      <AnchorPane stylesheets="@../../styles/ConnectToServer.css">
          <children>
             <ImageView fitHeight="363.0" fitWidth="646.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@connecto.jpg" />
+                  <Image url="@../connecto.jpg" />
                </image>
             </ImageView>
             <VBox alignment="TOP_CENTER" layoutX="285.0" layoutY="4.0" prefHeight="362.0" prefWidth="358.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="285.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="4.0">

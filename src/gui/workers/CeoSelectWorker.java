@@ -1,8 +1,8 @@
 package gui.workers;
 
-import client.Ceo;
 import client.Client;
 import client.ClientUI;
+import gui.StageSingleton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -20,7 +20,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Method;
-import models.Regions;
 import models.Request;
 import models.Worker;
 import models.WorkerType;
@@ -35,7 +34,7 @@ import java.util.List;
  */
 public class CeoSelectWorker {
 
-    static Stage popupDialog;
+    public static Stage popupDialog;
     private TableView<WorkersData> workersTable;
     private TableColumn<WorkersData, String> marketWorkerIDCol;
     private TableColumn<WorkersData, String> marketWorkerNameCol;
@@ -172,16 +171,16 @@ public class CeoSelectWorker {
         // choosing which work space we open
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
-                openWorkerPopup("/assets/workers/RegionalDeliveryHomePage_Default.fxml");
+                openWorkerPopup("/assets/workers/fxmls/RegionalDeliveryHomePage_Default.fxml");
                 break;
             case MarketingWorker:
-            	openWorkerPopup("/assets/workers/MarketingWorkerWindow.fxml");
+            	openWorkerPopup("/assets/workers/fxmls/MarketingWorkerWindow.fxml");
                 break;
             case ServiceOperator:
-            	openWorkerPopup("/assets/ServiceOperator.fxml");
+            	openWorkerPopup("/assets/fxmls/ServiceOperator.fxml");
                 break;
             case OperationalWorker:
-                openWorkerPopup("/assets/workers/OperationalWorkerHomePage_Default.fxml");
+                openWorkerPopup("/assets/workers/fxmls/OperationalWorkerHomePage_Default.fxml");
                 break;
             default:
                 break;
@@ -189,9 +188,10 @@ public class CeoSelectWorker {
     }
 
     private void openWorkerPopup(String fxmlPath) {
+        Stage primaryStage = StageSingleton.getInstance().getStage();
         popupDialog = new Stage();
         popupDialog.initModality(Modality.APPLICATION_MODAL);
-        popupDialog.initOwner(Ceo.primaryStage);
+        popupDialog.initOwner(primaryStage);
 
         AnchorPane anchorPane;
         try {
@@ -207,9 +207,11 @@ public class CeoSelectWorker {
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
 
-        popupDialog.setX(Ceo.primaryStage.getX() + 75);
-        popupDialog.setY(Ceo.primaryStage.getY() + 75);
+        popupDialog.setX(primaryStage.getX() + 75);
+        popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);
+        popupDialog.setHeight(primaryStage.getHeight());
+        popupDialog.setWidth(primaryStage.getWidth());
         popupDialog.show();
     }
 

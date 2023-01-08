@@ -15,14 +15,14 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Tavlaot.jpg" />
+            <Image url="@../Tavlaot.jpg" />
          </image>
       </ImageView>
       <HBox layoutX="20.0" layoutY="20.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="10.0">
          <children>
             <ImageView fitHeight="36.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@avaaarrrr.png" />
+                  <Image url="@../avaaarrrr.png" />
                </image>
             </ImageView>
             <Label fx:id="labelName">

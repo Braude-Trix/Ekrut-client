@@ -19,7 +19,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.*;
 import utils.Util;
@@ -71,7 +70,7 @@ public class PickupController implements Initializable {
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/PickUpForm.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/PickUpForm.fxml"));
 
 		Scene scene = new Scene(root);
 		this.scene = scene;
@@ -115,7 +114,7 @@ public class PickupController implements Initializable {
 		Stage primaryStage = StageSingleton.getInstance().getStage();
 		Parent root;
 		try {
-			root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+			root = FXMLLoader.load(getClass().getResource("/assets/fxmls/OLMain.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
 			primaryStage.setTitle("EKrut Main");

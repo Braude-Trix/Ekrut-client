@@ -1,6 +1,5 @@
 package gui.workers;
 
-import client.Ceo;
 import gui.LoginController;
 import gui.SelectOptionWorkerOrCustomer;
 import gui.StageSingleton;
@@ -179,11 +178,10 @@ public class CeoGui implements Initializable {
      * @param primaryStage - Singleton in our program
      */
     public void start(Stage primaryStage) {
-        Ceo.primaryStage = primaryStage;
         AnchorPane anchorPane;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/assets/workers/CeoHomePage_Default.fxml"));
+            loader.setLocation(getClass().getResource("/assets/workers/fxmls/CeoHomePage_Default.fxml"));
             anchorPane = loader.load();
             CeoGui.controller = loader.getController();
         } catch (IOException e) {

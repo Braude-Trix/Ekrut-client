@@ -2,7 +2,7 @@ package gui.workers;
 
 import client.Client;
 import client.ClientUI;
-import client.RegionalManager;
+import gui.StageSingleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -18,13 +18,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import models.InventoryReport;
 import models.Machine;
 import models.Method;
 import models.OrdersReport;
 import models.Regions;
 import models.Request;
-import models.ResponseCode;
 import models.UsersReport;
 import utils.ColorsAndFonts;
 import utils.WorkerNodesUtils;
@@ -52,9 +52,7 @@ public class SelectReportGui {
     private ComboBox<String> monthComboBox;
     private List<ComboBox<String>> comboBoxList;
     private Button viewButton;
-    //
     private Label errLabel;
-    
     private List<Machine> machinesSet;
 
     private enum ReportType {
@@ -232,13 +230,13 @@ public class SelectReportGui {
             } else { // all form data is validated
                 switch (reportType) { // todo: query the DB for report here...
                     case INVENTORY:
-                        openReportPopup("/assets/workers/InventoryReportPage.fxml");
+                        openReportPopup("/assets/workers/fxmls/InventoryReportPage.fxml");
                         break;
                     case ORDERS:
-                        openReportPopup("/assets/workers/OrdersReportPage.fxml");
+                        openReportPopup("/assets/workers/fxmls/OrdersReportPage.fxml");
                         break;
                     case USERS:
-                        openReportPopup("/assets/workers/UsersReportPage.fxml");
+                        openReportPopup("/assets/workers/fxmls/UsersReportPage.fxml");
                         break;
                 }
             }
@@ -248,9 +246,11 @@ public class SelectReportGui {
     }
 
     private void openReportPopup(String fxmlPath) {
+        Stage primaryStage = StageSingleton.getInstance().getStage();
         popupDialog = new Stage();
         popupDialog.initModality(Modality.APPLICATION_MODAL);
-        popupDialog.initOwner(RegionalManager.primaryStage);
+        popupDialog.initStyle(StageStyle.UNDECORATED);
+        popupDialog.initOwner(primaryStage);
 
         AnchorPane anchorPane;
         try {
@@ -269,6 +269,7 @@ public class SelectReportGui {
         popupDialog.setScene(dialogScene);
         popupDialog.setResizable(false);
         popupDialog.show();
+        WorkerNodesUtils.setStageMovable(popupDialog);
     }
 
     private void setInitValuesInReportsPopup() {

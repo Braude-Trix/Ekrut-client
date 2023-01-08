@@ -1,31 +1,23 @@
 package client;
-import javafx.application.Application;
-import gui.StageSingleton;
-import javafx.stage.Stage;
+
 import gui.ConnectToServerController;
+import gui.StageSingleton;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 
 public class ClientUI extends Application {
 	public static client.ClientController chat; //only one instance
-	public static void main( String args[] ) throws Exception
-	   { 
+	public static void main(String[] args) throws Exception {
 		    launch(args);  
-	   } // end main 
-	 
-	
+	} // end main
+
 //	start method, starts the whole application.
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
-		ConnectToServerController connectToServer = new ConnectToServerController();
 		StageSingleton.getInstance().setStage(primaryStage);
-		connectToServer.start(primaryStage);
-
-		primaryStage.setMinHeight(primaryStage.getHeight());
-		primaryStage.setMinWidth(primaryStage.getWidth());
+		ConnectToServerController.start(primaryStage);
 	}
-	
-	
 }
 
 

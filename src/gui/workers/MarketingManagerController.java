@@ -213,14 +213,15 @@ public class MarketingManagerController implements Initializable {
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		if (isCEOLogged)
             logoutBtn.setVisible(false);
-		
+		else
+			setBackBtnIfExist();
+
 		setRegionComboBox();
 		setHoursComboBox();
 		setTypeSaleComboBox();
 		setDatePicker();
 		initSaleTemplateTable();
 		setUsernameLabel();
-		setBackBtnIfExist();
 		addButtonsToSaleTemplatesTable();
 		saleDescriptionTxt.setStyle("-fx-control-inner-background: #d6dfe8; -fx-border-color:black");
 		setTextFormatterForTextAreaDescription();
@@ -259,7 +260,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/MarketingManagerWindow.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/MarketingManagerWindow.fxml"));
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/table_style.css").toExternalForm());

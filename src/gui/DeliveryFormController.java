@@ -98,7 +98,7 @@ public class DeliveryFormController implements Initializable {
 	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/DeliveryForm.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/DeliveryForm.fxml"));
 				
 		Scene scene = new Scene(root);
 		this.scene = scene;
@@ -187,7 +187,7 @@ public class DeliveryFormController implements Initializable {
 		Stage primaryStage = StageSingleton.getInstance().getStage();
 		Parent root;
 		try {
-			root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+			root = FXMLLoader.load(getClass().getResource("/assets/fxmls/OLMain.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());
 			primaryStage.setTitle("EKrut Main");

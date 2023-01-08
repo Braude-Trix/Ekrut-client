@@ -81,7 +81,7 @@ public class Util {
 		Stage stage = StageSingleton.getInstance().getStage();
 		Parent root;
 		try {
-			root = FXMLLoader.load(getClass.getResource("/assets/login.fxml"));
+			root = FXMLLoader.load(getClass.getResource("/assets/fxmls/login.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass.getResource("/styles/loginForm.css").toExternalForm());
 			stage.setTitle("Login");

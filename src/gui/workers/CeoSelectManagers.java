@@ -1,6 +1,6 @@
 package gui.workers;
 
-import client.Ceo;
+import gui.StageSingleton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -34,7 +34,7 @@ public class CeoSelectManagers {
     private Button managerMarketingBtn;
     private static ManagerType managerType;
     private List<Worker> managerList;
-    private List<Worker> MakretManagerList;
+    private List<Worker> MarketManagerList;
     private Worker selectedWorker;
 
     private enum ManagerType {
@@ -112,17 +112,18 @@ public class CeoSelectManagers {
     }
     
     private void goToMarketingManager() {
-    	openMangerPopup("/assets/workers/MarketingManagerWindow.fxml");
+    	openMangerPopup("/assets/workers/fxmls/MarketingManagerWindow.fxml");
     }
 
     private void goToRegionManager() {
-        openMangerPopup("/assets/workers/ManagerHomePage_Default.fxml");
+        openMangerPopup("/assets/workers/fxmls/ManagerHomePage_Default.fxml");
     }
 
     private void openMangerPopup(String fxmlPath) {
+        Stage primaryStage = StageSingleton.getInstance().getStage();
         popupDialog = new Stage();
         popupDialog.initModality(Modality.APPLICATION_MODAL);
-        popupDialog.initOwner(Ceo.primaryStage);
+        popupDialog.initOwner(primaryStage);
 
         AnchorPane anchorPane;
         try {
@@ -139,9 +140,11 @@ public class CeoSelectManagers {
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
 
-        popupDialog.setX(Ceo.primaryStage.getX() + 75);
-        popupDialog.setY(Ceo.primaryStage.getY() + 75);
+        popupDialog.setX(primaryStage.getX() + 75);
+        popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);
+        popupDialog.setHeight(primaryStage.getHeight());
+        popupDialog.setWidth(primaryStage.getWidth());
         popupDialog.show();
     }
 

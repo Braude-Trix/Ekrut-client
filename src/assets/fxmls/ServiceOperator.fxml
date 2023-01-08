@@ -18,12 +18,12 @@
    <children>
       <ImageView fx:id="bgImage" fitHeight="505.0" fitWidth="900.0" layoutX="-7.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@regionalDeliverySecBackground.jpg" />
+            <Image url="@../regionalDeliverySecBackground.jpg" />
          </image>
       </ImageView>
       <HBox alignment="TOP_CENTER">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="505.0" prefWidth="270.0" spacing="10.0" stylesheets="@../styles/SideButtons.css">
+            <VBox alignment="TOP_CENTER" prefHeight="505.0" prefWidth="270.0" spacing="10.0" stylesheets="@../../styles/SideButtons.css">
                <children>
                   <HBox spacing="5.0">
                      <children>
@@ -31,7 +31,7 @@
                            <children>
                               <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@avatar.jpg" />
+                                    <Image url="@../avatar.jpg" />
                                  </image>
                               </ImageView>
                            </children>
@@ -87,8 +87,8 @@
          </font></Label>
       <Button fx:id="checkIdButton" layoutX="664.0" layoutY="107.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" text="Search">
          <stylesheets>
-            <URL value="@../styles/BadButton.css" />
-            <URL value="@../styles/worker_main_panel.css" />
+            <URL value="@../../styles/BadButton.css" />
+            <URL value="@../../styles/worker_main_panel.css" />
          </stylesheets></Button>
       <VBox fx:id="UserData" layoutX="400.0" layoutY="164.0" prefHeight="259.0" prefWidth="358.0" />
       <Label fx:id="NotOnlyDigits" layoutX="505.0" layoutY="137.0" prefHeight="17.0" prefWidth="149.0" text="Insert digits only please." textFill="RED" visible="false" />
@@ -97,7 +97,7 @@
       <Label fx:id="RegionError" layoutX="609.0" layoutY="415.0" text="Please Select Region" textFill="RED" visible="false" />
    </children>
    <stylesheets>
-      <URL value="@../styles/SideButtons.css" />
-      <URL value="@../styles/NoButton.css" />
+      <URL value="@../../styles/SideButtons.css" />
+      <URL value="@../../styles/NoButton.css" />
    </stylesheets>
 </AnchorPane>
