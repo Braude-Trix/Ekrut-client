@@ -83,7 +83,7 @@ public class UserInstallationController implements Initializable {
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/UserInstallation.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/UserInstallation.fxml"));
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/userInstallation.css").toExternalForm());
@@ -92,8 +92,6 @@ public class UserInstallationController implements Initializable {
 		primaryStage.centerOnScreen();
 		primaryStage.setResizable(false);
 		primaryStage.show();
-		primaryStage.setMinHeight(primaryStage.getHeight());
-		primaryStage.setMinWidth(primaryStage.getWidth());
         primaryStage.setOnCloseRequest(e -> forcedExit());
 	}
 	

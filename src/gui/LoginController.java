@@ -109,7 +109,7 @@ public class LoginController implements Initializable{
      */
     public void start(Stage primaryStage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/assets/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/login.fxml"));
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/styles/loginForm.css").toExternalForm());
@@ -118,8 +118,6 @@ public class LoginController implements Initializable{
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setMinHeight(primaryStage.getHeight());
-        primaryStage.setMinWidth(primaryStage.getWidth());
         primaryStage.setOnCloseRequest(e -> forcedExit());
     }
 

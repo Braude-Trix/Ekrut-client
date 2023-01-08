@@ -53,7 +53,7 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/SelectOptionWorkerOrCustomer.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/SelectOptionWorkerOrCustomer.fxml"));
 				
 		Scene scene = new Scene(root);
 		this.scene = scene;

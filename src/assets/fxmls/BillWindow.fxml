@@ -17,15 +17,15 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@billBackground.jpg" />
+            <Image url="@../billBackground.jpg" />
          </image>
       </ImageView>
       <ImageView fx:id="backBtn" accessibleText="Back" fitHeight="50.0" fitWidth="66.0" layoutX="23.0" layoutY="439.0" onMouseClicked="#backBtnClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="23.0">
          <image>
-            <Image url="@backBtn.png" />
+            <Image url="@../backBtn.png" />
          </image>
       </ImageView>
-      <TableView fx:id="billTable" layoutX="65.0" layoutY="119.0" prefHeight="345.0" prefWidth="410.0" stylesheets="@../styles/BillTable.css" AnchorPane.leftAnchor="65.0">
+      <TableView fx:id="billTable" layoutX="65.0" layoutY="119.0" prefHeight="345.0" prefWidth="410.0" stylesheets="@../../styles/BillTable.css" AnchorPane.leftAnchor="65.0">
         <columns>
           <TableColumn fx:id="productCol" prefWidth="127.0" text="Product" />
           <TableColumn fx:id="amountCol" prefWidth="153.0" text="Amount" />
@@ -48,26 +48,26 @@
                      <graphic>
                         <ImageView fitHeight="33.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@paymentImg.png" />
+                              <Image url="@../paymentImg.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Label>
                </children>
             </HBox>
-            <Button fx:id="proceedPaymentBtn" mnemonicParsing="false" onAction="#proceedPaymentClicked" prefHeight="36.0" prefWidth="230.0" stylesheets="@../styles/GoodButton.css" text="Proceed payment" />
+            <Button fx:id="proceedPaymentBtn" mnemonicParsing="false" onAction="#proceedPaymentClicked" prefHeight="36.0" prefWidth="230.0" stylesheets="@../../styles/GoodButton.css" text="Proceed payment" />
          </children>
       </VBox>
       <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="80.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="80.0">
          <image>
-            <Image url="@Bill_Icon.png" />
+            <Image url="@../Bill_Icon.png" />
          </image>
       </ImageView>
       <HBox layoutX="674.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="11.0">
          <children>
             <ImageView fx:id="avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@avaaarrrr.png" />
+                  <Image url="@../avaaarrrr.png" />
                </image>
             </ImageView>
             <Label fx:id="nameLabel" text="Yosi Sabbag">
@@ -77,8 +77,8 @@
             </Label>
             <Button mnemonicParsing="false" onAction="#logOutClicked" prefHeight="32.0" prefWidth="65.0" text="Log Out">
                <stylesheets>
-                  <URL value="@../styles/BadButton.css" />
-                  <URL value="@../styles/BadButton.css" />
+                  <URL value="@../../styles/BadButton.css" />
+                  <URL value="@../../styles/BadButton.css" />
                </stylesheets>
             </Button>
          </children>

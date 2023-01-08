@@ -34,7 +34,7 @@ public class CeoSelectManagers {
     private Button managerMarketingBtn;
     private static ManagerType managerType;
     private List<Worker> managerList;
-    private List<Worker> MakretManagerList;
+    private List<Worker> MarketManagerList;
     private Worker selectedWorker;
 
     private enum ManagerType {
@@ -112,11 +112,11 @@ public class CeoSelectManagers {
     }
     
     private void goToMarketingManager() {
-    	openMangerPopup("/assets/workers/MarketingManagerWindow.fxml");
+    	openMangerPopup("/assets/workers/fxmls/MarketingManagerWindow.fxml");
     }
 
     private void goToRegionManager() {
-        openMangerPopup("/assets/workers/ManagerHomePage_Default.fxml");
+        openMangerPopup("/assets/workers/fxmls/ManagerHomePage_Default.fxml");
     }
 
     private void openMangerPopup(String fxmlPath) {
@@ -143,6 +143,8 @@ public class CeoSelectManagers {
         popupDialog.setX(primaryStage.getX() + 75);
         popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);
+        popupDialog.setHeight(primaryStage.getHeight());
+        popupDialog.setWidth(primaryStage.getWidth());
         popupDialog.show();
     }
 

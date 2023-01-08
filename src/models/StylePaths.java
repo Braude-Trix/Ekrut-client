@@ -12,10 +12,10 @@ public class StylePaths {
     public static String POSITIVE_BUTTON_CSS = "styles/GoodButton.css";
 
     //Fxml Paths
-    public static String BILLWINDOW_CSS ="/assets/BillWindow.fxml";
+    public static String BILLWINDOW_CSS = "/assets/fxmls/BillWindow.fxml";
 
-    public static String CONFIRM_ORDER_POPUP_PATH = "/assets/OrderConfirmationPopUpWindow.fxml";
-    public static String NEW_ORDER_WINDOW_PATH = "/assets/NewOrder.fxml";
+    public static String CONFIRM_ORDER_POPUP_PATH = "/assets/fxmls/OrderConfirmationPopUpWindow.fxml";
+    public static String NEW_ORDER_WINDOW_PATH = "/assets/fxmls/NewOrder.fxml";
 
     public static String VIMAGE_PATH = "/assets/VImage.png";
 

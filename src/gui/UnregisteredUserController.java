@@ -44,7 +44,7 @@ public class UnregisteredUserController implements Initializable{
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/UnregisteredUser.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/UnregisteredUser.fxml"));
 				
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/customerMain.css").toExternalForm());

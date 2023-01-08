@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class CeoSelectWorker {
 
-    static Stage popupDialog;
+    public static Stage popupDialog;
     private TableView<WorkersData> workersTable;
     private TableColumn<WorkersData, String> marketWorkerIDCol;
     private TableColumn<WorkersData, String> marketWorkerNameCol;
@@ -171,16 +171,16 @@ public class CeoSelectWorker {
         // choosing which work space we open
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
-                openWorkerPopup("/assets/workers/RegionalDeliveryHomePage_Default.fxml");
+                openWorkerPopup("/assets/workers/fxmls/RegionalDeliveryHomePage_Default.fxml");
                 break;
             case MarketingWorker:
-            	openWorkerPopup("/assets/workers/MarketingWorkerWindow.fxml");
+            	openWorkerPopup("/assets/workers/fxmls/MarketingWorkerWindow.fxml");
                 break;
             case ServiceOperator:
-            	openWorkerPopup("/assets/ServiceOperator.fxml");
+            	openWorkerPopup("/assets/fxmls/ServiceOperator.fxml");
                 break;
             case OperationalWorker:
-                openWorkerPopup("/assets/workers/OperationalWorkerHomePage_Default.fxml");
+                openWorkerPopup("/assets/workers/fxmls/OperationalWorkerHomePage_Default.fxml");
                 break;
             default:
                 break;
@@ -210,6 +210,8 @@ public class CeoSelectWorker {
         popupDialog.setX(primaryStage.getX() + 75);
         popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);
+        popupDialog.setHeight(primaryStage.getHeight());
+        popupDialog.setWidth(primaryStage.getWidth());
         popupDialog.show();
     }
 

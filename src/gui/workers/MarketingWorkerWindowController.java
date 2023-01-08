@@ -252,7 +252,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	 */
 	public void start(Stage primaryStage) throws Exception {
 
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/MarketingWorkerWindow.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/MarketingWorkerWindow.fxml"));
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/MarketingWorkerCss.css").toExternalForm());
 		scene.getStylesheets().add(getClass().getResource("/styles/table_style.css").toExternalForm());

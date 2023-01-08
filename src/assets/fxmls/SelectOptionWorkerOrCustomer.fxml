@@ -13,7 +13,7 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Tavlaot.jpg" />
+            <Image url="@../Tavlaot.jpg" />
          </image>
       </ImageView>
       <HBox alignment="CENTER" layoutY="109.0" prefHeight="18.0" prefWidth="900.0">
@@ -45,7 +45,7 @@
          <children>
             <ImageView fitHeight="34.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@avaaarrrr.png" />
+                  <Image url="@../avaaarrrr.png" />
                </image>
             </ImageView>
             <Label fx:id="labelName">

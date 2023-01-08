@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.chart.StackedBarChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -18,11 +18,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.351" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.OrdersReportPopupGui">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.351" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.workers.UsersReportPopupGui">
    <children>
       <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@reportPopup.jpg" />
+            <Image url="@../reportPopup.jpg" />
          </image>
       </ImageView>
       <VBox alignment="TOP_RIGHT" prefHeight="720.0" prefWidth="1280.0">
@@ -31,12 +31,12 @@
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label fx:id="titleUpper" text="Orders Report | North" textFill="#dfe3e5">
+                        <Label fx:id="titleUpper" text="Users Report" textFill="#dfe3e5">
                            <font>
                               <Font size="44.0" />
                            </font>
                         </Label>
-                        <Label fx:id="titleInfo" text="12/2022" textFill="#dfe3e5" underline="true">
+                        <Label fx:id="titleInfo" text="North - 12/2022" textFill="#dfe3e5" underline="true">
                            <font>
                               <Font size="44.0" />
                            </font>
@@ -49,7 +49,7 @@
                            <graphic>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@x-mark.png" />
+                                    <Image url="@../x-mark.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -65,17 +65,18 @@
             </Separator>
             <HBox prefHeight="580.0" prefWidth="1280.0" spacing="10.0">
                <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="580.0" prefWidth="350.0" spacing="10.0">
+                  <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="580.0" prefWidth="450.0" spacing="10.0">
                      <children>
-                        <PieChart fx:id="monthlyOrdersPie" title="EK vs Late-pickup orders" />
+                        <PieChart fx:id="PieClients" title="Clients vs Subscribers" />
                         <Separator prefWidth="200.0" />
-                        <VBox alignment="CENTER" spacing="10.0">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                            <children>
-                              <Label text="Monthly orders" />
-                              <TableView fx:id="monthlyOrdersTable" maxWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" stylesheets="@../../styles/worker_table.css">
+                              <Label text="Top 3 clients" />
+                              <TableView fx:id="top3ClientsTable" maxWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" stylesheets="@../../../styles/worker_table.css">
                                 <columns>
-                                  <TableColumn fx:id="machineNameCol" prefWidth="180.0" text="Machine name" />
-                                  <TableColumn fx:id="ordersCol" prefWidth="100.0" text="Orders (Units)" />
+                                    <TableColumn fx:id="IDCol" prefWidth="100.0" text="Client ID" />
+                                  <TableColumn fx:id="ClientCol" prefWidth="160.0" text="Client Name" />
+                                  <TableColumn fx:id="OrdersCol" prefWidth="120.0" text="Orders Amount" />
                                 </columns>
                               </TableView>
                            </children>
@@ -86,14 +87,14 @@
                      </children>
                   </VBox>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <StackedBarChart fx:id="dailyOrdersStackedBar" title="Daily orders of machines" HBox.hgrow="ALWAYS">
+                  <BarChart fx:id="usersActivityLevelChart" legendVisible="false" title="Monthly distribution according to different activity levels" HBox.hgrow="ALWAYS">
                     <xAxis>
-                      <CategoryAxis label="Days" side="BOTTOM" />
+                      <CategoryAxis label="Activity Level (based on orders)" side="BOTTOM" />
                     </xAxis>
                     <yAxis>
-                      <NumberAxis fx:id="dailyOrders" label="Orders (Units)" side="LEFT" />
+                      <NumberAxis label="Amount of Users (Units)" side="LEFT" />
                     </yAxis>
-                  </StackedBarChart>
+                  </BarChart>
                </children>
                <padding>
                   <Insets bottom="15.0" />

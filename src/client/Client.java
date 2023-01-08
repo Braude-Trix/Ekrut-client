@@ -1,8 +1,12 @@
 package client;
 
+import gui.BillWindowController;
 import gui.ConnectToServerController;
 import gui.LoginController;
 import gui.StageSingleton;
+import gui.workers.CeoSelectManagers;
+import gui.workers.CeoSelectWorker;
+import gui.workers.SelectReportGui;
 import javafx.application.Platform;
 import models.Response;
 import ocsf.client.AbstractClient;
@@ -101,6 +105,16 @@ public class Client extends AbstractClient {
             try {
 				if (LoginController.threadListeningNewMsg != null)
 					LoginController.threadListeningNewMsg.interrupt();
+				// closing all opened popups
+				if (CeoSelectManagers.popupDialog != null)
+					CeoSelectManagers.popupDialog.close();
+				if (CeoSelectWorker.popupDialog != null)
+					CeoSelectWorker.popupDialog.close();
+				if (SelectReportGui.popupDialog != null)
+					SelectReportGui.popupDialog.close();
+				if (BillWindowController.popupDialog != null)
+					BillWindowController.popupDialog.close();
+				// opening ConnectToServer window panel
 				ConnectToServerController.start(StageSingleton.getInstance().getStage());
             } catch (IOException e) {
 			throw new RuntimeException(e);

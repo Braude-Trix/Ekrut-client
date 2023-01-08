@@ -67,7 +67,7 @@ public class OLController implements Initializable {
 	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/assets/OLMain.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/OLMain.fxml"));
 				
 		Scene scene = new Scene(root);
 		this.scene = scene;
