@@ -35,6 +35,8 @@ public class PickupController implements Initializable {
 	 */
 	public static Scene scene = null;
 
+	public static Regions regionForMach = null;
+
 	@FXML
 	private Label errorLabel;
 
@@ -57,6 +59,7 @@ public class PickupController implements Initializable {
 		setRegionComboBox();
 		machinesSet = new ArrayList<>();
 		scene = null;
+		regionForMach = null;
         Util.setNameNavigationBar(labelName);
 	}
 
@@ -206,6 +209,7 @@ public class PickupController implements Initializable {
 		LoginController.order = new PickupOrder(null, null, 0, getMachineId(), OrderStatus.NotCollected, PickUpMethod.latePickUp, null,
 				LoginController.user.getId(), null);
 		try {
+			regionForMach = regionList.getValue();
 			new NewOrderController().start(StageSingleton.getInstance().getStage());
 		} catch (Exception e) {
 			e.printStackTrace();

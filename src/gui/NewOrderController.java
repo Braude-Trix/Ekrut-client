@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
@@ -31,11 +32,15 @@ import javafx.stage.Stage;
 import models.*;
 import utils.Util;
 import utils.Utils;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static java.lang.Thread.sleep;
 
 
 public class NewOrderController implements Initializable {
+
+    private ObservableList<Sale> readySales = FXCollections.observableArrayList();
 
     static Order previousOrder;
     public static boolean NewOrderReplaced = false;
@@ -64,8 +69,18 @@ public class NewOrderController implements Initializable {
     @FXML
     private Label TotalOrderPrice;
 
+
+    @FXML
+    private Label Saletype;
+
     @FXML
     private Label ClearCart;
+
+    @FXML
+    private ImageView saleImage;
+
+    @FXML
+    private Label saleLabel;
 
     @FXML
     void logOutClicked(ActionEvent event) {
@@ -131,6 +146,63 @@ public class NewOrderController implements Initializable {
     private double firstTimeMultiplier;
 
     List<Object> MaxAmountsList;
+
+    private Regions getRegion(Order order)
+    {
+        if(UserInstallationController.configuration.equals("OL")) {
+            if (order instanceof PickupOrder) {
+                return PickupController.regionForMach;
+
+            } else if (order instanceof DeliveryOrder) {
+                return ((DeliveryOrder) order).getRegion();
+            } else {
+                System.out.println("Error from getRegion");
+                return null;
+            }
+        }
+        else
+        {
+            return Regions.valueOf(UserInstallationController.machine.getRegion());
+        }
+
+
+    }
+
+    private void requestReadySales(Order order) {
+        List<Object> body = new ArrayList<>();
+        Regions regionForSale = getRegion(order);
+
+        body.add(regionForSale.toString());
+        body.add(SaleStatus.Running.toString());
+        Request request = new Request();
+        request.setPath("/sales");
+        request.setMethod(Method.GET);
+        request.setBody(body);
+        ClientUI.chat.accept(request);
+    }
+
+    private void handleReponseGetReadySales() {
+        switch (Client.resFromServer.getCode()) {
+            case OK:
+                updateReadySales(Client.resFromServer.getBody());
+                break;
+            default:
+                System.out.println("error");
+                break;
+        }
+    }
+    private void updateReadySales(List<Object> listOfSalesFromDB) {
+        readySales.clear();
+        if (listOfSalesFromDB == null) {
+            return;
+        }
+        for (Object sale : listOfSalesFromDB) {
+            if (sale instanceof Sale) {
+                readySales.add((Sale) sale);
+            }
+        }
+    }
+
     public List<Object> requestMachineProducts(String machineId) {
         if(MaxAmountsList != null)
         {
@@ -206,9 +278,41 @@ public class NewOrderController implements Initializable {
         return order;
     }
 
+    private void setLabelandImage(Sale sale)
+    {
+        saleImage.setVisible(true);
+        Saletype.setText("2+1");
+        Saletype.setVisible(true);
+        Tooltip tooltip = new Tooltip(sale.getSaleName() + "\n"+sale.getSaleDiscription());
+        Tooltip.install(saleImage, tooltip);
+        saleLabel.setVisible(true);
+    }
+    private Double findDiscount(int amount, Double pricePerItem,Sale sale)
+    {
+        setLabelandImage(sale);
+        System.out.println(sale.getSaleDiscription());
+        return amount*pricePerItem*firstTimeMultiplier;
+    }
 
     private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
     {
+        Sale activeSale;
+        for(Sale currentSale : readySales) {
+            if (currentSale != null) {
+                activeSale = currentSale;
+                String dateString = currentSale.getSaleStartDate();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDate date = LocalDate.parse(dateString, formatter);
+                LocalDate today = LocalDate.now();
+
+                if (!date.isAfter(today)) {
+                    return findDiscount(amount, pricePerItem,activeSale);
+                }
+            }
+        }
+
+
+        System.out.println("NO DISCOUNT");
         return amount*pricePerItem*firstTimeMultiplier;
     }
 
@@ -403,10 +507,15 @@ public class NewOrderController implements Initializable {
         }
     }
 
-    private void setfirstTimeMultiplier(Integer id)
+    private void setfirstTimeMultiplier(Integer id,Order order)
     {
+        requestReadySales(order);
+        handleReponseGetReadySales();
         List<Object> OrderedIds = requestCompletedOrders(id);
         Boolean isExist = (Boolean)OrderedIds.get(0);
+
+
+
 
         if(isExist)
         {
@@ -427,7 +536,9 @@ public class NewOrderController implements Initializable {
             Thread timeOutThread = new Thread(new gui.NewOrderController.TimeOutControllerNewOrder());
             timeOutThread.start();
         }
-        setfirstTimeMultiplier(user.getId());
+        saleLabel.setVisible(false);
+        saleImage.setVisible(false);
+        Saletype.setVisible(false);
         setUserProfile();
         putProductsInMachine();
     }
@@ -441,15 +552,12 @@ public class NewOrderController implements Initializable {
         Order order;
         if (BillWindowController.restoreOrder != null)
         {
-            System.out.println("Get from yuval");
             order = BillWindowController.restoreOrder;
         }
         else
         {
-            System.out.println("Get from gal");
             order = receiveOrderFromPreviousPage();
         }
-        System.out.println(order.getPrice());
         return order;
     }
 
@@ -544,6 +652,7 @@ public class NewOrderController implements Initializable {
     private void putProductsInMachine() {
         int buttonPlusMinus = StyleConstants.PLUS_MINUS_SIZE;
         Order order = recieveCurrentOrder();
+        setfirstTimeMultiplier(user.getId(),order);
         ObservableList<Product> products = (ObservableList<Product>) getAllProductsFromDB(order);
         Image prodImage = null;
         ContinueButton.setOnMouseClicked(event -> ContinueOrder(order));
@@ -600,6 +709,7 @@ public class NewOrderController implements Initializable {
                     prodImage = new Image(StylePaths.DEFAULT_PRODUCT_IMAGE);
                 }
                 ImageView productImage = new ImageView(prodImage);
+
                 productImage.setFitWidth(StyleConstants.PRODUCT_IMAGE_WIDTH);
                 productImage.setFitHeight(StyleConstants.PRODUCT_IMAGE_HEIGHT);
                 hboxTop.getChildren().addAll(productImage, ProdName, new Label("  |  " + prod.getInformation()), pane, minusImage, counter, plusImage);
