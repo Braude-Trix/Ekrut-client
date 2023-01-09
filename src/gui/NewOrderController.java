@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.math.RoundingMode;
 
@@ -28,15 +29,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+<<<<<<< HEAD
 import javafx.scene.text.Text;
+=======
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+>>>>>>> c4e9ffea43d91d4b18a13398627dba3a1ff90b84
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import models.*;
 import utils.Util;
 import utils.Utils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-import static java.lang.Thread.sleep;
 
 
 public class NewOrderController implements Initializable {
@@ -146,11 +151,19 @@ public class NewOrderController implements Initializable {
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
         primaryStage.show();
+        playCancelOrderVoice();
     }
 
-
-
-
+    private void playCancelOrderVoice() {
+        String audioFile = Objects.requireNonNull(getClass().getResource("/assets/sounds/cancel.mp3")).toString();
+        Media media = new Media(audioFile);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.totalDurationProperty().addListener((observable, oldDuration, newDuration) -> {
+            if (newDuration.greaterThan(Duration.ONE)) {
+                mediaPlayer.play();
+            }
+        });
+    }
 
     List<ProductInMachineMonitor> allProductsMonitors = new ArrayList<>();
     private double firstTimeMultiplier;
@@ -627,6 +640,18 @@ public class NewOrderController implements Initializable {
 
         setUserProfile();
         putProductsInMachine();
+        playSelectProductVoice();
+    }
+
+    private void playSelectProductVoice() {
+        String audioFile = Objects.requireNonNull(getClass().getResource("/assets/sounds/select.mp3")).toString();
+        Media media = new Media(audioFile);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.totalDurationProperty().addListener((observable, oldDuration, newDuration) -> {
+            if (newDuration.greaterThan(Duration.ZERO)) {
+                mediaPlayer.play();
+            }
+        });
     }
 
     private void setUserProfile()
