@@ -108,7 +108,7 @@ public class NewOrderController implements Initializable {
     }
 
     @FXML
-    void backBtnClicked(MouseEvent event) {
+    void backBtnClicked(MouseEvent event) throws Exception {
         NewOrderReplaced = true;
         Stage stage = StageSingleton.getInstance().getStage();
         // delivery, selfPickUp, latePickUp;
@@ -121,7 +121,7 @@ public class NewOrderController implements Initializable {
         }
         else if(LoginController.order.getPickUpMethod() == PickUpMethod.selfPickUp)
         {
-            stage.setScene(EKController.scene);
+            new EKController().start(stage);
         }
 
         else
