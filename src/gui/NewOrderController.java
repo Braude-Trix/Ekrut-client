@@ -28,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import models.*;
 import utils.Util;
@@ -41,6 +42,7 @@ import static java.lang.Thread.sleep;
 public class NewOrderController implements Initializable {
 
     private ObservableList<Sale> readySales = FXCollections.observableArrayList();
+
 
     static Order previousOrder;
     public static boolean NewOrderReplaced = false;
@@ -82,6 +84,15 @@ public class NewOrderController implements Initializable {
     @FXML
     private Label saleLabel;
 
+
+    @FXML
+    private Text textForSale;
+
+    @FXML
+    private ImageView cloudForSale;
+    @FXML
+    private ImageView imageToPresent;
+
     @FXML
     void logOutClicked(ActionEvent event) {
         try {
@@ -120,6 +131,7 @@ public class NewOrderController implements Initializable {
     @FXML
     void CancelOrderClicked(ActionEvent event) throws IOException {
         NewOrderReplaced = true;
+        BillWindowController.restoreOrder = null;
         Parent root;
         Stage primaryStage = StageSingleton.getInstance().getStage();
         if (LoginController.order.getPickUpMethod() == PickUpMethod.delivery || LoginController.order.getPickUpMethod() == PickUpMethod.latePickUp)
@@ -276,20 +288,95 @@ public class NewOrderController implements Initializable {
         return order;
     }
 
+    private void showTooltip(Sale sale) throws InterruptedException {
+        textForSale.setText(sale.getSaleName()+"\n\n"+sale.getSaleDiscription());
+        cloudForSale.setVisible(true);
+        textForSale.setVisible(true);
+        sleep(300);
+    }
+    private void hideTooltip()
+    {
+        cloudForSale.setVisible(false);
+        textForSale.setVisible(false);
+
+    }
+
     private void setLabelandImage(Sale sale)
     {
         saleImage.setVisible(true);
-        Saletype.setText("2+1");
         Saletype.setVisible(true);
-        Tooltip tooltip = new Tooltip(sale.getSaleName() + "\n"+sale.getSaleDiscription());
-        Tooltip.install(saleImage, tooltip);
         saleLabel.setVisible(true);
+
+//        saleLabel.setOnMouseEntered(event -> showTooltip(sale));
+//        saleLabel.setOnMouseExited(event -> hideTooltip());
+        imageToPresent.setOnMouseEntered(event -> {
+            try {
+                showTooltip(sale);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        imageToPresent.setOnMouseExited(event -> hideTooltip());
+//        saleImage.setOnMouseEntered(event -> showTooltip(sale));
+//        saleImage.setOnMouseExited(event -> hideTooltip());
+
     }
     private Double findDiscount(int amount, Double pricePerItem,Sale sale)
     {
         setLabelandImage(sale);
         System.out.println(sale.getSaleDiscription());
-        return amount*pricePerItem*firstTimeMultiplier;
+        Double price = 0.0;
+        if(sale.getSaleType().equals(TypeSale.Sale1Plus1))
+        {
+            Saletype.setText("1+1");
+            for(int i=0;i<amount;i++)
+            {
+                if(i%2 == 0)
+                {
+                    price += pricePerItem;
+                }
+            }
+            return price;
+        }
+        else if(sale.getSaleType().equals(TypeSale.Sale2Plus1))
+        {
+            Saletype.setText("2+1");
+            for(int i=0;i<amount;i++)
+            {
+                if(i%3 == 0 || i%3 == 1)
+                {
+                    price += pricePerItem;
+                }
+            }
+            return price;
+        }
+        else if(sale.getSaleType().equals(TypeSale.Sale2Plus2))
+        {
+            Saletype.setText("2+2");
+            for(int i=0;i<amount;i++)
+            {
+                if(i%4 == 0 || i%4 == 1)
+                {
+                    price += pricePerItem;
+                }
+            }
+            return price;
+        }
+        else if(sale.getSaleType().equals(TypeSale.PercentageDiscount))
+        {
+
+            Saletype.setText(sale.getSalePercentage() + "%");
+            Double discount = Double.parseDouble(sale.getSalePercentage())/100;
+            return amount*pricePerItem*firstTimeMultiplier*discount;
+        }
+        System.out.println("Error From findDiscount");
+        return null;
+
+
+
+    }
+    private Double calculatePriceWithout(int amount, Double pricePerItem) {
+        return amount * pricePerItem * firstTimeMultiplier;
     }
 
     private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
@@ -308,8 +395,6 @@ public class NewOrderController implements Initializable {
                 }
             }
         }
-
-
         System.out.println("NO DISCOUNT");
         return amount*pricePerItem*firstTimeMultiplier;
     }
@@ -537,6 +622,9 @@ public class NewOrderController implements Initializable {
         saleLabel.setVisible(false);
         saleImage.setVisible(false);
         Saletype.setVisible(false);
+        textForSale.setVisible(false);
+        cloudForSale.setVisible(false);
+
         setUserProfile();
         putProductsInMachine();
     }
@@ -699,6 +787,7 @@ public class NewOrderController implements Initializable {
                 AddToCartButton.setOnMouseClicked(event -> productMonitor.AddToCart());
                 UpdateCart(order);
                 TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
+
                 try {
                     prodImage = recieveImageForProduct(prod);
 

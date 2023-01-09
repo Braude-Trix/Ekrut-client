@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.NewOrderController">
    <children>
@@ -77,10 +78,17 @@
       </ImageView>
       <ImageView fx:id="saleImage" fitHeight="66.0" fitWidth="65.0" layoutX="415.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@badge-g5b9d52ffd_640.png" />
+            <Image url="@../badge-g5b9d52ffd_640.png" />
          </image>
       </ImageView>
       <Label fx:id="saleLabel" layoutX="436.0" layoutY="50.0" prefHeight="36.0" prefWidth="23.0" text="Sale" textAlignment="CENTER" textFill="WHITE" />
       <Label fx:id="Saletype" layoutX="437.0" layoutY="70.0" prefHeight="32.0" prefWidth="28.0" textFill="WHITE" />
+      <ImageView fx:id="cloudForSale" fitHeight="342.0" fitWidth="317.0" layoutX="398.0" layoutY="-18.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../tooltipforsale.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="textForSale" fill="WHITE" layoutX="497.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" />
+      <ImageView fx:id="imageToPresent" fitHeight="73.0" fitWidth="81.0" layoutX="407.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

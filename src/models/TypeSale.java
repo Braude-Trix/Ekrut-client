@@ -16,8 +16,6 @@ public enum TypeSale implements Serializable {
 			return "2+2 Sale";
 		case PercentageDiscount:
 			return "Percentage";
-		case GetSecondOneAtDiscount:
-			return "Percentage on 2nd";
 		default:
 			return null;
 		}
