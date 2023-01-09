@@ -29,12 +29,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-<<<<<<< HEAD
 import javafx.scene.text.Text;
-=======
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
->>>>>>> c4e9ffea43d91d4b18a13398627dba3a1ff90b84
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.*;
@@ -42,6 +39,8 @@ import utils.Util;
 import utils.Utils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import static java.lang.Thread.sleep;
 
 
 public class NewOrderController implements Initializable {
@@ -305,7 +304,7 @@ public class NewOrderController implements Initializable {
         textForSale.setText(sale.getSaleName()+"\n\n"+sale.getSaleDiscription());
         cloudForSale.setVisible(true);
         textForSale.setVisible(true);
-        sleep(300);
+        //sleep(300);
     }
     private void hideTooltip()
     {
@@ -867,7 +866,7 @@ public class NewOrderController implements Initializable {
                     return;
                 }
                 try {
-                    Thread.sleep(10000);
+                    sleep(10000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
