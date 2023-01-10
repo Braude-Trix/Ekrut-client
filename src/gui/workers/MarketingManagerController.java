@@ -635,12 +635,19 @@ private void setTextFormatterForTextAreaDescription() {
 	void SelectedDate(ActionEvent event) {
 		ChronoLocalDate timeNow = LocalDate.from(ZonedDateTime.now());
 		if (StartDate.getValue() != null) {
+			System.out.println("value is"+StartDate.getValue()+"End");
 			EndDate.setDayCellFactory(picker -> new DateCell() {
 				public void updateItem(LocalDate date, boolean empty) {
 					super.updateItem(date, empty);
-					LocalDate today = StartDate.getValue();
+					LocalDate today; 
+					if( StartDate.getValue()!=null) {
+						today=StartDate.getValue();
+					}
+					else {
+						today=LocalDate.from(ZonedDateTime.now());
+					}
 
-					setDisable(empty || date.compareTo(today) < 0);
+					setDisable(date!=null && today!=null && (empty || date.compareTo(today) < 0));
 				}
 			});
 			if (StartDate.getValue() != null && StartDate.getValue().compareTo(timeNow) >= 0) {
