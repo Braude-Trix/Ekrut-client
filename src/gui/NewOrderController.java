@@ -42,13 +42,26 @@ import java.time.format.DateTimeFormatter;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * @author badihi
+ * This class describes the functionality of the new order creation, add products to cart and continue for payment.
+ */
 
 public class NewOrderController implements Initializable {
 
     static private ObservableList<Sale> readySales = FXCollections.observableArrayList();
 
+    static private Regions oldRegion=null;
+
+    static private boolean aliveSale = false;
 
     static Order previousOrder;
+
+
+    /**
+     * This object monitor if there is new order that replaced old one
+     */
+
     public static boolean NewOrderReplaced = false;
 
     static User user = LoginController.user;//new Customer("Yuval", "Zohar", 318128841, "asdfjj2@gmail.com", "05234822234", "asdfk", "asdf",false, "00",CustomerType.Client,"3", Regions.South);
@@ -110,6 +123,10 @@ public class NewOrderController implements Initializable {
     @FXML
     void backBtnClicked(MouseEvent event) throws Exception {
         NewOrderReplaced = true;
+        BillWindowController.restoreOrder = null;
+        oldRegion = null;
+        aliveSale = false;
+
         Stage stage = StageSingleton.getInstance().getStage();
         // delivery, selfPickUp, latePickUp;
         //  System.out.println((""));
@@ -225,7 +242,8 @@ public class NewOrderController implements Initializable {
         }
     }
 
-    public List<Object> requestMachineProducts(String machineId) {
+    //badihi
+    private List<Object> requestMachineProducts(String machineId) {
         if(MaxAmountsList != null)
         {
             return MaxAmountsList;
@@ -247,8 +265,8 @@ public class NewOrderController implements Initializable {
         }
         return machineIdList;
     }
-
-    public List<Object> requestProducts() {
+    //badihi
+    private List<Object> requestProducts() {
         Request request = new Request();
         request.setPath("/requestProducts");
         request.setMethod(Method.GET);
@@ -264,7 +282,8 @@ public class NewOrderController implements Initializable {
         return null;
     }
 
-    public List<Object> requestCompletedOrders(Integer userId) {
+    //badihi
+    private List<Object> requestCompletedOrders(Integer userId) {
         List<Object> userIdList = new ArrayList<>();
         userIdList.add(userId);
         Request request = new Request();
@@ -336,7 +355,6 @@ public class NewOrderController implements Initializable {
     private Double findDiscount(int amount, Double pricePerItem,Sale sale)
     {
         setLabelandImage(sale);
-        System.out.println(sale.getSaleDiscription());
         Double price = 0.0;
         if(sale.getSaleType().equals(TypeSale.Sale1Plus1))
         {
@@ -407,7 +425,6 @@ public class NewOrderController implements Initializable {
                 }
             }
         }
-        System.out.println("NO DISCOUNT");
         return amount*pricePerItem*firstTimeMultiplier;
     }
 
@@ -437,7 +454,8 @@ public class NewOrderController implements Initializable {
         return products;
     }
 
-    public class ProductInMachineMonitor {
+    //badihi
+    private class ProductInMachineMonitor {
         Product product;
         int amountSelected;
         Button AddToCartButton;
@@ -447,8 +465,8 @@ public class NewOrderController implements Initializable {
         int productMaxAmount;
         Order order;
 
-
-        public ProductInMachineMonitor(Product product, Button AddToCartButton,
+        //badihi
+        private ProductInMachineMonitor(Product product, Button AddToCartButton,
                                        Label counter, ImageView minusImage, ImageView plusImage, Order order) {
             this.order = order;
             this.product = product;
@@ -461,7 +479,8 @@ public class NewOrderController implements Initializable {
 
         }
 
-        public String getMonitorMainProductID() {
+        //badihi
+        private String getMonitorMainProductID() {
             return product.getProductId();
         }
 
@@ -482,7 +501,8 @@ public class NewOrderController implements Initializable {
             return MaxAmountInDB - AmountAlreadyInOrder;
         }
 
-        public void increaseAmount() {
+        //badihi
+        private void increaseAmount() {
             EmptyCartAlert.setVisible(false);
             try {
                 if (amountSelected >= productMaxAmount) { // Throw label
@@ -502,7 +522,8 @@ public class NewOrderController implements Initializable {
             }
         }
 
-        public void decreaseAmount() {
+        //badihi
+        private void decreaseAmount() {
             try {
                 if (amountSelected <= 1) { // Throw label
                     minusImage.setOpacity(StyleConstants.LOW_OPACITY);
@@ -520,7 +541,8 @@ public class NewOrderController implements Initializable {
                 System.out.println(e);
             }
         }
-        public void AddToCart() {
+        //badihi
+        private void AddToCart() {
             minusImage.setOpacity(StyleConstants.LOW_OPACITY);
             productMaxAmount -= amountSelected;
             if (productMaxAmount <= 0) {
@@ -575,7 +597,8 @@ public class NewOrderController implements Initializable {
             TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
         }
 
-        public double roundTo2Digit(double num) {
+        //badihi
+        private double roundTo2Digit(double num) {
             BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
             return bd.doubleValue();
         }
@@ -604,10 +627,15 @@ public class NewOrderController implements Initializable {
 
     private void setfirstTimeMultiplier(Integer id,Order order)
     {
-        if(readySales.size() == 0) {
+
+        Regions currReg = getRegion(order);
+        if(aliveSale == false ||  !currReg.equals(oldRegion)) {
             requestReadySales(order);
             handleReponseGetReadySales();
+            aliveSale = true;
+
         }
+        oldRegion = currReg;
 
 
         List<Object> OrderedIds = requestCompletedOrders(id);
@@ -627,6 +655,9 @@ public class NewOrderController implements Initializable {
 
     }
 
+    /**
+     * This method initializes data before the screen comes up
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
@@ -635,6 +666,7 @@ public class NewOrderController implements Initializable {
             Thread timeOutThread = new Thread(new gui.NewOrderController.TimeOutControllerNewOrder());
             timeOutThread.start();
         }
+
         saleLabel.setVisible(false);
         saleImage.setVisible(false);
         Saletype.setVisible(false);
@@ -840,10 +872,14 @@ public class NewOrderController implements Initializable {
 
     }
 
+    /**
+     * Time out controller
+     */
 
     static class TimeOutControllerNewOrder implements Runnable {
         private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES; //Utils.TIME_OUT_TIME_IN_MINUTES;
         private long TimeOutStartTime = System.currentTimeMillis();
+
 
         @Override
         public void run() {
@@ -876,6 +912,10 @@ public class NewOrderController implements Initializable {
                 }
             }
         }
+
+        /**
+         * Handle clicked that received assist to timeout monitor
+         */
         public void handleAnyClick() {
             StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>(){
                 @Override
@@ -917,6 +957,5 @@ public class NewOrderController implements Initializable {
 			}
 		});
 	}
-
 }
 

@@ -31,7 +31,7 @@
                <HBox.margin>
                   <Insets left="15.0" right="15.0" top="10.0" />
                </HBox.margin></Label>
-            <Button mnemonicParsing="false" onAction="#logOutClicked" prefHeight="32.0" prefWidth="65.0" text="Log Out">
+            <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logOutClicked" prefHeight="32.0" prefWidth="65.0" text="Log Out">
                <stylesheets>
                   <URL value="@../../styles/BadButton.css" />
                   <URL value="@../../styles/BadButton.css" />
@@ -76,19 +76,19 @@
             <Image url="@../backBtn.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="saleImage" fitHeight="66.0" fitWidth="65.0" layoutX="415.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="saleImage" fitHeight="66.0" fitWidth="65.0" layoutX="415.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="395.0" AnchorPane.leftAnchor="420.0">
          <image>
             <Image url="@../badge-g5b9d52ffd_640.png" />
          </image>
       </ImageView>
-      <Label fx:id="saleLabel" layoutX="436.0" layoutY="50.0" prefHeight="36.0" prefWidth="23.0" text="Sale" textAlignment="CENTER" textFill="WHITE" />
-      <Label fx:id="Saletype" layoutX="437.0" layoutY="70.0" prefHeight="32.0" prefWidth="28.0" textFill="WHITE" />
-      <ImageView fx:id="cloudForSale" fitHeight="342.0" fitWidth="317.0" layoutX="398.0" layoutY="-18.0" pickOnBounds="true" preserveRatio="true">
+      <Label fx:id="saleLabel" layoutX="436.0" layoutY="50.0" prefHeight="36.0" prefWidth="23.0" text="Sale" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="421.0" AnchorPane.leftAnchor="441.0" />
+      <Label fx:id="Saletype" layoutX="437.0" layoutY="70.0" prefHeight="32.0" prefWidth="28.0" textFill="WHITE" AnchorPane.bottomAnchor="405.0" AnchorPane.leftAnchor="442.0" />
+      <ImageView fx:id="cloudForSale" fitHeight="342.0" fitWidth="317.0" layoutX="398.0" layoutY="-18.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="211.0" AnchorPane.leftAnchor="403.0">
          <image>
             <Image url="@../tooltipforsale.png" />
          </image>
       </ImageView>
-      <Text fx:id="textForSale" fill="WHITE" layoutX="497.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" />
-      <ImageView fx:id="imageToPresent" fitHeight="43.0" fitWidth="44.0" layoutX="428.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true" />
+      <Text fx:id="textForSale" fill="WHITE" layoutX="502.0" layoutY="84.94921875" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" AnchorPane.bottomAnchor="330.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="258.0" />
+      <ImageView fx:id="imageToPresent" fitHeight="43.0" fitWidth="44.0" layoutX="428.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="430.0" />
    </children>
 </AnchorPane>
