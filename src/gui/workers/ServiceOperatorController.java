@@ -3,6 +3,8 @@ package gui.workers;
 import client.Client;
 import client.ClientUI;
 import gui.LoginController;
+import gui.SelectOptionWorkerOrCustomer;
+import gui.StageSingleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -69,6 +71,9 @@ public class ServiceOperatorController implements Initializable {
 
     @FXML
     private ComboBox<String> SelectRegion;
+    
+    @FXML
+    private Button backBtn;
 
     @FXML
     void logOutClicked(ActionEvent event) {
@@ -94,11 +99,21 @@ public class ServiceOperatorController implements Initializable {
 			logoutBtn.setVisible(false);
 			worker = workerAccessByCeo;
     	}
+    	else
+			setBackBtnIfExist();
+
         WorkerNodesUtils.setUserName(userNameLabel, worker);
         WorkerNodesUtils.setRole(userRank, worker.getRegion(), worker.getType());
         setRegionsOnBox();
         checkIdButton.setOnMouseClicked(event -> IDFieldInserted());
     }
+    
+    private void setBackBtnIfExist() {
+		if (LoginController.customerAndWorker != null) {
+			backBtn.setVisible(true);
+		}
+
+	}
 
     private void setRegionsOnBox() {
         ObservableList<String> options = FXCollections.observableArrayList();
@@ -106,6 +121,17 @@ public class ServiceOperatorController implements Initializable {
         options.add("South");
         options.add("UAE");
         SelectRegion.getItems().addAll(options);
+    }
+    
+    /**
+	 * This method is the actual back button, shoots onAction and changes the stage to be the selection page.
+	 * @param event - the current event when clicking.
+	 */
+    @FXML
+    void back(ActionEvent event) {
+    	Stage stage = StageSingleton.getInstance().getStage();
+		stage.setScene(SelectOptionWorkerOrCustomer.scene);
+		stage.show();
     }
 
     private boolean isValidFillComboBoxes() {
@@ -118,7 +144,7 @@ public class ServiceOperatorController implements Initializable {
 
 
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/ServiceOperator.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/ServiceOperator.fxml"));
 
         Scene scene = new Scene(root);
         this.scene = scene;

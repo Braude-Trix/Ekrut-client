@@ -18,7 +18,7 @@
    <children>
       <ImageView fx:id="bgImage" fitHeight="505.0" fitWidth="900.0" layoutX="-7.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../regionalDeliverySecBackground.jpg" />
+            <Image url="@../WorkerBackGround.jpeg" />
          </image>
       </ImageView>
       <HBox alignment="TOP_CENTER">
@@ -31,7 +31,7 @@
                            <children>
                               <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../avatar.jpg" />
+                                    <Image url="@../../avatar.jpg" />
                                  </image>
                               </ImageView>
                            </children>
@@ -66,6 +66,7 @@
                      </padding>
                   </Separator>
                   <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logOutClicked" prefHeight="30.0" prefWidth="200.0" text="Log out" />
+                  <Button fx:id="backBtn" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="200.0" text="Switch Customer/Worker" visible="false" />
                </children>
                <opaqueInsets>
                   <Insets />
@@ -85,16 +86,17 @@
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Label>
-      <Button fx:id="checkIdButton" layoutX="664.0" layoutY="107.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" text="Search">
-         <stylesheets>
-            <URL value="@../../styles/BadButton.css" />
-            <URL value="@../../styles/worker_main_panel.css" />
-         </stylesheets></Button>
+      <Button fx:id="checkIdButton" layoutX="664.0" layoutY="107.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" stylesheets="@../../../styles/worker_main_panel.css" text="Search" />
       <VBox fx:id="UserData" layoutX="400.0" layoutY="164.0" prefHeight="259.0" prefWidth="358.0" />
       <Label fx:id="NotOnlyDigits" layoutX="505.0" layoutY="137.0" prefHeight="17.0" prefWidth="149.0" text="Insert digits only please." textFill="RED" visible="false" />
       <Label fx:id="CouldntFineUser" layoutX="513.0" layoutY="137.0" prefHeight="17.0" prefWidth="113.0" text="User did not find." textFill="RED" visible="false" />
       <ComboBox fx:id="SelectRegion" layoutX="588.0" layoutY="371.0" prefWidth="150.0" promptText="Select Region" visible="false" />
       <Label fx:id="RegionError" layoutX="609.0" layoutY="415.0" text="Please Select Region" textFill="RED" visible="false" />
+      <Label layoutX="474.0" layoutY="14.0" text="Welcome Back!" AnchorPane.leftAnchor="474.0" AnchorPane.rightAnchor="197.0">
+         <font>
+            <Font size="34.0" />
+         </font>
+      </Label>
    </children>
    <stylesheets>
       <URL value="@../../styles/SideButtons.css" />
