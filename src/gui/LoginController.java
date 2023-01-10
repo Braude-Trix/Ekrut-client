@@ -310,6 +310,8 @@ public class LoginController implements Initializable{
 
 
     private void setUserWindow(List<Object> userDetails) throws Exception {
+        PickupController.scene = null;
+        DeliveryFormController.scene = null;
         if (userDetails.size() == 2) {
             customerAndWorker = userDetails;
             SelectOptionWorkerOrCustomer selectWindow = new SelectOptionWorkerOrCustomer();
@@ -318,8 +320,6 @@ public class LoginController implements Initializable{
         else if(userDetails.get(0) instanceof Customer) {
             user = (Customer) userDetails.get(0);
             OLController OLcon = new OLController();
-            PickupController.scene = null;
-            DeliveryFormController.scene = null;
             OLcon.start(stage);
         }
         else if(userDetails.get(0) instanceof Worker) {
