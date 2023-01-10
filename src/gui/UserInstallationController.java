@@ -17,6 +17,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -62,6 +64,9 @@ public class UserInstallationController implements Initializable {
     private ComboBox<String> machineComboboxId;
     
 	private List<Machine> machinesSet;
+    @FXML
+    private ImageView backImage;
+
 
     
 	/**
@@ -71,8 +76,26 @@ public class UserInstallationController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		machinesSet = new ArrayList<>();
 		machine = null;
+    	setRegionComboBox();
+
 	}
 	
+
+    /**
+     * This method returns to the ek/ol decision.
+     * 
+     * @param event - current event when user clicked the button
+     */
+    @FXML
+    void back(MouseEvent event) {
+    	backImage.setVisible(false);
+    	HboxConfiguration.setVisible(true);
+    	VboxAfterClickedEk.setVisible(false);
+    	title.setText("Select an installation configuration:");
+		//regionComboBoxId.getItems().clear();
+		//machinesSet.clear();
+    	
+    }
 	
     /**
 	 * This method sets a scene to a given stage.
@@ -110,14 +133,15 @@ public class UserInstallationController implements Initializable {
     	HboxConfiguration.setVisible(false);
     	title.setText("Select a region and a machine in the \"EK\" configuration:");
     	title.setFont(new Font(24));
-    	setRegionComboBox();
     	VboxAfterClickedEk.setVisible(true);
     	configuration = "EK";
+    	backImage.setVisible(true);
     	    	
     }
     
 	private void setRegionComboBox() {
 		ObservableList<Regions> options = FXCollections.observableArrayList(Regions.class.getEnumConstants());
+		//regionComboBoxId.getItems().clear();
 		regionComboBoxId.getItems().addAll(options);
 		regionComboBoxId.getItems().remove(Regions.All);
 	}
