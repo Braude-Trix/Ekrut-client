@@ -310,6 +310,8 @@ public class LoginController implements Initializable{
 
 
     private void setUserWindow(List<Object> userDetails) throws Exception {
+        PickupController.scene = null;
+        DeliveryFormController.scene = null;
         if (userDetails.size() == 2) {
             customerAndWorker = userDetails;
             SelectOptionWorkerOrCustomer selectWindow = new SelectOptionWorkerOrCustomer();
