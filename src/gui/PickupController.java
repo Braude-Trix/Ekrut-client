@@ -74,7 +74,7 @@ public class PickupController implements Initializable {
 
 		Scene scene = new Scene(root);
 		this.scene = scene;
-		scene.getStylesheets().add(getClass().getResource("/styles/PickUpForm.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/styles/PickupForm.css").toExternalForm());
 		primaryStage.setTitle("Pickup Form");
 		primaryStage.setScene(scene);
 		primaryStage.centerOnScreen();
