@@ -108,8 +108,8 @@ public class UserInstallationController implements Initializable {
     @FXML
     void EkClicked(ActionEvent event) {
     	HboxConfiguration.setVisible(false);
-    	title.setText("You must select a region and the machine in the \"EK\" configuration");
-    	title.setFont(new Font(16));
+    	title.setText("Select a region and a machine in the \"EK\" configuration:");
+    	title.setFont(new Font(24));
     	setRegionComboBox();
     	VboxAfterClickedEk.setVisible(true);
     	configuration = "EK";
