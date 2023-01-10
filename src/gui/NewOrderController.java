@@ -45,7 +45,7 @@ import static java.lang.Thread.sleep;
 
 public class NewOrderController implements Initializable {
 
-    private ObservableList<Sale> readySales = FXCollections.observableArrayList();
+    static private ObservableList<Sale> readySales = FXCollections.observableArrayList();
 
 
     static Order previousOrder;
@@ -604,8 +604,12 @@ public class NewOrderController implements Initializable {
 
     private void setfirstTimeMultiplier(Integer id,Order order)
     {
-        requestReadySales(order);
-        handleReponseGetReadySales();
+        if(readySales.size() == 0) {
+            requestReadySales(order);
+            handleReponseGetReadySales();
+        }
+
+
         List<Object> OrderedIds = requestCompletedOrders(id);
         Boolean isExist = (Boolean)OrderedIds.get(0);
 

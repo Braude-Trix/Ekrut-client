@@ -89,6 +89,6 @@
          </image>
       </ImageView>
       <Text fx:id="textForSale" fill="WHITE" layoutX="497.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" />
-      <ImageView fx:id="imageToPresent" fitHeight="73.0" fitWidth="81.0" layoutX="407.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imageToPresent" fitHeight="43.0" fitWidth="44.0" layoutX="428.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>
