@@ -66,6 +66,7 @@ public class EKController implements Initializable {
     
     @FXML
     private Label labelName;
+    public static Thread staticTimeOutThread;
     
     /**
 	 * This method initializes data before the screen comes up
@@ -75,6 +76,7 @@ public class EKController implements Initializable {
         Util.setNameNavigationBar(labelName);
         EKPageReplace = false;
         Thread timeOutThread = new Thread(new TimeOutControllerEkMain());
+        staticTimeOutThread = timeOutThread;
         timeOutThread.start();
 	}
     
@@ -220,8 +222,8 @@ public class EKController implements Initializable {
          */
         @Override
         public void run() {
-            while (true) {
-                Platform.runLater(()->handleAnyClick());
+            Platform.runLater(()->handleAnyClick());
+            while (!Thread.currentThread().isInterrupted()) {
                 long TimeOutCurrentTime = System.currentTimeMillis();
                 if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
                     System.out.println("Time Out passed");
@@ -239,13 +241,14 @@ public class EKController implements Initializable {
                     return;
                 }
                 if(EKPageReplace) {
-                    System.out.println("Thread closed");
+                    System.out.println("Thread closed from TimeOut Controller");
                     return;
                 }
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println(e.getMessage());
+                    Thread.currentThread().interrupt();
                 }
             }
         }

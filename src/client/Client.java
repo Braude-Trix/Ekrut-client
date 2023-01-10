@@ -1,9 +1,6 @@
 package client;
 
-import gui.BillWindowController;
-import gui.ConnectToServerController;
-import gui.LoginController;
-import gui.StageSingleton;
+import gui.*;
 import gui.workers.CeoSelectManagers;
 import gui.workers.CeoSelectWorker;
 import gui.workers.SelectReportGui;
@@ -110,6 +107,8 @@ public class Client extends AbstractClient {
             try {
 				if (LoginController.threadListeningNewMsg != null)
 					LoginController.threadListeningNewMsg.interrupt();
+				if (EKController.staticTimeOutThread != null)
+					EKController.staticTimeOutThread.interrupt();
 				// closing all opened popups
 				if (CeoSelectManagers.popupDialog != null)
 					CeoSelectManagers.popupDialog.close();
