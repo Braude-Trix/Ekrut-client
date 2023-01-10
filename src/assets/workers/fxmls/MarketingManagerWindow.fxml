@@ -78,7 +78,7 @@
             </VBox>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../../../styles/MainButtons.css">
                <children>
-                                 <BorderPane fx:id="mainBorderPane" prefHeight="505.0" prefWidth="628.0" visible="false">
+                                 <BorderPane fx:id="mainBorderPane" prefHeight="505.0" prefWidth="628.0">
                      <top>
                         <VBox fx:id="topBorderVBox2" alignment="CENTER" BorderPane.alignment="CENTER">
                            <children>
@@ -331,15 +331,11 @@
                                     </TableView>
                                  </children>
                               </VBox>
-                              <Button fx:id="refreshBtn" mnemonicParsing="false" onAction="#clickRefreshBtn" prefHeight="15.0" prefWidth="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="15.0">
-                                 <graphic>
-                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../refresh-page-option.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
+                              <ImageView fx:id="refreshImage" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#clickRefreshBtn" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+                                 <image>
+                                    <Image url="@../../refresh-page-option.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                            <BorderPane.margin>
                               <Insets />

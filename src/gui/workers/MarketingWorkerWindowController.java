@@ -183,11 +183,7 @@ public class MarketingWorkerWindowController implements Initializable {
 
 	@FXML
 	private VBox statusBoxInSalePreview1;
-	@FXML
-	private Button refreshBtnReadyTable;
 
-	@FXML
-	private Button refreshBtnRunningTable;
 	@FXML
 	private HBox previewSaleHbox;
 	@FXML
@@ -207,6 +203,11 @@ public class MarketingWorkerWindowController implements Initializable {
 
     @FXML
 	 private Button backBtn;
+    @FXML
+    private ImageView refreshBtnReadyTable;
+
+    @FXML
+    private ImageView refreshBtnRunningTable;
 
 	/**
 	 * runningSales ObserveableList, this is the list with all the running sales brought from db and showed in the running sales tableview.
@@ -632,7 +633,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	 * @param event - current event when user clicks refresh
 	 */
 	@FXML
-	void clickRefreshBtn(ActionEvent event) {
+	void clickRefreshBtn(MouseEvent event) {
 		initReadyForStartSalesTable();
 		initRunningSalesTable();
 	}

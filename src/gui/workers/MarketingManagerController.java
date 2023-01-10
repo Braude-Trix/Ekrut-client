@@ -192,6 +192,8 @@ public class MarketingManagerController implements Initializable {
 
     @FXML
     private Label descriptionCounterLabel1;
+    @FXML
+    private ImageView refreshImage;
 
 
     public static MarketingManagerController controller;
@@ -490,7 +492,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * @param event - current event when user clicks refresh
 	 */
 	@FXML
-	void clickRefreshBtn(ActionEvent event) {
+	void clickRefreshBtn(MouseEvent  event) {
 		initSaleTemplateTable();
 		System.out.println("refreshed");
 	}

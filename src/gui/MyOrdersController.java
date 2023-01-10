@@ -111,6 +111,9 @@ public class MyOrdersController implements Initializable {
     @FXML
     private AnchorPane anchorPane;
     
+    @FXML
+    private ImageView refreshImage;
+    
 	/**
 	 * This method describes the initialization of information that will be
 	 * displayed in the window depending on the client.
@@ -158,7 +161,7 @@ public class MyOrdersController implements Initializable {
      * @param event
      */
     @FXML
-    void refreshAllBtn(ActionEvent event) {
+    void refreshAllBtn(MouseEvent event) {
     	orderObser.clear();
 		getAllOrdersForSpecificUser();
 		setStyleForEmptyTable();

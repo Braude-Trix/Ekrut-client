@@ -129,15 +129,11 @@
                                     </TableView>
                                  </children>
                               </VBox>
-                              <Button fx:id="refreshBtnRunningTable" mnemonicParsing="false" onAction="#clickRefreshBtn" prefHeight="15.0" prefWidth="15.0" AnchorPane.topAnchor="15.0">
-                                 <graphic>
-                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../refresh-page-option.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
+                              <ImageView fx:id="refreshBtnRunningTable" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#clickRefreshBtn" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+                                 <image>
+                                    <Image url="@../../refresh-page-option.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                      </center>
@@ -284,15 +280,11 @@
                                     </TableView>
                                  </children>
                               </VBox>
-                              <Button fx:id="refreshBtnReadyTable" mnemonicParsing="false" onAction="#clickRefreshBtn" prefHeight="15.0" prefWidth="15.0" AnchorPane.topAnchor="15.0">
-                                 <graphic>
-                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../refresh-page-option.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
+                              <ImageView fx:id="refreshBtnReadyTable" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#clickRefreshBtn" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+                                 <image>
+                                    <Image url="@../../refresh-page-option.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                      </center>
