@@ -134,7 +134,7 @@ public class LoginController implements Initializable{
      * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
      */
     @FXML
-    void moveHomePage(ActionEvent event) throws Exception {
+    void login(ActionEvent event) throws Exception {
         anchorPane.requestFocus();
         boolean isInputErrorUsername = false;
         boolean isInputErrorPassword = false;
@@ -187,7 +187,7 @@ public class LoginController implements Initializable{
             if (Client.resFromServer.getCode() == ResponseCode.INVALID_DATA) {
                 setWindowUnregisteredUser();
             }
-            else {
+            else if (Client.resFromServer.getCode() == ResponseCode.OK) {
                 EKController EKcon = new EKController();
                 EKcon.start(stage);
             }

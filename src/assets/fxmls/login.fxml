@@ -88,7 +88,7 @@
                               <Insets left="35.0" top="15.0" />
                            </VBox.margin>
                         </Label>
-                        <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" focusTraversable="false" mnemonicParsing="false" onAction="#moveHomePage" prefHeight="30.0" prefWidth="225.0" text="Login">
+                        <Button fx:id="loginBtn" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" focusTraversable="false" mnemonicParsing="false" onAction="#login" prefHeight="30.0" prefWidth="225.0" text="Login">
                            <VBox.margin>
                               <Insets left="35.0" top="10.0" />
                            </VBox.margin>
