@@ -33,6 +33,7 @@ import models.Request;
 import models.ResponseCode;
 import models.User;
 import models.Worker;
+import utils.IUtil;
 import utils.Util;
 
 /**
@@ -78,7 +79,7 @@ public class LoginController implements Initializable{
     @FXML
     private TextField txtPassword;
 
-    @FXML
+	@FXML
     private TextField txtUsername;
 
     @FXML
@@ -87,6 +88,7 @@ public class LoginController implements Initializable{
     @FXML
     private Label errorTouch;
 
+    private IUtil utilInterface; 
     /**
      * This method initializes data before the screen comes up
      */
@@ -120,6 +122,14 @@ public class LoginController implements Initializable{
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> forcedExit());
     }
+    
+    public LoginController() {
+    	utilInterface = new UtilWrapper();
+    }
+    
+    public LoginController(IUtil utilI) {
+    	utilInterface = utilI;
+    }
 
 
     private static void forcedExit() {
@@ -141,12 +151,12 @@ public class LoginController implements Initializable{
 
         removeErrorStyle();
 
-        if (Util.isBlankString(txtUsername.getText())){
-            Util.setFieldTextErrorBorder(txtUsername);
+        if (utilInterface.isBlankString(txtUsername.getText())){
+        	Util.setFieldTextErrorBorder(txtUsername);
             isInputErrorUsername = true;
         }
-        if (Util.isBlankString(txtPassword.getText())){
-            Util.setFieldTextErrorBorder(txtPassword);
+        if (utilInterface.isBlankString(txtPassword.getText())){
+        	Util.setFieldTextErrorBorder(txtPassword);
             isInputErrorPassword = true;
         }
 
@@ -486,5 +496,40 @@ public class LoginController implements Initializable{
             alert.show();
         }
     }
+    
+    
+    public TextField getTxtPassword() {
+		return txtPassword;
+	}
+
+	public void setTxtPassword(TextField txtPassword) {
+		this.txtPassword = txtPassword;
+	}
+
+	public TextField getTxtUsername() {
+		return txtUsername;
+	}
+
+	public void setTxtUsername(TextField txtUsername) {
+		this.txtUsername = txtUsername;
+	}
+
+	public Label getErrorLabel() {
+		return errorLabel;
+	}
+
+	public void setErrorLabel(Label errorLabel) {
+		this.errorLabel = errorLabel;
+	}
+	
+	public class UtilWrapper implements IUtil {
+	    public boolean isBlankString(String s) {
+	        return Util.isBlankString(s);
+	    }
+
+
+	}
+	
+	
 
 }
