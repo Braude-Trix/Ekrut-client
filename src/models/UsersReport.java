@@ -24,7 +24,7 @@ public class UsersReport implements Serializable {
     // map of all orders of subscribers that holds <key: clientId, value: amountOfOrders>
     private final Map<String, Integer> subscribersOrders;
     // sorted list of top 3 client names
-    private final List<String> top3ClientNames;
+    private List<String> top3ClientNames;
     // map of all orders of subscribers that holds <key: userId, value: amountOfOrders>
     private final Map<String, Integer> top3UserIdAndAmount;
     private final int maxAmountOfOrders;
@@ -76,6 +76,10 @@ public class UsersReport implements Serializable {
 
     public double getSubscribersPercentage() {
         return subscribersPercentage;
+    }
+
+    public void setTop3ClientNames(List<String> top3ClientNames) {
+        this.top3ClientNames = top3ClientNames;
     }
 
     private Map<String, Integer> calculateTop3Users() {

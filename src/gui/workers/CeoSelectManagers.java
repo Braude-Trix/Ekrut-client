@@ -154,7 +154,7 @@ public class CeoSelectManagers {
             popupDialog.setTitle("CEO - Marketing Manager");
         } else {
             RegionalManagerGui.isCEOLogged = true;
-            popupDialog.setTitle("CEO - Regional Manager");
+            popupDialog.setTitle("CEO - Regional Manager | " + managerType.name());
         }
 
         switch (managerType) {

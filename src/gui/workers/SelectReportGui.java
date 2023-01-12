@@ -24,7 +24,10 @@ import models.Machine;
 import models.Method;
 import models.OrdersReport;
 import models.Regions;
+import models.ReportType;
 import models.Request;
+import models.ResponseCode;
+import models.SavedReportRequest;
 import models.UsersReport;
 import utils.ColorsAndFonts;
 import utils.WorkerNodesUtils;
@@ -37,6 +40,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import static gui.workers.RegionalManagerGui.VALIDATION_ERROR_MSG;
@@ -54,10 +58,7 @@ public class SelectReportGui {
     private Button viewButton;
     private Label errLabel;
     private List<Machine> machinesSet;
-
-    private enum ReportType {
-        INVENTORY, ORDERS, USERS
-    }
+    private Object reportFromServer;
 
     void loadInventoryReport() {
         reportType = ReportType.INVENTORY;
@@ -228,21 +229,48 @@ public class SelectReportGui {
 				errLabel = WorkerNodesUtils.getErrorLabel(VALIDATION_ERROR_MSG);
                 bottomBroderVbox.getChildren().add(errLabel);
             } else { // all form data is validated
-                switch (reportType) { // todo: query the DB for report here...
-                    case INVENTORY:
-                        openReportPopup("/assets/workers/fxmls/InventoryReportPage.fxml");
-                        break;
-                    case ORDERS:
-                        openReportPopup("/assets/workers/fxmls/OrdersReportPage.fxml");
-                        break;
-                    case USERS:
-                        openReportPopup("/assets/workers/fxmls/UsersReportPage.fxml");
-                        break;
+                boolean isLoaded = loadReportPopup();
+                if (!isLoaded) {
+                    errLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
+                    bottomBroderVbox.getChildren().add(errLabel);
                 }
             }
         }));
-
         return bottomBroderVbox;
+    }
+
+    private boolean loadReportPopup() {
+        int year = Integer.parseInt(yearComboBox.getSelectionModel().getSelectedItem());
+        int month = Integer.parseInt(monthComboBox.getSelectionModel().getSelectedItem());
+        Regions region = RegionalManagerGui.region;
+        Integer machineId = null; // if not inventory report
+        if (reportType == ReportType.INVENTORY) {
+            String machineName = machineComboBox.getSelectionModel().getSelectedItem();
+            machineId = Integer.valueOf(machinesSet.stream()
+                    .filter(machine -> Objects.equals(machine.getName(), machineName))
+                    .map(Machine::getId)
+                    .findFirst().get());
+        }
+        SavedReportRequest savedReport = new SavedReportRequest(year, month, reportType, region, machineId);
+        requestReportFromServer(savedReport);
+
+        if (Client.resFromServer.getCode() != ResponseCode.OK) {
+            return false;
+        }
+        reportFromServer = Client.resFromServer.getBody().get(0);
+
+        switch (reportType) {
+            case INVENTORY:
+                openReportPopup("/assets/workers/fxmls/InventoryReportPage.fxml");
+                break;
+            case ORDERS:
+                openReportPopup("/assets/workers/fxmls/OrdersReportPage.fxml");
+                break;
+            case USERS:
+                openReportPopup("/assets/workers/fxmls/UsersReportPage.fxml");
+                break;
+        }
+        return true;
     }
 
     private void openReportPopup(String fxmlPath) {
@@ -278,17 +306,17 @@ public class SelectReportGui {
                 InventoryReportPopupGui.machineName = machineComboBox.getValue();
                 InventoryReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
                 InventoryReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
-                InventoryReportPopupGui.inventoryReportData = getDummyInventoryReport();
+                InventoryReportPopupGui.inventoryReportData = (InventoryReport) reportFromServer;
                 break;
             case ORDERS:
                 OrdersReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
                 OrdersReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
-                OrdersReportPopupGui.ordersReportData = getDummyOrdersReport();
+                OrdersReportPopupGui.ordersReportData = (OrdersReport) reportFromServer;
                 break;
             case USERS:
                 UsersReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
                 UsersReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
-                UsersReportPopupGui.usersReportData = getDummyUsersReport();
+                UsersReportPopupGui.usersReportData = (UsersReport) reportFromServer;
                 break;
         }
     }
@@ -430,5 +458,16 @@ public class SelectReportGui {
         VBox.setVgrow(contentVBox, Priority.ALWAYS);
         contentVBox.setSpacing(20);
         return contentVBox;
+    }
+
+    private void requestReportFromServer(SavedReportRequest reportRequest) {
+        List<Object> paramList = new ArrayList<>();
+        paramList.add(reportRequest);
+
+        Request request = new Request();
+        request.setPath("/reports");
+        request.setMethod(Method.GET);
+        request.setBody(paramList);
+        ClientUI.chat.accept(request);
     }
 }
