@@ -259,6 +259,8 @@ public class NewOrderController implements Initializable {
         for (Object sale : listOfSalesFromDB) {
             if (sale instanceof Sale) {
                 readySales.add((Sale) sale);
+                aliveSale = true;
+
             }
         }
     }
@@ -622,8 +624,9 @@ public class NewOrderController implements Initializable {
             if(aliveSale)
             {
                 Double original_price = findOriginalPrice(order);
-                originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
                 originalPrice.setVisible(true);
+
             }
 
             TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
@@ -652,8 +655,9 @@ public class NewOrderController implements Initializable {
                     if(aliveSale)
                     {
                         Double original_price = findOriginalPrice(order);
-                        originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                        originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
                         originalPrice.setVisible(true);
+
                     }
 
 
@@ -668,8 +672,9 @@ public class NewOrderController implements Initializable {
             if(aliveSale)
             {
                 Double original_price = findOriginalPrice(order);
-                originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
                 originalPrice.setVisible(true);
+
             }
 
 
@@ -698,7 +703,6 @@ public class NewOrderController implements Initializable {
         if(aliveSale == false ||  !currReg.equals(oldRegion)) {
             requestReadySales(order);
             handleReponseGetReadySales();
-            aliveSale = true;
 
         }
         oldRegion = currReg;
@@ -736,10 +740,12 @@ public class NewOrderController implements Initializable {
         rotation.play();
         user = LoginController.user;
         saleLabel.setVisible(false);
-        Tooltip tooltip = new Tooltip("Price before discount");
-        Tooltip.install(originalPrice, tooltip);
-        tooltip.setShowDuration(Duration.millis(3000));
-        tooltip.setShowDelay(Duration.millis(0));
+        originalPrice.setVisible(false);
+
+//        Tooltip tooltip = new Tooltip("Price before discount");
+//        Tooltip.install(originalPrice, tooltip);
+//        tooltip.setShowDuration(Duration.millis(3000));
+//        tooltip.setShowDelay(Duration.millis(0));
 
         saleImage.setVisible(false);
         Saletype.setVisible(false);
@@ -925,7 +931,7 @@ public class NewOrderController implements Initializable {
                 if(aliveSale)
                 {
                     Double original_price = findOriginalPrice(order);
-                    originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                    originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
                     originalPrice.setVisible(true);
                 }
 
