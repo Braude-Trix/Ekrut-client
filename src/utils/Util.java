@@ -89,8 +89,6 @@ public class Util {
 			stage.centerOnScreen();
 			stage.setResizable(false);
 			stage.show();
-			stage.setMinHeight(stage.getHeight());
-			stage.setMinWidth(stage.getWidth());
 			stage.setOnCloseRequest(e -> Exit());
 		} catch (IOException e1) {
 			e1.printStackTrace();

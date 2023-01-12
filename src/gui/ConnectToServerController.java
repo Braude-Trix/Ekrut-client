@@ -13,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import logic.EndOfMonthTask;
 
 import java.io.IOException;
 
@@ -52,8 +51,6 @@ public class ConnectToServerController {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setMinHeight(scene.getHeight());
-        primaryStage.setMinWidth(scene.getWidth());
         primaryStage.setOnCloseRequest(e -> forcedExit());
     }
 
@@ -86,9 +83,6 @@ public class ConnectToServerController {
             HandleConnectionError();
             return;
         }
-        // starting reports creation thread
-        Thread reportsThread = new Thread(new EndOfMonthTask());
-        reportsThread.start();
 
         UserInstallationController UserCon = new UserInstallationController();
 		Stage stage = StageSingleton.getInstance().getStage();

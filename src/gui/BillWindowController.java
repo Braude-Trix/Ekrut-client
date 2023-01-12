@@ -428,7 +428,10 @@ public class BillWindowController implements Initializable {
         popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
         popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
         popupDialog.show();
-        playThanksForBuyingVoice();
+
+        if (UserInstallationController.configuration.equals("EK")) {
+            playThanksForBuyingVoice();
+        }
     }
 
     private void playThanksForBuyingVoice() {
@@ -437,7 +440,7 @@ public class BillWindowController implements Initializable {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.totalDurationProperty().addListener((observable, oldDuration, newDuration) -> {
             if (newDuration.greaterThan(Duration.ONE)) {
-                mediaPlayer.play();
+                Platform.runLater(mediaPlayer::play);
             }
         });
     }
@@ -516,8 +519,9 @@ public class BillWindowController implements Initializable {
          */
         @Override
         public void run() {
+            Platform.runLater(() -> handleAnyClick());
+
             while (true) {
-                Platform.runLater(() -> handleAnyClick());
                 long TimeOutCurrentTime = System.currentTimeMillis();
                 if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
                     System.out.println("Time Out passed");
@@ -557,6 +561,7 @@ public class BillWindowController implements Initializable {
                     TimeOutStartTime = System.currentTimeMillis();
                 }
             });
+
         }
     }
 }

@@ -263,8 +263,6 @@ public class MarketingWorkerWindowController implements Initializable {
 		primaryStage.centerOnScreen();
 		primaryStage.setResizable(false);
 		primaryStage.show();
-		primaryStage.setMinHeight(primaryStage.getHeight());
-		primaryStage.setMinWidth(primaryStage.getWidth());
 		primaryStage.setOnCloseRequest(e -> {
 			try {
 				Util.forcedExit();

@@ -99,6 +99,7 @@ public class NewOrderController implements Initializable {
 
     @FXML
     private Label ClearCart;
+    public static boolean isBackClicked = false;
 
     @FXML
     private ImageView saleImage;
@@ -175,7 +176,9 @@ public class NewOrderController implements Initializable {
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
         primaryStage.show();
-        playCancelOrderVoice();
+        if (UserInstallationController.configuration.equals("EK")) {
+            playCancelOrderVoice();
+        }
     }
 
     private void playCancelOrderVoice() {
@@ -184,7 +187,7 @@ public class NewOrderController implements Initializable {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.totalDurationProperty().addListener((observable, oldDuration, newDuration) -> {
             if (newDuration.greaterThan(Duration.ONE)) {
-                mediaPlayer.play();
+                Platform.runLater(mediaPlayer::play);
             }
         });
     }
@@ -757,7 +760,9 @@ public class NewOrderController implements Initializable {
 
         setUserProfile();
         putProductsInMachine();
-        playSelectProductVoice();
+        if (UserInstallationController.configuration.equals("EK")) {
+            playSelectProductVoice();
+        }
     }
 
     private void playSelectProductVoice() {
@@ -766,7 +771,7 @@ public class NewOrderController implements Initializable {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.totalDurationProperty().addListener((observable, oldDuration, newDuration) -> {
             if (newDuration.greaterThan(Duration.ZERO)) {
-                mediaPlayer.play();
+                Platform.runLater(mediaPlayer::play);
             }
         });
     }
@@ -972,8 +977,8 @@ public class NewOrderController implements Initializable {
 
         @Override
         public void run() {
+            Platform.runLater(()->handleAnyClick());
             while (true) {
-                Platform.runLater(()->handleAnyClick());
                 long TimeOutCurrentTime = System.currentTimeMillis();
                 if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
                     System.out.println("Time Out passed");
@@ -991,7 +996,7 @@ public class NewOrderController implements Initializable {
                     return;
                 }
                 if(NewOrderReplaced) {
-                    System.out.println("Thread closed");
+                    System.out.println("Thread closed from badihi");
                     return;
                 }
                 try {
@@ -1006,6 +1011,8 @@ public class NewOrderController implements Initializable {
          * Handle clicked that received assist to timeout monitor
          */
         public void handleAnyClick() {
+            if(isBackClicked)
+                return;
             StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>(){
                 @Override
                 public void handle(javafx.scene.input.MouseEvent mouseEvent) {
