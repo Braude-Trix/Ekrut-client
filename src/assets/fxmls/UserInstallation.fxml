@@ -13,6 +13,11 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserInstallationController">
    <children>
+      <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../OKEL.jpg" />
+         </image>
+      </ImageView>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="900.0">
          <children>
             <Label text="User Installation">

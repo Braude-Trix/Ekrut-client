@@ -208,6 +208,7 @@ public class ServiceOperatorController implements Initializable {
                 button.setText("Pending To Upgrade");
                 successPop(user,"Request Submitted Successfully");
                 button.setDisable(true);
+                button.setOpacity(0.7);
                 List<Object> users = Client.resFromServer.getBody();
                 SelectRegion.setVisible(false);
                 return;
@@ -403,6 +404,7 @@ public class ServiceOperatorController implements Initializable {
         }
         else{
             Button subButton = new Button("Already Subscriber");
+            subButton.setOpacity(0.7);
             UserData.getChildren().add(subButton);
             subButton.setDisable(true);
         }

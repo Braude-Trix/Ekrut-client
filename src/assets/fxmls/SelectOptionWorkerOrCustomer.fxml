@@ -13,7 +13,7 @@
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Tavlaot.jpg" />
+            <Image url="@../curorem.jpg" />
          </image>
       </ImageView>
       <HBox alignment="CENTER" layoutY="109.0" prefHeight="18.0" prefWidth="900.0">
@@ -27,7 +27,7 @@
       </HBox>
       <HBox layoutX="264.0" layoutY="213.0">
          <children>
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#customerClicked" prefHeight="40.0" prefWidth="170.0" text="customer">
+            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#customerClicked" prefHeight="40.0" prefWidth="170.0" text="Customer">
                <HBox.margin>
                   <Insets right="30.0" />
                </HBox.margin>
@@ -35,7 +35,7 @@
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#employeeClicked" prefHeight="40.0" prefWidth="170.0" text="employee">
+            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#employeeClicked" prefHeight="40.0" prefWidth="170.0" text="Employee">
                <font>
                   <Font size="16.0" />
                </font></Button>

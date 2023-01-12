@@ -44,7 +44,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <ListView fx:id="CartListShop" layoutX="556.0" layoutY="132.0" prefHeight="200.0" prefWidth="317.0" stylesheets="@../../styles/ListView.css" />
+      <ListView fx:id="CartListShop" layoutX="556.0" layoutY="132.0" prefHeight="200.0" prefWidth="317.0" stylesheets="@../../styles/GoodButton.css" />
       <Button fx:id="ContinueButton" layoutX="728.0" layoutY="429.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="116.0" stylesheets="@../../styles/GoodButton.css" text="Continue" AnchorPane.bottomAnchor="46.0" />
       <Button fx:id="CancelOrderButton" layoutX="579.0" layoutY="429.0" mnemonicParsing="false" onAction="#CancelOrderClicked" prefHeight="30.0" prefWidth="116.0" text="Cancel Order" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="579.0">
          <stylesheets>
@@ -53,13 +53,13 @@
             <URL value="@../../styles/BadButton.css" />
          </stylesheets>
       </Button>
-      <Label fx:id="TotalOrderPrice" layoutX="629.0" layoutY="378.0" prefHeight="43.0" prefWidth="196.0" text="Total Price: 0₪" AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="629.0" AnchorPane.rightAnchor="75.0">
+      <Label fx:id="TotalOrderPrice" layoutX="636.0" layoutY="379.0" prefHeight="43.0" prefWidth="196.0" text="Total Price: 0₪" AnchorPane.bottomAnchor="83.0" AnchorPane.leftAnchor="636.0" AnchorPane.rightAnchor="68.0">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
       <Label fx:id="EmptyCartAlert" layoutX="587.0" layoutY="470.0" text="Please add to the cart products before continue." textFill="RED" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="587.0" />
-      <Line endX="100.0" layoutX="717.0" layoutY="369.0" startX="-100.0" />
+      <Line endX="100.0" layoutX="718.0" layoutY="369.0" startX="-100.0" />
       <ListView fx:id="ProductsList" layoutX="94.0" layoutY="83.0" prefHeight="319.0" prefWidth="341.0" stylesheets="@../../styles/GoodButton.css" />
       <ImageView fitHeight="30.0" fitWidth="43.0" layoutX="637.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -88,7 +88,13 @@
             <Image url="@../tooltipforsale.png" />
          </image>
       </ImageView>
-      <Text fx:id="textForSale" fill="WHITE" layoutX="502.0" layoutY="84.94921875" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" AnchorPane.bottomAnchor="330.0" AnchorPane.leftAnchor="502.0" AnchorPane.rightAnchor="258.0" />
+      <Text fx:id="textForSale" fill="WHITE" layoutX="503.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" AnchorPane.bottomAnchor="413.98828125" AnchorPane.leftAnchor="503.0" AnchorPane.rightAnchor="257.0" />
       <ImageView fx:id="imageToPresent" fitHeight="43.0" fitWidth="44.0" layoutX="428.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="430.0" />
+      <Label fx:id="discountDisplayed" layoutX="94.0" layoutY="95.0" prefHeight="30.0" prefWidth="362.0" text="Discounts applied to all prices displayed" textFill="RED">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Label fx:id="originalPrice" layoutX="793.0" layoutY="379.0" prefHeight="30.0" prefWidth="81.0" textFill="RED" underline="true" />
    </children>
 </AnchorPane>

@@ -11,24 +11,26 @@ import java.math.RoundingMode;
 
 import client.Client;
 import client.ClientUI;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -74,6 +76,9 @@ public class NewOrderController implements Initializable {
     private ListView<VBox> ProductsList;
 
     @FXML
+    private Label originalPrice;
+
+    @FXML
     private ListView<HBox> CartListShop;
 
     @FXML
@@ -109,6 +114,9 @@ public class NewOrderController implements Initializable {
     private ImageView cloudForSale;
     @FXML
     private ImageView imageToPresent;
+
+    @FXML
+    private Label discountDisplayed;
 
     @FXML
     void logOutClicked(ActionEvent event) {
@@ -185,6 +193,19 @@ public class NewOrderController implements Initializable {
     private double firstTimeMultiplier;
 
     List<Object> MaxAmountsList;
+
+
+    private Double findOriginalPrice(Order order)
+    {
+        Double price = 0.0;
+        List<ProductInOrder> products = order.getProductsInOrder();
+        for(ProductInOrder prod : products)
+        {
+            price += prod.getAmount()*prod.getProduct().getPrice();
+        }
+        return price;
+    }
+
 
     private Regions getRegion(Order order)
     {
@@ -323,12 +344,16 @@ public class NewOrderController implements Initializable {
         textForSale.setText(sale.getSaleName()+"\n\n"+sale.getSaleDiscription());
         cloudForSale.setVisible(true);
         textForSale.setVisible(true);
+        discountDisplayed.setVisible(true);
+        ProductsList.setOpacity(0.4);
         //sleep(300);
     }
     private void hideTooltip()
     {
         cloudForSale.setVisible(false);
         textForSale.setVisible(false);
+        discountDisplayed.setVisible(false);
+        ProductsList.setOpacity(1);
 
     }
 
@@ -594,6 +619,13 @@ public class NewOrderController implements Initializable {
                         + (calculatePriceAfterDiscount(prodInOrder.getAmount(),prodInOrder.getProduct().getPrice()))));
             }
             UpdateCart(order);
+            if(aliveSale)
+            {
+                Double original_price = findOriginalPrice(order);
+                originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                originalPrice.setVisible(true);
+            }
+
             TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
         }
 
@@ -615,14 +647,48 @@ public class NewOrderController implements Initializable {
                     plusImage.setOpacity(1);
                     AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, calculatePriceAfterDiscount(amountSelected,product.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                     priceSetterForSmallNumbers(order.getPrice() - calculatePriceAfterDiscount( produtToRemove.getAmount(), produtToRemove.getProduct().getPrice()));
+
+
+                    if(aliveSale)
+                    {
+                        Double original_price = findOriginalPrice(order);
+                        originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                        originalPrice.setVisible(true);
+                    }
+
+
+
                     TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
                     AddToCartButton.setOpacity(1);
                     break;
                 }
             }
             UpdateCart(order);
+
+            if(aliveSale)
+            {
+                Double original_price = findOriginalPrice(order);
+                originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                originalPrice.setVisible(true);
+            }
+
+
+
             TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
         }
+    }
+
+    private void successPop(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setHeaderText(null);
+        ImageView image = new ImageView(new Image("assets/gift.png"));
+        image.setFitHeight(100);
+        image.setFitWidth(100);
+        alert.setGraphic(image);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getScene().getStylesheets().add("styles/DiscountPopup.css");
+        stage.setResizable(true);
+        alert.show();
     }
 
     private void setfirstTimeMultiplier(Integer id,Order order)
@@ -637,12 +703,8 @@ public class NewOrderController implements Initializable {
         }
         oldRegion = currReg;
 
-
         List<Object> OrderedIds = requestCompletedOrders(id);
         Boolean isExist = (Boolean)OrderedIds.get(0);
-
-
-
 
         if(isExist)
         {
@@ -650,6 +712,7 @@ public class NewOrderController implements Initializable {
         }
         else
         {
+            successPop("Congratulations on subscribing! As a member, enjoy a 20% discount on all prices.");
             firstTimeMultiplier = 0.8;
         }
 
@@ -666,12 +729,25 @@ public class NewOrderController implements Initializable {
             Thread timeOutThread = new Thread(new gui.NewOrderController.TimeOutControllerNewOrder());
             timeOutThread.start();
         }
-
+        Timeline rotation = new Timeline(
+                new KeyFrame(Duration.seconds(20),
+                        new KeyValue(saleImage.rotateProperty(), 360)));
+        rotation.setCycleCount(Animation.INDEFINITE);
+        rotation.play();
+        user = LoginController.user;
         saleLabel.setVisible(false);
+        Tooltip tooltip = new Tooltip("Price before discount");
+        Tooltip.install(originalPrice, tooltip);
+        tooltip.setShowDuration(Duration.millis(3000));
+        tooltip.setShowDelay(Duration.millis(0));
+
         saleImage.setVisible(false);
         Saletype.setVisible(false);
         textForSale.setVisible(false);
         cloudForSale.setVisible(false);
+        discountDisplayed.setVisible(false);
+        ProductsList.setOpacity(1);
+
 
         setUserProfile();
         putProductsInMachine();
@@ -846,6 +922,13 @@ public class NewOrderController implements Initializable {
                 minusImage.setOnMouseClicked(event -> productMonitor.decreaseAmount());
                 AddToCartButton.setOnMouseClicked(event -> productMonitor.AddToCart());
                 UpdateCart(order);
+                if(aliveSale)
+                {
+                    Double original_price = findOriginalPrice(order);
+                    originalPrice.setText(String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                    originalPrice.setVisible(true);
+                }
+
                 TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
 
                 try {

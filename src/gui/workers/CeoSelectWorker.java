@@ -176,9 +176,11 @@ public class CeoSelectWorker {
             case MarketingWorker:
             	openWorkerPopup("/assets/workers/fxmls/MarketingWorkerWindow.fxml");
                 break;
+
             case ServiceOperator:
-            	openWorkerPopup("/assets/fxmls/ServiceOperator.fxml");
+            	openWorkerPopup("/assets/workers/fxmls/ServiceOperator.fxml");
                 break;
+
             case OperationalWorker:
                 openWorkerPopup("/assets/workers/fxmls/OperationalWorkerHomePage_Default.fxml");
                 break;
