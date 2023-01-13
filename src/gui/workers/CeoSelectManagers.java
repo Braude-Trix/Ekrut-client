@@ -1,5 +1,6 @@
 package gui.workers;
 
+import gui.ConnectToServerController;
 import gui.StageSingleton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -21,6 +23,7 @@ import utils.WorkerNodesUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Gui controller for CEO selecting managers window
@@ -139,7 +142,10 @@ public class CeoSelectManagers {
 
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
-
+        Image iconImage = new Image(Objects.requireNonNull(
+                ConnectToServerController.class.getResourceAsStream("/assets/clientIcon.png")));
+        popupDialog.getIcons().clear();
+        popupDialog.getIcons().add(iconImage);
         popupDialog.setX(primaryStage.getX() + 75);
         popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);
