@@ -104,7 +104,7 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
             case OK:
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return Client.resFromServer.getBody().get(0).toString();
 
@@ -158,7 +158,7 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
             case OK:
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return Double.parseDouble(Client.resFromServer.getBody().get(0).toString());
     }
@@ -179,7 +179,7 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
                 case OK:
                     break;
                 default:
-                    System.out.println("Some error occurred");
+                    System.out.println(Client.resFromServer.getDescription());
             }
         }
     }

@@ -325,7 +325,7 @@ private void setTextFormatterForTextAreaDescription() {
 			updateSaleTemplates(Client.resFromServer.getBody());
 			break;
 		default:
-			System.out.println("error");
+			System.out.println(Client.resFromServer.getDescription());
 			// setErrorPlaceHolder();
 			break;
 		}
@@ -337,7 +337,7 @@ private void setTextFormatterForTextAreaDescription() {
 			saleTemplatesTableView.getItems().remove(rowIndex);
 			break;
 		default:
-			System.out.println("error");
+			System.out.println(Client.resFromServer.getDescription());
 			// setErrorPlaceHolder();
 			break;
 		}
@@ -492,7 +492,6 @@ private void setTextFormatterForTextAreaDescription() {
 	@FXML
 	void clickRefreshBtn(MouseEvent  event) {
 		initSaleTemplateTable();
-		System.out.println("refreshed");
 	}
 
 	/**
@@ -528,7 +527,6 @@ private void setTextFormatterForTextAreaDescription() {
 		request.setPath("/sales");
 		request.setMethod(Method.GET);
 		request.setBody(body);
-		System.out.println("got here");
 		ClientUI.chat.accept(request);
 
 	}
@@ -549,7 +547,6 @@ private void setTextFormatterForTextAreaDescription() {
 		request.setPath("/sales");
 		request.setMethod(Method.PUT);
 		request.setBody(body);
-		System.out.println("got here");
 		ClientUI.chat.accept(request);
 
 	}
@@ -570,14 +567,11 @@ private void setTextFormatterForTextAreaDescription() {
 		Sale newSale = new Sale("1", startDate, endDate, comboBoxHoursSale.getValue(), txtNameSale.getText(),
 				comboBoxRegions.getValue(), SaleStatus.Template, percentage, txtAreaDescription.getText(),
 				comboBoxType.getValue());
-		System.out.println(newSale.getSalePercentage());
 		return newSale;
 	}
 
 	private String fixNumberPrefix(String percentageString) {
 		if (percentageString != null && !percentageString.equals("")) {
-			System.out.println("debug");
-			System.out.println("percer"+percentageString+"1");
 			int percentageNum = Integer.parseInt(percentageString);
 			percentageString = String.valueOf(percentageNum);
 		}
@@ -635,7 +629,6 @@ private void setTextFormatterForTextAreaDescription() {
 	void SelectedDate(ActionEvent event) {
 		ChronoLocalDate timeNow = LocalDate.from(ZonedDateTime.now());
 		if (StartDate.getValue() != null) {
-			System.out.println("value is"+StartDate.getValue()+"End");
 			EndDate.setDayCellFactory(picker -> new DateCell() {
 				public void updateItem(LocalDate date, boolean empty) {
 					super.updateItem(date, empty);
@@ -712,11 +705,6 @@ private void setTextFormatterForTextAreaDescription() {
 		boolean percentageBoxNotFilledCorrectly = percentageIsOnlyNaturalNumbersUnder99();
 		boolean comboBoxesIsNotFilled = isNotFilledComboBoxes();
 		boolean datesIsNotFilled = isNotFilledDates();
-		System.out.println(nameSaleIsBlank);
-		System.out.println(percentageBoxNotFilledCorrectly);
-		System.out.println(comboBoxesIsNotFilled);
-		System.out.println(datesIsNotFilled);
-
 		return nameSaleIsBlank || percentageBoxNotFilledCorrectly || comboBoxesIsNotFilled || datesIsNotFilled;
 
 	}
@@ -731,7 +719,6 @@ private void setTextFormatterForTextAreaDescription() {
 		if (selectedTypeWithPercentage) {
 			if (!isBlankTextField(txtPercentage)) {
 				if (txtPercentage.getText().matches("[0-9]+") && txtPercentage.getText().length() < 3) {
-					System.out.println("good number");
 					return false;
 				}
 			}
@@ -798,7 +785,6 @@ private void setTextFormatterForTextAreaDescription() {
 			EndDate.getStyleClass().add("validation-error");
 		}
 		if (StartDate.getValue() != null && StartDate.getValue().compareTo(timeNow) < 0) {
-			System.out.println("start date error");
 			startDateErrorLabel.setVisible(true);
 			StartDate.getStyleClass().add("validation-error");
 		}
@@ -814,7 +800,6 @@ private void setTextFormatterForTextAreaDescription() {
 		if ((EndDate.getValue() != null && EndDate.getValue().compareTo(timeNow) < 0)
 				|| (EndDate.getValue() != null && EndDate.getValue().compareTo(StartDate.getValue()) < 0)) {
 
-			System.out.println("end date error");
 			endDateErrorLabel.setVisible(true);
 			EndDate.getStyleClass().add("validation-error");
 		}
@@ -866,7 +851,6 @@ private void setTextFormatterForTextAreaDescription() {
 				saleTemplatesTableView.getSelectionModel().clearSelection();
 			}
 		} catch (NullPointerException e) {
-			System.out.println("caught null");
 //					catches null pointer exceptions whenever a user clicks the header row.
 		}
 	}

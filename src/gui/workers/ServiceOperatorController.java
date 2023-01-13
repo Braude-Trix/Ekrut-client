@@ -183,7 +183,7 @@ public class ServiceOperatorController implements Initializable {
 
                 return true;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return false;
 
@@ -214,7 +214,7 @@ public class ServiceOperatorController implements Initializable {
                 return;
 
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
 
 
@@ -255,7 +255,7 @@ public class ServiceOperatorController implements Initializable {
                 return;
 
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
 
     }
@@ -274,7 +274,7 @@ public class ServiceOperatorController implements Initializable {
 
                 return status;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
             return null;
 }
@@ -291,7 +291,7 @@ public class ServiceOperatorController implements Initializable {
 
                 return users;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return null;
     }

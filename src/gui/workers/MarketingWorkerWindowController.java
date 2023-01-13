@@ -458,8 +458,6 @@ public class MarketingWorkerWindowController implements Initializable {
 			break;
 		default:
 			System.out.println(Client.resFromServer.getCode());
-			System.out.println("error");
-			// setErrorPlaceHolder();
 			break;
 		}
 	}
@@ -499,7 +497,7 @@ public class MarketingWorkerWindowController implements Initializable {
 			updateReadySales(Client.resFromServer.getBody());
 			break;
 		default:
-			System.out.println("error");
+			System.out.println(Client.resFromServer.getDescription());
 			break;
 		}
 	}
@@ -586,7 +584,7 @@ public class MarketingWorkerWindowController implements Initializable {
 			runningSalesTableView.setItems(runningSales);
 			break;
 		default:
-			System.out.println("error");
+			System.out.println(Client.resFromServer.getDescription());
 			// setErrorPlaceHolder();
 			break;
 		}

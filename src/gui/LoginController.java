@@ -475,7 +475,7 @@ public class LoginController implements Initializable{
                         break;
 
                     default:
-                        System.out.println("Some error occurred");
+                        System.out.println(Client.MsgResFromServer.getDescription());
                 }
                 try {
                     Thread.sleep(10000);

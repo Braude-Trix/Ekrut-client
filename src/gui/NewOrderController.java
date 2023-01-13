@@ -139,8 +139,6 @@ public class NewOrderController implements Initializable {
         aliveSale = false;
 
         Stage stage = StageSingleton.getInstance().getStage();
-        // delivery, selfPickUp, latePickUp;
-        //  System.out.println((""));
 
         if (LoginController.order.getPickUpMethod() == PickUpMethod.delivery)
         {
@@ -256,7 +254,7 @@ public class NewOrderController implements Initializable {
                 updateReadySales(Client.resFromServer.getBody());
                 break;
             default:
-                System.out.println("error");
+                System.out.println(Client.resFromServer.getDescription());
                 break;
         }
     }
@@ -293,7 +291,7 @@ public class NewOrderController implements Initializable {
                 MaxAmountsList = result;
                 return result;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return machineIdList;
     }
@@ -309,7 +307,7 @@ public class NewOrderController implements Initializable {
                 List<Object> products = Client.resFromServer.getBody();
                 return products;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return null;
     }
@@ -328,7 +326,7 @@ public class NewOrderController implements Initializable {
                 List<Object> compOrders = Client.resFromServer.getBody();
                 return compOrders;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return null;
     }
@@ -435,7 +433,6 @@ public class NewOrderController implements Initializable {
             Double discount = Double.parseDouble(sale.getSalePercentage())/100;
             return amount*pricePerItem*firstTimeMultiplier*discount;
         }
-        System.out.println("Error From findDiscount");
         return null;
 
 
@@ -470,7 +467,6 @@ public class NewOrderController implements Initializable {
         List<Object> objectedProdInMachine = requestMachineProducts(order.getMachineId());
         if(objectedProducts == null)
         {
-            System.out.println("Error in getAllProductsFromDB()");
             return null;
         }
         for(Object product : objectedProducts) {

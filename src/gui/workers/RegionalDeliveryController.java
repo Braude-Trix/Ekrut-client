@@ -378,7 +378,7 @@ public class RegionalDeliveryController implements Initializable {
                     resList.add((DeliveryOrder) deliveryOrder);
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return resList;
     }
@@ -394,7 +394,7 @@ public class RegionalDeliveryController implements Initializable {
             case OK:
                 return (Map<String, String>) Client.resFromServer.getBody().get(0);
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return null;
     }
@@ -409,7 +409,7 @@ public class RegionalDeliveryController implements Initializable {
             case OK:
                 return (Map<String, String>) Client.resFromServer.getBody().get(0);
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return null;
     }
@@ -426,7 +426,7 @@ public class RegionalDeliveryController implements Initializable {
             case OK:
                 return Integer.parseInt(Client.resFromServer.getBody().get(0).toString());
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
                 return null;
         }
     }
@@ -480,7 +480,7 @@ public class RegionalDeliveryController implements Initializable {
             case OK:
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
     }
 

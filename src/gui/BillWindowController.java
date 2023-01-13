@@ -182,7 +182,7 @@ public class BillWindowController implements Initializable {
             case OK:
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
     }
 
@@ -200,7 +200,7 @@ public class BillWindowController implements Initializable {
                 case OK:
                     break;
                 default:
-                    System.out.println("Some error occurred");
+                    System.out.println(Client.resFromServer.getDescription());
             }
         }
     }
@@ -219,7 +219,7 @@ public class BillWindowController implements Initializable {
                 case OK:
                     break;
                 default:
-                    System.out.println("Some error occurred");
+                    System.out.println(Client.resFromServer.getDescription());
             }
         }
     }
@@ -237,7 +237,7 @@ public class BillWindowController implements Initializable {
             case OK:
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
     }
 
@@ -255,9 +255,8 @@ public class BillWindowController implements Initializable {
                 threshold = (Integer) Client.resFromServer.getBody().get(0);
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
-        System.out.println(threshold);
         return threshold;
     }
 
@@ -275,7 +274,7 @@ public class BillWindowController implements Initializable {
             case OK:
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
     }
 
@@ -321,7 +320,7 @@ public class BillWindowController implements Initializable {
             case OK:
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return Client.resFromServer.getBody().get(0).toString();
 
@@ -348,7 +347,7 @@ public class BillWindowController implements Initializable {
             case OK:
                 return Regions.valueOf(Client.resFromServer.getBody().get(0).toString());
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return null;
     }
@@ -370,7 +369,7 @@ public class BillWindowController implements Initializable {
                 }
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return managersIds;
     }
@@ -401,7 +400,7 @@ public class BillWindowController implements Initializable {
                 }
                 break;
             default:
-                System.out.println("Some error occurred");
+                System.out.println(Client.resFromServer.getDescription());
         }
         return productInMachineList;
     }
@@ -505,7 +504,6 @@ public class BillWindowController implements Initializable {
      */
     @FXML
     void logOutClicked(ActionEvent event) throws Exception {
-        System.out.println("OOUT");
         BillReplaced = true;
         Util.genricLogOut(getClass());
     }

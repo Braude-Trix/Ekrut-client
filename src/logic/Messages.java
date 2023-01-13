@@ -21,7 +21,7 @@ public class Messages {
         request.setBody(paramList);
         ClientUI.chat.accept(request);// sending the request to the server.
         if (Client.resFromServer.getCode() != ResponseCode.OK) {
-            System.out.println("Some error occurred");
+            System.out.println(Client.resFromServer.getDescription());
         }
     }
 }
