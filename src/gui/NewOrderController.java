@@ -157,6 +157,9 @@ public class NewOrderController implements Initializable {
         {
             stage.setScene(PickupController.scene);
         }
+        if (UserInstallationController.configuration.equals("EK")) {
+            playCancelOrderVoice();
+        }
     }
 
 
