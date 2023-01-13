@@ -58,7 +58,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static utils.Util.forcedExit;
-import static utils.Utils.isBlank;
+import static utils.Util.isBlank;
 
 /**
  * Gui controller for presenting Operational Worker window

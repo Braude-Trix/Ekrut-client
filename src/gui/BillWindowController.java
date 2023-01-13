@@ -31,7 +31,6 @@ import javafx.util.Duration;
 import logic.Messages;
 import models.*;
 import utils.Util;
-import utils.Utils;
 
 /**
  * class that represents the bill window controller
@@ -512,26 +511,28 @@ public class BillWindowController implements Initializable {
     }
 
     /**
-     * inner class that handle the timeOut of this current scene. if TIME_OUT_TIME_IN_MINUTES time over wihout activity, the system will logout the user.
+     * A class that implements a runnable task for detecting and handling a time out event.
+     * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerBillWindow implements Runnable {
-        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
+        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**
-         * run method, running while new thread started with object of this class. measuring
-         * time,  logout the user and close the thread if there is no click identified in the scene.
+         * Detects and handles a time out event.
+         * This task is executed every 10 seconds until the thread is interrupted or the `EKPageReplace` flag is set to `true`.
+         * If a time out event occurs, the log out process is initiated.
          */
+
         @Override
         public void run() {
-            Platform.runLater(() -> handleAnyClick());
-
-            while (true) {
+            Platform.runLater(()->handleAnyClick());
+            while (!Thread.currentThread().isInterrupted()) {
                 long TimeOutCurrentTime = System.currentTimeMillis();
                 if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
                     System.out.println("Time Out passed");
                     try {
-                        Platform.runLater(() -> {
+                        Platform.runLater(()-> {
                             try {
                                 Util.genricLogOut(getClass());
                             } catch (Exception e) {
@@ -543,30 +544,29 @@ public class BillWindowController implements Initializable {
                     }
                     return;
                 }
-                if (BillReplaced) {
-                    System.out.println("Thread closed from " + getClass().toString());
+                if(BillReplaced) {
+                    System.out.println("Thread closed from TimeOut Controller");
                     return;
                 }
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println(e.getMessage());
+                    Thread.currentThread().interrupt();
                 }
             }
         }
 
-        /**
-         * method that reset the TimeOutStartTime with any click on the screen.
-         */
-        public void handleAnyClick() {
-            StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>() {
+        private void handleAnyClick() {
+            StageSingleton.getInstance().getStage().getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>(){
                 @Override
-                public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+                public void handle(MouseEvent mouseEvent) {
                     System.out.print("Mouse clicked, timeout time reset\n");
                     TimeOutStartTime = System.currentTimeMillis();
                 }
             });
-
         }
     }
+
+
 }

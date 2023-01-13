@@ -29,7 +29,6 @@ import models.OrderStatus;
 import models.PickUpMethod;
 import models.Request;
 import utils.Util;
-import utils.Utils;
 
 /**
  * @author gal
@@ -210,7 +209,7 @@ public class EKController implements Initializable {
      * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerEkMain implements Runnable {
-        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
+        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**

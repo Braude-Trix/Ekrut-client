@@ -30,7 +30,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -38,7 +37,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.*;
 import utils.Util;
-import utils.Utils;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -980,18 +979,22 @@ public class NewOrderController implements Initializable {
     }
 
     /**
-     * Time out controller
+     * A class that implements a runnable task for detecting and handling a time out event.
+     * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
-
     static class TimeOutControllerNewOrder implements Runnable {
-        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES; //Utils.TIME_OUT_TIME_IN_MINUTES;
+        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
-
+        /**
+         * Detects and handles a time out event.
+         * This task is executed every 10 seconds until the thread is interrupted or the `EKPageReplace` flag is set to `true`.
+         * If a time out event occurs, the log out process is initiated.
+         */
         @Override
         public void run() {
             Platform.runLater(()->handleAnyClick());
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 long TimeOutCurrentTime = System.currentTimeMillis();
                 if (TimeOutCurrentTime - TimeOutStartTime >= TimeOutTime * 60 * 1000) {
                     System.out.println("Time Out passed");
@@ -1009,34 +1012,32 @@ public class NewOrderController implements Initializable {
                     return;
                 }
                 if(NewOrderReplaced) {
-                    System.out.println("Thread closed from badihi");
+                    System.out.println("Thread closed from TimeOut Controller");
                     return;
                 }
                 try {
-                    sleep(10000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println(e.getMessage());
+                    Thread.currentThread().interrupt();
                 }
             }
         }
 
-        /**
-         * Handle clicked that received assist to timeout monitor
-         */
-        public void handleAnyClick() {
-            if(isBackClicked)
-                return;
-            StageSingleton.getInstance().getStage().getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>(){
+        private void handleAnyClick() {
+            StageSingleton.getInstance().getStage().getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<javafx.scene.input.MouseEvent>(){
                 @Override
-                public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+                public void handle(MouseEvent mouseEvent) {
                     System.out.print("Mouse clicked, timeout time reset\n");
                     TimeOutStartTime = System.currentTimeMillis();
                 }
             });
         }
     }
-    
-	/**
+
+
+
+    /**
 	 * This method describes setting up a new scene.
 	 * 
 	 * @param primaryStage, Description: The stage on which the scene is presented

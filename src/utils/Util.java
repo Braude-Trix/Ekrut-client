@@ -22,7 +22,14 @@ import models.Request;
  * This class is intended for code reuse
  */
 public class Util {
-	
+
+	/**
+
+	 The variable TIME_OUT_TIME_IN_MINUTES represents the time in minutes until a timeout occurs.
+	 The default value is set to 1 minute.
+	 */
+	public static int TIME_OUT_TIME_IN_MINUTES = 1;
+
 	/**
 	 * A method that checks whether spaces or tabs or an empty string has been inserted if so returns true otherwise false
 	 * @param string, Description: A string entered by the user
@@ -128,4 +135,16 @@ public class Util {
         }
 
     }
+
+	/**
+	 * A method that checks whether spaces or tabs or an empty string has been inserted if so returns true otherwise false
+	 * @param cs, Description: A string entered by the user
+	 * @return, boolean: returns true if the string is spaces/tabs/empty otherwise false
+	 */
+	public static boolean isBlank(CharSequence cs) {
+		if (cs == null || cs.length() == 0) {
+			return true;
+		}
+		return cs.chars().allMatch(Character::isWhitespace);
+	}
 }

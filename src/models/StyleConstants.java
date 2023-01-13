@@ -15,7 +15,7 @@ public class StyleConstants {
     public static String OUT_OF_STOCK_LABEL = "Out Of Stock";
     public static String TOTAL_PRICE_LABEL = "Total Price: ";
     public static String STAGE_LABEL = "Order confirmation";
-    public static String CURRENCY_SYMBOL = "€";
+    public static String CURRENCY_SYMBOL = "$";
     public static String NUMBER_OF_DECIMAL_DIGITS_CODE = "%.2f";
     public static String INIT_AMOUNT_OF_PRODUCTS_TO_ONE = "  1  ";
     public static String INIT_AMOUNT_OF_PRODUCTS_TO_ZERO = "  0  ";
