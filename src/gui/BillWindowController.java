@@ -428,8 +428,8 @@ public class BillWindowController implements Initializable {
         popupDialog.centerOnScreen();
         popupDialog.setMinHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
         popupDialog.setMinWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-        popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-        popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
+       // popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
+       // popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
         popupDialog.show();
 
         if (UserInstallationController.configuration.equals("EK")) {

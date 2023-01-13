@@ -266,7 +266,7 @@ public class NewOrderController implements Initializable {
         for (Object sale : listOfSalesFromDB) {
             if (sale instanceof Sale) {
                 readySales.add((Sale) sale);
-                aliveSale = true;
+             //   aliveSale = true;
 
             }
         }
@@ -400,7 +400,7 @@ public class NewOrderController implements Initializable {
                     price += pricePerItem;
                 }
             }
-            return price;
+            return price*firstTimeMultiplier;
         }
         else if(sale.getSaleType().equals(TypeSale.Sale2Plus1))
         {
@@ -412,7 +412,7 @@ public class NewOrderController implements Initializable {
                     price += pricePerItem;
                 }
             }
-            return price;
+            return price*firstTimeMultiplier;
         }
         else if(sale.getSaleType().equals(TypeSale.Sale2Plus2))
         {
@@ -424,7 +424,7 @@ public class NewOrderController implements Initializable {
                     price += pricePerItem;
                 }
             }
-            return price;
+            return price*firstTimeMultiplier;
         }
         else if(sale.getSaleType().equals(TypeSale.PercentageDiscount))
         {
@@ -454,6 +454,7 @@ public class NewOrderController implements Initializable {
                 LocalDate today = LocalDate.now();
 
                 if (!date.isAfter(today)) {
+                    aliveSale = true;
                     return findDiscount(amount, pricePerItem,activeSale);
                 }
             }
@@ -721,6 +722,7 @@ public class NewOrderController implements Initializable {
         }
         else
         {
+            aliveSale = true;
             successPop("Congratulations on subscribing! As a member, enjoy a 20% discount on all prices.");
             firstTimeMultiplier = 0.8;
         }
