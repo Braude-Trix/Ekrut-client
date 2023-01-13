@@ -81,7 +81,7 @@
 }
 
 .button:hover {
-  -fx-background-color: #00ff90;
+  -fx-background-color: #ffa66b;
   -fx-backgroup-radius: 30 30 30 30;
 }
 
@@ -95,7 +95,7 @@
 }
 
 #logoutBtn:hover {
-  -fx-background-color: #00ff90;
+  -fx-background-color: #ffa66b;
   -fx-backgroup-radius: 30 30 30 30;
 }
 

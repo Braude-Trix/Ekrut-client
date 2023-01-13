@@ -1,33 +1,31 @@
-
-
 .button {
-    -fx-background-color: #ffc39c;
-    -fx-backgroup-radius: 60 60 60 60;
-    -fx-background-radius: 15px;
-    -fx-text-fill: #000000;
+  -fx-background-color: #ffc39c;
+  -fx-backgroup-radius: 60 60 60 60;
+  -fx-background-radius: 15px;
+  -fx-text-fill: #000000;
 }
 
-    .button:hover {
-        -fx-background-color: #00ff90;
-        -fx-backgroup-radius: 30 30 30 30;
-    }
+.button:hover {
+  -fx-background-color: #ffa66b;
+  -fx-backgroup-radius: 30 30 30 30;
+}
 
 #logoutBtn {
-    -fx-border-radius: 60 60 60 60;
-    -fx-border-color: black;
-    -fx-background-color: #ffd9c1;
-    -fx-backgroup-radius: 60 60 60 60;
-    -fx-background-radius: 15px;
-    -fx-text-fill: #000000;
+  -fx-border-radius: 60 60 60 60;
+  -fx-border-color: black;
+  -fx-background-color: #ffd9c1;
+  -fx-backgroup-radius: 60 60 60 60;
+  -fx-background-radius: 15px;
+  -fx-text-fill: #000000;
 }
 
-    #logoutBtn:hover {
-        -fx-background-color: #00ff90;
-        -fx-backgroup-radius: 30 30 30 30;
-    }
+#logoutBtn:hover {
+  -fx-background-color: #ffa66b;
+  -fx-backgroup-radius: 30 30 30 30;
+}
 
 .combo-box {
-    -fx-background-color: #ffc39c;
+  -fx-background-color: #ffc39c;
 }
 /*.text-field {
     -fx-border-radius: 20px;
@@ -46,24 +44,23 @@
         -fx-pref-height: 0px;
     }*/
 
-
 .text-field {
-    -fx-accent: #ffc39c;
-    -fx-background-insets: -1, 0 0 1 0;
-    -fx-background-radius: 0;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+  -fx-accent: #ffc39c;
+  -fx-background-insets: -1, 0 0 1 0;
+  -fx-background-radius: 0;
+  -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
 }
 
-    .text-field:focused {
-        -fx-background-color: #ffc39c, white;
-    }
+.text-field:focused {
+  -fx-background-color: #ffc39c, white;
+}
 
 .validation-error {
-    -fx-background-color: #FFF0F0;
-    -fx-border-color: #ff0000;
+  -fx-background-color: #fff0f0;
+  -fx-border-color: #ff0000;
 }
 
 .progress-bar > .bar {
-    -fx-background-insets: 1 1 2 1;
-    -fx-padding: 0.40em;
+  -fx-background-insets: 1 1 2 1;
+  -fx-padding: 0.4em;
 }

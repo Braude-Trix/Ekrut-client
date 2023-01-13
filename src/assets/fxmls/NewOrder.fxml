@@ -96,5 +96,10 @@
          </font>
       </Label>
       <Label fx:id="originalPrice" layoutX="637.0" layoutY="364.0" prefHeight="23.0" prefWidth="168.0" textFill="RED" underline="true" />
+      <Label fx:id="outOfStock" layoutX="105.0" layoutY="81.0" prefHeight="65.0" prefWidth="341.0" text="We apologize, the machine is currently out of stock." textFill="RED">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -15,13 +15,12 @@ public class StyleConstants {
     public static String OUT_OF_STOCK_LABEL = "Out Of Stock";
     public static String TOTAL_PRICE_LABEL = "Total Price: ";
     public static String STAGE_LABEL = "Order confirmation";
-    public static String CURRENCY_SYMBOL = "₪";
+    public static String CURRENCY_SYMBOL = "€";
     public static String NUMBER_OF_DECIMAL_DIGITS_CODE = "%.2f";
     public static String INIT_AMOUNT_OF_PRODUCTS_TO_ONE = "  1  ";
     public static String INIT_AMOUNT_OF_PRODUCTS_TO_ZERO = "  0  ";
 
     public static String TOTAL_PRICE_STRING = "Total price:";
-    public static String CURRENCY_INS =  " ₪";
     public static String INVENTORY_UPDATE_ALERT_MSG =  "We are sorry, but the inventory updated.\nPlease order again.";
     public static String ORDER_CONFIRMATION_TITLE_LABEL =  "Order confirmation";
     public static String SUBSCRIBER_MSG = "Dear subscriber, your bill has been added to the monthly bill, thank you for shopping with us";

@@ -82,6 +82,9 @@ public class NewOrderController implements Initializable {
     private ListView<HBox> CartListShop;
 
     @FXML
+    private Label outOfStock;
+
+    @FXML
     private Label EmptyCartAlert;
 
     @FXML
@@ -191,6 +194,7 @@ public class NewOrderController implements Initializable {
             }
         });
     }
+
 
     List<ProductInMachineMonitor> allProductsMonitors = new ArrayList<>();
     private double firstTimeMultiplier;
@@ -627,12 +631,12 @@ public class NewOrderController implements Initializable {
             if(aliveSale)
             {
                 Double original_price = findOriginalPrice(order);
-                originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price)+StyleConstants.CURRENCY_SYMBOL);
                 originalPrice.setVisible(true);
 
             }
 
-            TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
+            TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice())+StyleConstants.CURRENCY_SYMBOL);
         }
 
         //badihi
@@ -658,14 +662,14 @@ public class NewOrderController implements Initializable {
                     if(aliveSale)
                     {
                         Double original_price = findOriginalPrice(order);
-                        originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                        originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price)+StyleConstants.CURRENCY_SYMBOL);
                         originalPrice.setVisible(true);
 
                     }
 
 
 
-                    TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
+                    TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice())+StyleConstants.CURRENCY_SYMBOL);
                     AddToCartButton.setOpacity(1);
                     break;
                 }
@@ -675,14 +679,14 @@ public class NewOrderController implements Initializable {
             if(aliveSale)
             {
                 Double original_price = findOriginalPrice(order);
-                originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price)+StyleConstants.CURRENCY_SYMBOL);
                 originalPrice.setVisible(true);
 
             }
 
 
 
-            TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
+            TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice())+StyleConstants.CURRENCY_SYMBOL);
         }
     }
 
@@ -749,7 +753,7 @@ public class NewOrderController implements Initializable {
 //        Tooltip.install(originalPrice, tooltip);
 //        tooltip.setShowDuration(Duration.millis(3000));
 //        tooltip.setShowDelay(Duration.millis(0));
-
+        outOfStock.setVisible(false);
         saleImage.setVisible(false);
         Saletype.setVisible(false);
         textForSale.setVisible(false);
@@ -775,6 +779,7 @@ public class NewOrderController implements Initializable {
             }
         });
     }
+
 
     private void setUserProfile()
     {
@@ -936,11 +941,11 @@ public class NewOrderController implements Initializable {
                 if(aliveSale)
                 {
                     Double original_price = findOriginalPrice(order);
-                    originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price));
+                    originalPrice.setText("Price before discount: "+String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, original_price)+StyleConstants.CURRENCY_SYMBOL);
                     originalPrice.setVisible(true);
                 }
 
-                TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice()));
+                TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice())+StyleConstants.CURRENCY_SYMBOL);
 
                 try {
                     prodImage = recieveImageForProduct(prod);
@@ -962,7 +967,12 @@ public class NewOrderController implements Initializable {
                 System.out.println(e);
             }
 
+
         }
+        if(ProductsList.getItems().size() == 0)
+        {
+             outOfStock.setVisible(true);}
+
 
     }
 

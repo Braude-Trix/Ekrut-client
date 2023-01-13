@@ -115,11 +115,11 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
         String date = order.getDate();
         PickUpMethod pickUpMethod = order.getPickUpMethod();
         monthlyBillLabel.setVisible(true);
-        totalPriceLabel.setText(totalPriceLabel.getText() + order.getPrice() + "₪");
+        totalPriceLabel.setText(totalPriceLabel.getText() + order.getPrice() + StyleConstants.CURRENCY_SYMBOL);
         orderDateLabel.setText(orderDateLabel.getText() + " " + date);
         if (isSubscriber) {
             thankLabel.setText(StyleConstants.SUBSCRIBER_MSG);
-            monthlyBillLabel.setText(monthlyBillLabel.getText() + getMonthlyBill().toString() + "₪");
+            monthlyBillLabel.setText(monthlyBillLabel.getText() + getMonthlyBill().toString() + StyleConstants.CURRENCY_SYMBOL);
         } else {
             vboxContainer.getChildren().remove(monthlyBillLabel);
             thankLabel.setText(StyleConstants.CUSTOMER_MSG);

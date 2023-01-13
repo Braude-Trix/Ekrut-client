@@ -69,7 +69,7 @@ public class BillWindowController implements Initializable {
     int customerId;
 
     private void initBillWindow() {
-        totalPriceLabel.setText(StyleConstants.TOTAL_PRICE_STRING + Double.toString(NewOrderController.previousOrder.getPrice()) + StyleConstants.CURRENCY_INS);
+        totalPriceLabel.setText(StyleConstants.TOTAL_PRICE_STRING + " "+Double.toString(NewOrderController.previousOrder.getPrice()) + StyleConstants.CURRENCY_SYMBOL);
         initBillTable(NewOrderController.previousOrder);
         restoreOrder = NewOrderController.previousOrder;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT);
