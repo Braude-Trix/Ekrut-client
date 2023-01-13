@@ -2,6 +2,7 @@ package gui.workers;
 
 import client.Client;
 import client.ClientUI;
+import gui.ConnectToServerController;
 import gui.StageSingleton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -28,6 +30,7 @@ import utils.WorkerNodesUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Gui controller for CEO selecting workers window (based on CeoGui.workerType)
@@ -208,7 +211,10 @@ public class CeoSelectWorker {
         }
         Scene dialogScene = new Scene(anchorPane);
         popupDialog.setScene(dialogScene);
-
+        Image iconImage = new Image(Objects.requireNonNull(
+                ConnectToServerController.class.getResourceAsStream("/assets/clientIcon.png")));
+        popupDialog.getIcons().clear();
+        popupDialog.getIcons().add(iconImage);
         popupDialog.setX(primaryStage.getX() + 75);
         popupDialog.setY(primaryStage.getY() + 75);
         popupDialog.setResizable(false);

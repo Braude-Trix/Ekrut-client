@@ -20,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -421,6 +422,10 @@ public class BillWindowController implements Initializable {
         restoreOrder = null;
         popupDialog = new Stage();
         popupDialog.setTitle(StyleConstants.ORDER_CONFIRMATION_TITLE_LABEL);
+        Image iconImage = new Image(Objects.requireNonNull(
+                ConnectToServerController.class.getResourceAsStream("/assets/clientIcon.png")));
+        popupDialog.getIcons().clear();
+        popupDialog.getIcons().add(iconImage);
         popupDialog.setScene(new Scene(pane));
         popupDialog.centerOnScreen();
         popupDialog.setMinHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);

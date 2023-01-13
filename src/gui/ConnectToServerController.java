@@ -12,9 +12,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /*
  * This class describes all the functionality in the first screen - the process of connecting to the server
@@ -48,6 +50,10 @@ public class ConnectToServerController {
         Parent root = FXMLLoader.load(ConnectToServerController.class.getResource("/assets/fxmls/ConnectToServer.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Connect To Server");
+        Image iconImage = new Image(Objects.requireNonNull(
+                ConnectToServerController.class.getResourceAsStream("/assets/clientIcon.png")));
+        primaryStage.getIcons().clear();
+        primaryStage.getIcons().add(iconImage);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
