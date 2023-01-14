@@ -54,7 +54,11 @@ public class NewOrderController implements Initializable {
 
     static private Regions oldRegion=null;
 
-    static private boolean aliveSale = false;
+
+    /**
+     * This variable responsible to check if there is an active sale
+     */
+    static public boolean aliveSale = false;
 
     static Order previousOrder;
 

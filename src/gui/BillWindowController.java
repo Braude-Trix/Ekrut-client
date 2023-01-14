@@ -142,11 +142,11 @@ public class BillWindowController implements Initializable {
     void proceedPaymentClicked(ActionEvent event) {
         if (!validateProductsInInventory()) {
             restoreOrder = null;
-
             replaceWindowToNewOrder();
             createAnAlert(Alert.AlertType.ERROR, StyleConstants.OUT_OF_STOCK_LABEL, StyleConstants.INVENTORY_UPDATE_ALERT_MSG);
             return;
         }
+        NewOrderController.aliveSale = false;
         requestSaveOrder();
         requestSaveProductsInOrder();
         updateInventoryInDB();

@@ -204,6 +204,12 @@ public class DeliveryFormController implements Initializable {
     		Util.setFieldTextErrorBorder(textField);
     		return true;
     	}
+		if (textField.getText().length() >= 100) {
+			errorLabel.setText("Maximum length is 100");
+			Util.setFieldTextErrorBorder(textField);
+			return true;
+		}
+
     	return false;    	
     }
     
