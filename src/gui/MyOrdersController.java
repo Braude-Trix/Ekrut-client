@@ -254,7 +254,7 @@ public class MyOrdersController implements Initializable {
 					super.updateItem(item, empty);
 					setText(item);
 					Tooltip tooltip = new Tooltip(item);
-					tooltip.setShowDelay(Duration.ZERO);
+					//tooltip.setShowDelay(Duration.ZERO);
 					setTooltip(tooltip);
 
 

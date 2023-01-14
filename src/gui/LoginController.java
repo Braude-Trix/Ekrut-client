@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
+import client.IClient;
 import gui.workers.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -30,6 +31,7 @@ import models.Customer;
 import models.Method;
 import models.Order;
 import models.Request;
+import models.Response;
 import models.ResponseCode;
 import models.User;
 import models.Worker;
@@ -89,6 +91,11 @@ public class LoginController implements Initializable{
     private Label errorTouch;
 
     private IUtil utilInterface; 
+    private IClient clientInterface; 
+    private static IInitWindow initWindowInterface;
+    private IRunThread iRunThreadInterface;
+
+
     /**
      * This method initializes data before the screen comes up
      */
@@ -125,10 +132,16 @@ public class LoginController implements Initializable{
     
     public LoginController() {
     	utilInterface = new UtilWrapper();
+    	clientInterface = new ClientWrapper();
+    	initWindowInterface = new InitWindow();
+    	iRunThreadInterface = new RunThread();
     }
     
-    public LoginController(IUtil utilI) {
+    public LoginController(IUtil utilI, IClient iclient, IInitWindow iInitWindow, IRunThread iRunThread) {
     	utilInterface = utilI;
+    	clientInterface = iclient;
+    	initWindowInterface = iInitWindow;
+    	iRunThreadInterface = iRunThread;
     }
 
 
@@ -145,18 +158,15 @@ public class LoginController implements Initializable{
      */
     @FXML
     void login(ActionEvent event) throws Exception {
-        anchorPane.requestFocus();
         boolean isInputErrorUsername = false;
         boolean isInputErrorPassword = false;
 
-        removeErrorStyle();
+        utilInterface.setErrorLabel("");
 
-        if (utilInterface.isBlankString(txtUsername.getText())){
-        	Util.setFieldTextErrorBorder(txtUsername);
+        if (utilInterface.isBlankString(utilInterface.getTxtUsername())){
             isInputErrorUsername = true;
         }
-        if (utilInterface.isBlankString(txtPassword.getText())){
-        	Util.setFieldTextErrorBorder(txtPassword);
+        if (utilInterface.isBlankString(utilInterface.getTxtPassword())){
             isInputErrorPassword = true;
         }
 
@@ -170,20 +180,14 @@ public class LoginController implements Initializable{
 
     private void setErrorLabel(boolean invalidUsername, boolean invalidPassword) {
         if (invalidPassword && invalidUsername) {
-            errorLabel.setText("The username and password are incorrect");
+        	utilInterface.setErrorLabel("The username and password are incorrect");
         }
         else if (invalidPassword) {
-            errorLabel.setText("The password is incorrect");
+        	utilInterface.setErrorLabel("The password is incorrect");
         }
         else if (invalidUsername) {
-            errorLabel.setText("The username is incorrect");
+        	utilInterface.setErrorLabel("The username is incorrect");
         }
-    }
-
-    private void removeErrorStyle() {
-        txtUsername.getStyleClass().remove("validation-error");
-        txtPassword.getStyleClass().remove("validation-error");
-        errorLabel.setText("");
     }
 
     private void SelectHomePageToOpen() throws Exception {
@@ -194,21 +198,17 @@ public class LoginController implements Initializable{
 
         if (configuration.equals("EK")) {
             requestEKCustomer();
-            if (Client.resFromServer.getCode() == ResponseCode.INVALID_DATA) {
-                setWindowUnregisteredUser();
-            }
-            else if (Client.resFromServer.getCode() == ResponseCode.OK) {
-                EKController EKcon = new EKController();
-                EKcon.start(stage);
-            }
         }
         else if (configuration.equals("OL")){
             requestOLUser();
         }
         
-        threadListeningNewMsg = new Thread(new getMessages());
-        threadListeningNewMsg.start();
-
+        if (clientInterface.getResFromServer().getCode() == ResponseCode.DB_ERROR ||
+        		clientInterface.getResFromServer().getCode() == ResponseCode.SERVER_ERROR) {
+        	return;
+        }
+        
+        iRunThreadInterface.Run();
     }
 
     private void setComboBoxFastLogin() {
@@ -216,13 +216,17 @@ public class LoginController implements Initializable{
         request.setPath("/login/getAllSubscriberForFastLogin");
         request.setMethod(Method.GET);
         request.setBody(null);
-        ClientUI.chat.accept(request);
-        switch (Client.resFromServer.getCode()) {
+        clientInterface.setRequestForServer(request);
+    	if (clientInterface.getResFromServer() == null) {
+        	utilInterface.setErrorTouch("Communication error");
+        	return;
+    	}
+        switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                setSubscribers(Client.resFromServer.getBody());
+                setSubscribers(clientInterface.getResFromServer().getBody());
                 break;
             default:
-                errorTouch.setText(Client.resFromServer.getDescription());
+            	utilInterface.setErrorTouch(clientInterface.getResFromServer().getDescription());
                 break;
         }
     }
@@ -232,33 +236,36 @@ public class LoginController implements Initializable{
         for (int i = 0;i<subscribers.size();i++) {
             options.add((Integer)subscribers.get(i));
         }
-        comboBoxSubscribers.getItems().addAll(options);
+        utilInterface.setAllSubscribers(options);
     }
 
     private void requestUser() {
         List<Object> usernameAndPassword = new ArrayList<>();
-        usernameAndPassword.add(txtUsername.getText());
-        usernameAndPassword.add(txtPassword.getText());
+        usernameAndPassword.add(utilInterface.getTxtUsername());
+        usernameAndPassword.add(utilInterface.getTxtPassword());
 
         Request request = new Request();
         request.setPath("/login/getUser");
         request.setMethod(Method.GET);
         request.setBody(usernameAndPassword);
-        ClientUI.chat.accept(request);
-
+        clientInterface.setRequestForServer(request);
         handleResponseGetUser();
     }
 
     private void handleResponseGetUser() {
-        switch (Client.resFromServer.getCode()) {
+    	if (clientInterface.getResFromServer() == null) {
+        	utilInterface.setErrorLabel("Communication error");
+        	return;
+    	}
+        switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                user = (User) Client.resFromServer.getBody().get(0);
+                user = (User) clientInterface.getResFromServer().getBody().get(0);
                 break;
             case INVALID_DATA:
-                errorLabel.setText(Client.resFromServer.getDescription());
+            	utilInterface.setErrorLabel(clientInterface.getResFromServer().getDescription());
                 break;
             default:
-                errorLabel.setText(Client.resFromServer.getDescription());
+            	utilInterface.setErrorLabel(clientInterface.getResFromServer().getDescription());
                 break;
         }
     }
@@ -270,27 +277,28 @@ public class LoginController implements Initializable{
         request.setPath("/login/getUserForEkConfiguration");
         request.setMethod(Method.GET);
         request.setBody(userDetails);
-        ClientUI.chat.accept(request);
+        clientInterface.setRequestForServer(request);
 
         handleResponseGetCustomerForEkConfiguration();
     }
 
-    private void handleResponseGetCustomerForEkConfiguration() {
-        switch (Client.resFromServer.getCode()) {
+    private void handleResponseGetCustomerForEkConfiguration() throws Exception {
+    	if (clientInterface.getResFromServer() == null) {
+        	utilInterface.setErrorLabel("Communication error");
+        	return;
+    	}
+    	switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                user = (Customer) Client.resFromServer.getBody().get(0);
+                user = (Customer) clientInterface.getResFromServer().getBody().get(0);
+            	initWindowInterface.runWindow("EKController");
                 break;
             case INVALID_DATA:
+            	initWindowInterface.runWindow("UnregisteredUserController");
                 break;
             default:
-                errorLabel.setText(Client.resFromServer.getDescription());
+            	utilInterface.setErrorLabel(clientInterface.getResFromServer().getDescription());
                 break;
         }
-    }
-
-    private void setWindowUnregisteredUser() throws Exception {
-        UnregisteredUserController unregisteredCon = new UnregisteredUserController();
-        unregisteredCon.start(stage);
     }
 
     private void requestOLUser() throws Exception {
@@ -300,20 +308,24 @@ public class LoginController implements Initializable{
         request.setPath("/login/getUserForOLConfiguration");
         request.setMethod(Method.GET);
         request.setBody(userDetails);
-        ClientUI.chat.accept(request);
+        clientInterface.setRequestForServer(request);
         handleResponseGetUserForOLConfiguration();
     }
 
     private void handleResponseGetUserForOLConfiguration() throws Exception {
-        switch (Client.resFromServer.getCode()) {
+    	if (clientInterface.getResFromServer() == null) {
+        	utilInterface.setErrorLabel("Communication error");
+        	return;
+    	}
+    	switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                setUserWindow(Client.resFromServer.getBody());
+                setUserWindow(clientInterface.getResFromServer().getBody());
                 break;
             case INVALID_DATA:
-                setWindowUnregisteredUser();
+            	initWindowInterface.runWindow("UnregisteredUserController");
                 break;
             default:
-                errorLabel.setText(Client.resFromServer.getDescription());
+            	utilInterface.setErrorLabel(clientInterface.getResFromServer().getDescription());
                 break;
         }
     }
@@ -324,13 +336,11 @@ public class LoginController implements Initializable{
         DeliveryFormController.scene = null;
         if (userDetails.size() == 2) {
             customerAndWorker = userDetails;
-            SelectOptionWorkerOrCustomer selectWindow = new SelectOptionWorkerOrCustomer();
-            selectWindow.start(stage);
+            initWindowInterface.runWindow("SelectOptionWorkerOrCustomer");
         }
         else if(userDetails.get(0) instanceof Customer) {
             user = (Customer) userDetails.get(0);
-            OLController OLcon = new OLController();
-            OLcon.start(stage);
+            initWindowInterface.runWindow("OLController");
         }
         else if(userDetails.get(0) instanceof Worker) {
             user = (Worker) userDetails.get(0);
@@ -346,27 +356,26 @@ public class LoginController implements Initializable{
     public static void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
         switch (worker.getType()) {
             case CEO:
-                new CeoGui().start(stage);
+            	initWindowInterface.runWindow("CeoGui");
                 break;
             case OperationalWorker:
-                new OperationalWorkerGui().start(stage);
+            	initWindowInterface.runWindow("OperationalWorkerGui");
                 break;
             case MarketingManager:
-            	new MarketingManagerController().start(stage);
+            	initWindowInterface.runWindow("MarketingManagerController");
                 break;
             case MarketingWorker:
-            	new MarketingWorkerWindowController().start(stage);
+            	initWindowInterface.runWindow("MarketingWorkerWindowController");
                 break;
             case RegionalManager:
-                new RegionalManagerGui().start(stage);
+            	initWindowInterface.runWindow("RegionalManagerGui");
                 break;
             case RegionalDelivery:
-                (new RegionalDeliveryController()).start(stage);
+            	initWindowInterface.runWindow("RegionalDeliveryController");
                 break;
             case ServiceOperator:
-                new ServiceOperatorController().start(stage); 
+            	initWindowInterface.runWindow("ServiceOperatorController"); 
                 break;
-
         }
     }
 
@@ -378,7 +387,7 @@ public class LoginController implements Initializable{
      */
     @FXML
     void btnTouch(ActionEvent event) throws Exception {
-        comboBoxSubscribers.getStyleClass().remove("validation-error");
+//        comboBoxSubscribers.getStyleClass().remove("validation-error");
         if (!isValidFillComboBoxes()){
             return;
         }
@@ -386,9 +395,9 @@ public class LoginController implements Initializable{
     }
 
     private boolean isValidFillComboBoxes() {
-        if (comboBoxSubscribers.getValue() == null) {
-            comboBoxSubscribers.getStyleClass().add("validation-error");
-            errorTouch.setText("Please select subscriber id");
+        if (utilInterface.getValueSubscriberSelected() == null) {
+//            comboBoxSubscribers.getStyleClass().add("validation-error");
+        	utilInterface.setErrorTouch("Please select subscriber id");
             return false;
         }
         return true;
@@ -396,25 +405,29 @@ public class LoginController implements Initializable{
 
     private void requestUserById() throws Exception {
         List<Object> idSubscriber = new ArrayList<>();
-        idSubscriber.add(comboBoxSubscribers.getValue());
+        idSubscriber.add(utilInterface.getValueSubscriberSelected());
         Request request = new Request();
         request.setPath("/login/getCustomerById");
         request.setMethod(Method.GET);
         request.setBody(idSubscriber);
-        ClientUI.chat.accept(request);
+        clientInterface.setRequestForServer(request);
 
         handleResponseGetUserById();
     }
 
     private void handleResponseGetUserById() throws Exception {
-        switch (Client.resFromServer.getCode()) {
+    	if (clientInterface.getResFromServer() == null) {
+        	utilInterface.setErrorTouch("Communication error");
+        	return;
+    	}
+        switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                user = (Customer) Client.resFromServer.getBody().get(0);
-                EKController EKcon = new EKController();
-                EKcon.start(stage);
+                user = (Customer) clientInterface.getResFromServer().getBody().get(0);
+            	initWindowInterface.runWindow("EKController");
+                iRunThreadInterface.Run();
                 break;
             default:
-                errorTouch.setText(Client.resFromServer.getDescription());
+            	utilInterface.setErrorTouch(clientInterface.getResFromServer().getDescription());
                 break;
         }
     }
@@ -503,38 +516,115 @@ public class LoginController implements Initializable{
     }
     
     
-    public TextField getTxtPassword() {
-		return txtPassword;
-	}
-
-	public void setTxtPassword(TextField txtPassword) {
-		this.txtPassword = txtPassword;
-	}
-
-	public TextField getTxtUsername() {
-		return txtUsername;
-	}
-
-	public void setTxtUsername(TextField txtUsername) {
-		this.txtUsername = txtUsername;
-	}
-
-	public Label getErrorLabel() {
-		return errorLabel;
-	}
-
-	public void setErrorLabel(Label errorLabel) {
-		this.errorLabel = errorLabel;
-	}
-	
 	public class UtilWrapper implements IUtil {
 	    public boolean isBlankString(String s) {
 	        return Util.isBlankString(s);
 	    }
+	    
+	    public String getTxtPassword() {
+			return txtPassword.getText();
+		}
 
+		public String getTxtUsername() {
+			return txtUsername.getText();
+		}
 
+		public String getErrorLabel() {
+			return errorLabel.getText();
+		}
+		
+		public void setErrorLabel(String msgError) {
+			errorLabel.setText(msgError);
+		}
+		
+		public String getErrorTouch() {
+			return errorTouch.getText();
+		}
+		
+		public void setErrorTouch(String msgError) {
+			errorTouch.setText(msgError);
+		}
+		
+		public Integer getValueSubscriberSelected() {
+			return comboBoxSubscribers.getValue();
+		}
+		
+		public void setValueSubscriberSelected(Integer id) {
+			comboBoxSubscribers.setValue(id);
+		}
+		
+		public ObservableList<Integer> getAllSubscribers() {
+			return comboBoxSubscribers.getItems();
+		}
+		
+		public void setAllSubscribers(ObservableList<Integer> options) {
+			comboBoxSubscribers.getItems().addAll(options);
+		}
 	}
 	
+	public class ClientWrapper implements IClient{
+
+		@Override
+		public void setRequestForServer(Request request) {
+	        ClientUI.chat.accept(request);			
+		}
+
+		@Override
+		public Response getResFromServer() {
+			return Client.resFromServer;
+		}
+		
+	}
 	
+	public class InitWindow implements IInitWindow{
+
+		@Override
+		public void runWindow(String nameController) throws Exception {
+			switch(nameController) {
+            case "EKController":
+                new EKController().start(stage);
+                break;
+            case "OLController":
+                new OLController().start(stage);
+                break;
+            case "UnregisteredUserController":
+                new UnregisteredUserController().start(stage);
+                break;
+            case "SelectOptionWorkerOrCustomer":
+                new SelectOptionWorkerOrCustomer().start(stage);
+                break;    
+            case "CeoGui":
+                new CeoGui().start(stage);
+                break;
+            case "OperationalWorkerGui":
+                new OperationalWorkerGui().start(stage);
+                break;
+            case "MarketingManagerController":
+            	new MarketingManagerController().start(stage);
+                break;
+            case "MarketingWorkerWindowController":
+            	new MarketingWorkerWindowController().start(stage);
+                break;
+            case "RegionalManagerGui":
+                new RegionalManagerGui().start(stage);
+                break;
+            case "RegionalDeliveryController":
+                (new RegionalDeliveryController()).start(stage);
+                break;
+            case "ServiceOperatorController":
+                new ServiceOperatorController().start(stage); 
+                break;
+			}
+		}
+		
+	}
+	
+    public class RunThread implements IRunThread{
+		@Override
+		public void Run() {
+	        threadListeningNewMsg = new Thread(new getMessages());
+	        threadListeningNewMsg.start();			
+		}	
+    }
 
 }
