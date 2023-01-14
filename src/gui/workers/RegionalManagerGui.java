@@ -119,11 +119,12 @@ public class RegionalManagerGui implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
 		if (isCEOLogged) 
 			logoutBtn.setVisible(false);
-        else
+        else {
             setBackBtnIfExist();
+            region = worker.getRegion();
+        }
     	
         // setting username and region
         WorkerNodesUtils.setUserName(userNameLabel, worker);
@@ -378,8 +379,6 @@ public class RegionalManagerGui implements Initializable {
             label.setFont(ColorsAndFonts.CONTENT_FONT);
 
             ComboBox<String> comboBox = new ComboBox(FXCollections.observableList(comboboxValues));
-            // todo: add DB actual current threshold here
-//            comboBox.getSelectionModel().select(initValue);
             comboBox.setVisibleRowCount(4);
 
             Button button = WorkerNodesUtils.createWide85Button(btnText);

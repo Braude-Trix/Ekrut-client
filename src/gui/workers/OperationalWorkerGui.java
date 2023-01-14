@@ -304,15 +304,16 @@ public class OperationalWorkerGui implements Initializable {
             	bottomBroderVbox.getChildren().add(msgLabel);
             	return;
             }
-            // todo: call to server and change status to closed
-            // if request is ok
-            if (postNewTaskStatus(selectedTask)) {
+            if (postNewTaskStatus(selectedTask)) { // if request is ok
                 msgLabel = WorkerNodesUtils.getCenteredContentLabel("Task for machine " +
                         selectedTask.getMachineName() + " was closed successfully");
                 openedTasksTable.getItems().remove(selectedTask);
                 Messages.writeNewMsgToDB("Task for machine: " + selectedTask.getMachineName() + "\nis done by Operational worker: " +
-                worker.getFirstName() + " " + worker.getLastName()
-                		, worker.getId(), managerID);
+                worker.getFirstName() + " " + worker.getLastName(), worker.getId(), managerID);
+
+                goToButton.setDisable(true);
+                closeTaskButton.setVisible(false);
+                onRefreshClick();
             } else { // if some error
                 msgLabel = WorkerNodesUtils.getCenteredContentLabel("Task for machine " +
                         selectedTask.getMachineName() + " couldn't close, Server error occurred");

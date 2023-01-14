@@ -67,7 +67,6 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 			try {
 				Util.forcedExit();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -99,7 +98,6 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 		try {
 			OLcon.start(stage);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -116,11 +114,8 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 		try {
 			LoginController.setWindowByTypeWorker(stage, (Worker) LoginController.customerAndWorker.get(1));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
-
-
 }
 
