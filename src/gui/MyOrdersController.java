@@ -25,6 +25,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import models.Method;
 import models.MyOrders;
 import models.OrderStatus;
@@ -246,8 +247,29 @@ public class MyOrdersController implements Initializable {
 		idOrderConfirm.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("orderId"));
 		execDateConfirm.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("date"));
 
+		IdOrder.setCellFactory(column -> {
+			return new TableCell<MyOrders, String>() {
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+					setText(item);
+					Tooltip tooltip = new Tooltip(item);
+					tooltip.setShowDelay(Duration.ZERO);
+					setTooltip(tooltip);
+
+
+				}
+			};
+		});
+
 		tableViewOrders.setRowFactory(tv -> {
 			TableRow<MyOrders> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 1 && (!row.isEmpty())) {
+					MyOrders rowData = row.getItem();
+					txtOrderID.setText(rowData.getOrderId());
+				}
+			});
 			row.setOnMouseClicked(event -> {
 				if (event.getClickCount() == 1 && (!row.isEmpty())) {
 					MyOrders rowData = row.getItem();
@@ -258,7 +280,7 @@ public class MyOrdersController implements Initializable {
 		});
 	}
 
-    private void updateStatusDeliveryInLocallyListMyOrders(MyOrders order, String time) {
+			private void updateStatusDeliveryInLocallyListMyOrders(MyOrders order, String time) {
     	int index = orderObser.indexOf(order);
     	order.setStatus(OrderStatus.Collected);
     	order.setReceivedDate(time);
