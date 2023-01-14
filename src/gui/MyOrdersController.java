@@ -17,13 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -127,6 +121,7 @@ public class MyOrdersController implements Initializable {
 		setStyleForEmptyTable();
 		addButtonToTable();
         Util.setNameNavigationBar(labelName);
+		txtOrderID.setDisable(true);
 	}
 	
 	/**
@@ -182,7 +177,7 @@ public class MyOrdersController implements Initializable {
                         	if (isChangeStatusDeliveryOrderInDB(getTableView().getItems().get(getIndex()).getOrderId(),date)) {
                             	updateStatusDeliveryInLocallyListMyOrders(getTableView().getItems().get(getIndex()),date);
                             	getTableView().getItems().remove(getIndex());
-                        	}                       	
+                        	}
                         });
                     }
 
@@ -241,17 +236,28 @@ public class MyOrdersController implements Initializable {
 			e.printStackTrace();
 		}
     }
-    
-    private void setCellFactoryOfTables() {
+
+	private void setCellFactoryOfTables() {
 		IdOrder.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("orderId"));
 		Status.setCellValueFactory(new PropertyValueFactory<MyOrders, OrderStatus>("Status"));
 		execDate.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("date"));
 		recieveDate.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("receivedDate"));
 		typeOrder.setCellValueFactory(new PropertyValueFactory<MyOrders, PickUpMethod>("pickUpMethod"));
-		
 		idOrderConfirm.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("orderId"));
 		execDateConfirm.setCellValueFactory(new PropertyValueFactory<MyOrders, String>("date"));
-    }
+
+		tableViewOrders.setRowFactory(tv -> {
+			TableRow<MyOrders> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 1 && (!row.isEmpty())) {
+					MyOrders rowData = row.getItem();
+					txtOrderID.setText(rowData.getOrderId());
+				}
+			});
+			return row;
+		});
+	}
+
     private void updateStatusDeliveryInLocallyListMyOrders(MyOrders order, String time) {
     	int index = orderObser.indexOf(order);
     	order.setStatus(OrderStatus.Collected);

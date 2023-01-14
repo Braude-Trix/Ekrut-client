@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.221" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MyOrdersController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MyOrdersController">
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -133,12 +133,12 @@
                            <children>
                               <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="504.0">
                                  <children>
-                                    <Label prefHeight="19.0" prefWidth="253.0" text="Forgot the code for pick up? Enter OrderID:">
+                                    <Label prefHeight="19.0" prefWidth="203.0" text="Tap on order row for pick up code:">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtOrderID" focusTraversable="false" prefHeight="26.0" prefWidth="146.0" promptText="Order ID">
+                                    <TextField fx:id="txtOrderID" focusTraversable="false" prefHeight="26.0" prefWidth="197.0" promptText="Order ID">
                                        <HBox.margin>
                                           <Insets left="10.0" />
                                        </HBox.margin>
@@ -152,7 +152,7 @@
                               </HBox>
                               <Label fx:id="errorLabel" textFill="RED">
                                  <VBox.margin>
-                                    <Insets left="264.0" />
+                                    <Insets left="215.0" />
                                  </VBox.margin>
                               </Label>
                            </children>

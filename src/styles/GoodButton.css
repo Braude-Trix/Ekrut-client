@@ -25,3 +25,13 @@
         .list-view .list-cell:selected .label {
             -fx-text-fill: black;
         }
+.list-view .virtual-flow .scroll-bar:vertical  {
+    -fx-background-color: #F5F5F5;
+}
+
+.list-view .virtual-flow .scroll-bar:vertical .increment-button,
+.list-view .virtual-flow .scroll-bar:vertical .decrement-button,
+.list-view .virtual-flow .scroll-bar:vertical .thumb {
+    -fx-background-color: #ffc39c;
+    -fx-background-radius: 10px;
+}
