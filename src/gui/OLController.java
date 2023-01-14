@@ -113,7 +113,6 @@ public class OLController implements Initializable {
 			try {
 				DeliveryCon.start(stage);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

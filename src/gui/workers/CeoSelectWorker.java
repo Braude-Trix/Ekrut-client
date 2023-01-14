@@ -170,7 +170,6 @@ public class CeoSelectWorker {
     }
 
     private void onGoToClick() {
-
         // choosing which work space we open
         switch (CeoGui.chosenWorkerType) {
             case RegionalDelivery:
