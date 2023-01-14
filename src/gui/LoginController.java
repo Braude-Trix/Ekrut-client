@@ -461,21 +461,26 @@ public class LoginController implements Initializable{
                 paramList.add(LoginController.user.getId().toString());
                 request.setBody(paramList);
                 ClientUI.chat.accept(request);
-                switch (Client.MsgResFromServer.getCode()) {
-                    case OK:
-                        StringBuilder msgToClient = new StringBuilder();
-                        List<Object> result = Client.MsgResFromServer.getBody();
-                        if (result.size() == 0 || result.size() == 1)
+                try {
+                    switch (Client.MsgResFromServer.getCode()) {
+                        case OK:
+                            StringBuilder msgToClient = new StringBuilder();
+                            List<Object> result = Client.MsgResFromServer.getBody();
+                            if (result.size() == 0 || result.size() == 1)
+                                break;
+                            for (int i = 1; i < result.size(); i++) {
+                                msgToClient.append("\n");
+                                msgToClient.append(result.get(i).toString());
+                            }
+                            Platform.runLater(() -> createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
                             break;
-                        for(int i = 1; i < result.size(); i++){
-                            msgToClient.append("\n");
-                            msgToClient.append(result.get(i).toString());
-                        }
-                        Platform.runLater(()->createAnAlert(Alert.AlertType.INFORMATION, "Information", msgToClient.toString()));
-                        break;
 
-                    default:
-                        System.out.println(Client.MsgResFromServer.getDescription());
+                        default:
+                            System.out.println(Client.MsgResFromServer.getDescription());
+                    }
+                }
+                catch(Exception e){
+                    System.out.println(e.getMessage());
                 }
                 try {
                     Thread.sleep(10000);
