@@ -234,7 +234,6 @@ public class UserInstallationController implements Initializable {
 		try {
 			LoginCon.start(stage);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
     }

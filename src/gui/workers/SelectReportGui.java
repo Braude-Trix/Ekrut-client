@@ -170,7 +170,7 @@ public class SelectReportGui {
     void loadUsersReport() {
         reportType = ReportType.USERS;
         // Replacing background
-        WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", RegionalManagerGui.controller.bgImage); // todo: BADIHI HELP US...
+        WorkerNodesUtils.setBackground("/assets/workers/OrdersReportMenu.jpg", RegionalManagerGui.controller.bgImage);
         // Replacing top border
         WorkerNodesUtils.setTitle("Users Report", RegionalManagerGui.controller.topBorderVBox);
 
@@ -321,77 +321,6 @@ public class SelectReportGui {
                 UsersReportPopupGui.usersReportData = (UsersReport) reportFromServer;
                 break;
         }
-    }
-
-    private InventoryReport getDummyInventoryReport() {
-        List<Map<String, Integer>> dailyInventory = new ArrayList<>();
-        for (int i = 1; i <= 30; i++) {
-            Map<String, Integer> productInventory = new HashMap<>();
-            productInventory.put("aaa" + i, new Random().nextInt(10 + 1));
-            productInventory.put("bbb" + i, new Random().nextInt(10 + 1));
-            productInventory.put("ccc" + i, new Random().nextInt(10 + 1));
-            dailyInventory.add(productInventory);
-        }
-
-        List<Integer> belowThresholdAmount = new ArrayList<>();
-        List<Integer> unavailableAmount = new ArrayList<>();
-
-        for (int i = 1; i <= 30; i++) {
-            int yValue = new Random().nextInt(40 + 1);
-            belowThresholdAmount.add(yValue);
-            unavailableAmount.add((int) (yValue * 0.3));
-        }
-
-        return new InventoryReport(machineComboBox.getValue(), monthComboBox.getValue(), yearComboBox.getValue(),
-                dailyInventory, belowThresholdAmount, unavailableAmount);
-    }
-
-    private OrdersReport getDummyOrdersReport() {
-        List<Map<String, Integer>> ekOrders = new ArrayList<>();
-        List<Map<String, Integer>> latePickupOrders = new ArrayList<>();
-        /*for (int i=1; i<=15; i++) {
-            Map<String, Integer> ekOrdersDaily = new HashMap<>();
-            ekOrdersDaily.put("L 606", 0);
-            ekOrdersDaily.put("M 101", 0);
-            ekOrdersDaily.put("EM 302" , 0);
-            ekOrders.add(ekOrdersDaily);
-        }*/
-        
-        for (int i=1; i<=30; i++) {
-            Map<String, Integer> ekOrdersDaily = new HashMap<>();
-            ekOrdersDaily.put("L 606", new Random().nextInt(30 + 1));
-            ekOrdersDaily.put("M 101", new Random().nextInt(30 + 1));
-            ekOrdersDaily.put("EM 302" , new Random().nextInt(30 + 1));
-            ekOrders.add(ekOrdersDaily);
-        }
-
-       /* for (int i=1; i<=15; i++) {
-            Map<String, Integer> latePickupOrdersDaily = new HashMap<>();
-            latePickupOrdersDaily.put("L 606",0);
-            latePickupOrdersDaily.put("M 101", 0);
-            latePickupOrdersDaily.put("EM 302", 0);
-            latePickupOrders.add(latePickupOrdersDaily);
-        }*/
-        
-        for (int i=1; i<=30; i++) {
-            Map<String, Integer> latePickupOrdersDaily = new HashMap<>();
-            latePickupOrdersDaily.put("L 606", new Random().nextInt(15 + 1));
-            latePickupOrdersDaily.put("M 101", new Random().nextInt(15 + 1));
-            latePickupOrdersDaily.put("EM 302", new Random().nextInt(15 + 1));
-            latePickupOrders.add(latePickupOrdersDaily);
-        }
-        
-        return new OrdersReport(RegionalManagerGui.region.toString(), monthComboBox.getValue(), yearComboBox.getValue(),
-                ekOrders, latePickupOrders);
-    }
-
-    private UsersReport getDummyUsersReport() {
-        Map<String, Integer> clientsOrders = getOrders();
-        Map<String, Integer> subscribersOrders = getOrders1();
-        List<String> top3ClientNames = Arrays.asList("Yuval", "Fisher", "Avihay");
-
-        return new UsersReport(RegionalManagerGui.region.toString(), monthComboBox.getValue(), yearComboBox.getValue(),
-                clientsOrders, subscribersOrders, top3ClientNames);
     }
 
     private Map<String, Integer> getOrders() {

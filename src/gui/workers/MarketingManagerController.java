@@ -276,7 +276,6 @@ private void setTextFormatterForTextAreaDescription() {
 			try {
 				Util.forcedExit();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -576,7 +575,6 @@ private void setTextFormatterForTextAreaDescription() {
 			percentageString = String.valueOf(percentageNum);
 		}
 		return percentageString;
-		// TODO Auto-generated method stub
 
 	}
 
