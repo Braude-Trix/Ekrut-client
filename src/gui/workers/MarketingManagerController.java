@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -681,7 +682,7 @@ private void setTextFormatterForTextAreaDescription() {
 	@FXML
 	void selectedType(ActionEvent event) {
 		TypeSale typeSelected = comboBoxType.getValue();
-		if (typeSelected == TypeSale.PercentageDiscount || typeSelected == TypeSale.GetSecondOneAtDiscount) {
+		if (typeSelected == TypeSale.PercentageDiscount) {
 			hboxPercentage.setVisible(true);
 			selectedTypeWithPercentage = true;
 		} else {
@@ -881,8 +882,7 @@ private void setTextFormatterForTextAreaDescription() {
 			saleStartDateLabel.setText(previewSale.getSaleStartDate());
 			saleTimeLabel.setText(previewSale.getSaleTime().toString());
 			saleTypeLabel.setText(previewSale.getSaleType().toString());
-			if (saleTypeLabel.getText() == TypeSale.PercentageDiscount.toString()
-					|| saleTypeLabel.getText() == TypeSale.GetSecondOneAtDiscount.toString()) {
+			if (Objects.equals(saleTypeLabel.getText(), TypeSale.PercentageDiscount.toString())) {
 				saleTypeLabel.setText(saleTypeLabel.getText() + ":  " + previewSale.getSalePercentage() + "%");
 			}
 			saleStatusLabel.setText(previewSale.getSaleStatus().toString());
