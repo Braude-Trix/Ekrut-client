@@ -20,6 +20,7 @@ import models.Regions;
 import models.Request;
 import models.Response;
 import models.ResponseCode;
+import models.SaleStatus;
 import models.User;
 import models.Worker;
 import models.WorkerType;
@@ -144,6 +145,7 @@ class LoginControllerTest {
 	private RunThreadTest runThreadTest;
 
 	
+	@SuppressWarnings("static-access")
 	@BeforeEach
 	void setUp() throws Exception {
 		utilTest = new UtilTest();
@@ -181,6 +183,8 @@ class LoginControllerTest {
 		
 		setCombobox = LoginController.class.getDeclaredMethod("setComboBoxFastLogin");
 		setCombobox.setAccessible(true);
+		
+		loginCon.customerAndWorker = null;	
 	}
 
 	@Test
@@ -290,6 +294,17 @@ class LoginControllerTest {
 		assertEquals(null, errorL);
 	}
 	
+	@SuppressWarnings("static-access")
+	@Test
+	void requestUser_BodyResponseNull() throws Exception {
+		responseTest = setResponse(ResponseCode.OK, "Successfully got user details", null);
+		rUser.invoke(loginCon);
+		assertEquals(loginCon.user, null);
+		assertEquals("Data error", errorL);
+	}
+	
+
+	
 	
 //	@SuppressWarnings("static-access")
 //	@Test
@@ -356,6 +371,27 @@ class LoginControllerTest {
 		responseTest = null;
 		rEKCustomer.invoke(loginCon);
 		assertEquals("Communication error", errorL);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	void requestCustomerEkConfiguration_BodyResponseNull() throws Exception {
+		responseTest = setResponse(ResponseCode.OK, "Registered customer successfully accepted", null);
+		rEKCustomer.invoke(loginCon);
+		assertEquals(loginCon.user, null);
+		assertEquals("Data error", errorL);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	void requestCustomerEkConfiguration_BodyResponseWorkerFail() throws Exception {
+		listForResponse.add(worker);
+		responseTest = setResponse(ResponseCode.OK, "Registered customer successfully accepted", listForResponse);
+		rEKCustomer.invoke(loginCon);
+		assertEquals(loginCon.user, null);
+		assertEquals("Data error", errorL);
 		assertEquals(nameWindow, "LoginController");
 	}
 	
@@ -525,6 +561,34 @@ class LoginControllerTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
+	void requestOL_WorkerAndCustomer_reverseOrderFail() throws Exception {
+		listForResponse.add(worker);
+		listForResponse.add(customer);
+		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", listForResponse);
+		loginCon.user = user;
+		rOLUser.invoke(loginCon);
+		assertEquals("Data error", errorL);
+		assertEquals(loginCon.customerAndWorker, null);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	void requestOL_WorkerAndCustomer_CustomerAndCustomerFail() throws Exception {
+		listForResponse.add(worker);
+		listForResponse.add(worker);
+		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", listForResponse);
+		loginCon.user = user;
+
+		rOLUser.invoke(loginCon);
+		assertEquals("Data error", errorL);
+		assertEquals(loginCon.customerAndWorker, null);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
+	
+	@SuppressWarnings("static-access")
+	@Test
 	void request_OLConfiguration_UnregisteredUser() throws Exception {
 		responseTest = setResponse(ResponseCode.INVALID_DATA, "Unregistered user", null);
 		loginCon.user = user;
@@ -533,6 +597,43 @@ class LoginControllerTest {
 		assertEquals(loginCon.user, user);
 		assertEquals(nameWindow, "UnregisteredUserController");
 	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	void request_OLConfiguration_unknownWorkerTypeNull() throws Exception {
+		listForResponse.add(worker);
+		worker.setType(null);
+		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", listForResponse);
+		loginCon.user = user;
+		rOLUser.invoke(loginCon);
+		assertEquals("Employee error", errorL);
+		assertEquals(loginCon.user, null);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	void request_OLConfiguration_NullBodyResponse() throws Exception {
+		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", null);
+		loginCon.user = user;
+		rOLUser.invoke(loginCon);
+		assertEquals("Data error", errorL);
+		assertEquals(loginCon.user, null);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	void request_OLConfiguration_ErrorBodyData() throws Exception {
+		listForResponse.add("error");
+		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", listForResponse);
+		loginCon.user = user;
+		rOLUser.invoke(loginCon);
+		assertEquals("Data error", errorL);
+		assertEquals(loginCon.user, null);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
 	
 	@SuppressWarnings("static-access")
 	@Test
@@ -618,13 +719,26 @@ class LoginControllerTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
+	void requestById_BodyResponseNull() throws Exception {
+		responseTest = setResponse(ResponseCode.OK, "Successfully got user details", null);
+		rById.invoke(loginCon);
+		assertEquals(null, errorL);
+		assertEquals("Data error", errorTouch);
+		assertEquals(loginCon.user, null);
+		assertEquals(nameWindow, "LoginController");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
 	void requestById_NullResponse() throws Exception {
-		setCombobox.invoke(loginCon);
+		rById.invoke(loginCon);
 		assertEquals(null, errorL);
 		assertEquals("Communication error", errorTouch);
 		assertEquals(loginCon.user, null);
 		assertEquals(nameWindow, "LoginController");
 	}
+	
+
 	
 	@Test
 	void requestSetCombobox_Success() throws Exception {
@@ -639,6 +753,15 @@ class LoginControllerTest {
 		setCombobox.invoke(loginCon);
 		assertEquals(null, errorL);
 		assertEquals("Communication error", errorTouch);
+	}
+	
+	@Test
+	void requestSetCombobox_BodyResponseNull() throws Exception {
+		responseTest = setResponse(ResponseCode.OK, "Successfully sent all subscribers id", null);
+		setCombobox.invoke(loginCon);
+		assertEquals(null, errorL);
+		assertEquals(null, errorTouch);
+		assertEquals(null, subscribersList);		
 	}
 	
 	@Test
