@@ -90,7 +90,7 @@ public class LoginController implements Initializable{
     @FXML
     private Label errorTouch;
 
-    private IUtil utilInterface; 
+    private static IUtil utilInterface; 
     private IClient clientInterface; 
     private static IInitWindow initWindowInterface;
     private IRunThread iRunThreadInterface;
@@ -232,6 +232,9 @@ public class LoginController implements Initializable{
     }
 
     private void setSubscribers(List<Object> subscribers) {
+    	if (subscribers == null) {
+    		return;
+    	}
         ObservableList<Integer> options = FXCollections.observableArrayList();
         for (int i = 0;i<subscribers.size();i++) {
             options.add((Integer)subscribers.get(i));
@@ -259,7 +262,12 @@ public class LoginController implements Initializable{
     	}
         switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                user = (User) clientInterface.getResFromServer().getBody().get(0);
+            	if (clientInterface.getResFromServer().getBody() != null) {
+                    user = (User) clientInterface.getResFromServer().getBody().get(0);
+            	}
+            	else {
+                	utilInterface.setErrorLabel("Data error");
+            	}
                 break;
             case INVALID_DATA:
             	utilInterface.setErrorLabel(clientInterface.getResFromServer().getDescription());
@@ -289,8 +297,13 @@ public class LoginController implements Initializable{
     	}
     	switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                user = (Customer) clientInterface.getResFromServer().getBody().get(0);
-            	initWindowInterface.runWindow("EKController");
+            	if (clientInterface.getResFromServer().getBody() != null && (clientInterface.getResFromServer().getBody().get(0) instanceof Customer)) {
+                    user = (Customer) clientInterface.getResFromServer().getBody().get(0);
+                	initWindowInterface.runWindow("EKController");
+            	}
+            	else {
+            		utilInterface.setErrorLabel("Data error");
+            	}
                 break;
             case INVALID_DATA:
             	initWindowInterface.runWindow("UnregisteredUserController");
@@ -334,17 +347,25 @@ public class LoginController implements Initializable{
     private void setUserWindow(List<Object> userDetails) throws Exception {
         PickupController.scene = null;
         DeliveryFormController.scene = null;
-        if (userDetails.size() == 2) {
+        if (userDetails == null) {
+        	utilInterface.setErrorLabel("Data error");
+        	user = null;
+        }
+        else if (userDetails.size() == 2 && (userDetails.get(0) instanceof Customer) && (userDetails.get(1) instanceof Worker)) {
             customerAndWorker = userDetails;
             initWindowInterface.runWindow("SelectOptionWorkerOrCustomer");
         }
-        else if(userDetails.get(0) instanceof Customer) {
+        else if(userDetails.size() == 1 && (userDetails.get(0) instanceof Customer)) {
             user = (Customer) userDetails.get(0);
             initWindowInterface.runWindow("OLController");
         }
-        else if(userDetails.get(0) instanceof Worker) {
+        else if(userDetails.size() == 1 && (userDetails.get(0) instanceof Worker)) {
             user = (Worker) userDetails.get(0);
             setWindowByTypeWorker(stage, (Worker)userDetails.get(0));
+        }
+        else {
+        	utilInterface.setErrorLabel("Data error");
+        	user = null;
         }
     }
 
@@ -354,6 +375,11 @@ public class LoginController implements Initializable{
      * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
      */
     public static void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
+    	if (worker.getType() == null) {
+    		user = null;
+    		utilInterface.setErrorLabel("Employee error");
+        	return;
+    	}
         switch (worker.getType()) {
             case CEO:
             	initWindowInterface.runWindow("CeoGui");
@@ -376,6 +402,10 @@ public class LoginController implements Initializable{
             case ServiceOperator:
             	initWindowInterface.runWindow("ServiceOperatorController"); 
                 break;
+            default:
+            	user = null;
+        		utilInterface.setErrorLabel("Employee error");
+            	break;   	
         }
     }
 
@@ -422,9 +452,14 @@ public class LoginController implements Initializable{
     	}
         switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-                user = (Customer) clientInterface.getResFromServer().getBody().get(0);
-            	initWindowInterface.runWindow("EKController");
-                iRunThreadInterface.Run();
+            	if (clientInterface.getResFromServer().getBody() != null) {
+	                user = (Customer) clientInterface.getResFromServer().getBody().get(0);
+	            	initWindowInterface.runWindow("EKController");
+	                iRunThreadInterface.Run();
+            	}
+            	else {
+            		utilInterface.setErrorTouch("Data error");
+            	}
                 break;
             default:
             	utilInterface.setErrorTouch(clientInterface.getResFromServer().getDescription());
@@ -614,6 +649,8 @@ public class LoginController implements Initializable{
             case "ServiceOperatorController":
                 new ServiceOperatorController().start(stage); 
                 break;
+            default:
+            	break;
 			}
 		}
 		
