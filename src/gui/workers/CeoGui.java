@@ -139,8 +139,8 @@ public class CeoGui implements Initializable {
             }
         });
 		setBackBtnIfExists();
-
     }
+
     private void setBackBtnIfExists() {
 		if (LoginController.customerAndWorker != null) {
 			backBtn.setVisible(true);

@@ -114,6 +114,8 @@ public class OperationalWorkerGui implements Initializable {
         if (isCEOLogged) {
             logoutBtn.setVisible(false);
             worker = workerAccessByCeo;
+        } else {
+            setBackBtnIfExist();
         }
     	// setting username
         WorkerNodesUtils.setUserName(userNameLabel, worker);
@@ -138,8 +140,6 @@ public class OperationalWorkerGui implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-		setBackBtnIfExist();
-
     }
     private void setBackBtnIfExist() {
 		if (LoginController.customerAndWorker != null) {
@@ -362,6 +362,7 @@ public class OperationalWorkerGui implements Initializable {
         private List<ProductInMachine> productsAmount = new ArrayList<>();
         private List<InventoryFillTask> tasksData;
         private int chosenMachineThreshold;
+        private Label yellow_below_label;
 
 
         private void loadMachineInventory() {
@@ -441,12 +442,12 @@ public class OperationalWorkerGui implements Initializable {
             instructionsHBox.setAlignment(Pos.TOP_LEFT);
             instructionsHBox.setPadding(new Insets(0, 0, 0, 22));
             Label red = new Label("Unavailable");
-            Label yellow = new Label("Below threshold");
+            yellow_below_label = new Label("Below threshold");
             Circle redCircle = new Circle(8, 8, 8);
             redCircle.setFill(javafx.scene.paint.Color.rgb(255,153,102));
             Circle yellowCircle = new Circle(8, 8, 8);
             yellowCircle.setFill(javafx.scene.paint.Color.rgb(255,204,0));
-            instructionsHBox.getChildren().addAll(redCircle, red, yellowCircle, yellow);
+            instructionsHBox.getChildren().addAll(redCircle, red, yellowCircle, yellow_below_label);
 
             // Adding Labels, tasksTable, instructionsHBox to accountsTableVBox
             inventoryTableVBox.getChildren().addAll(selectionVbox, productsTable, instructionsHBox);
@@ -482,6 +483,7 @@ public class OperationalWorkerGui implements Initializable {
             } else {
                 resetErrorsInForm();
                 chosenMachineThreshold = getMachineThreshold();
+                updateBelowLabel();
                 setTableData();
                 productsTable.setVisible(true);
                 instructionsHBox.setVisible(true);
@@ -538,7 +540,7 @@ public class OperationalWorkerGui implements Initializable {
             newAmountColumn.setCellValueFactory(new PropertyValueFactory<>("newAmount"));
 
             imageColumn.setPrefWidth(45);
-            productNameColumn.setPrefWidth(150);
+            productNameColumn.setPrefWidth(200);
             currentAmountColumn.setPrefWidth(150);
         }
 
@@ -696,9 +698,14 @@ public class OperationalWorkerGui implements Initializable {
                     msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
                 }
                 chosenMachineThreshold = getMachineThreshold();
+                updateBelowLabel();
                 setTableData();
             }
             bottomBroderVbox.getChildren().add(msgLabel);
+        }
+
+        private void updateBelowLabel() {
+            yellow_below_label.setText(String.format("Below threshold (= %s)", chosenMachineThreshold));
         }
 
         private List<ProductInMachine> getOnlyChangedProductsInMachine() {
@@ -804,6 +811,7 @@ public class OperationalWorkerGui implements Initializable {
                 this.name = name;
                 this.currentAmount = currentAmount;
                 this.newAmount = new TextField(String.valueOf(currentAmount));
+                this.newAmount.setPrefWidth(70);
 
                 // setting constraints on TextField
                 forceFieldToNumeric();
