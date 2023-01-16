@@ -151,6 +151,9 @@ public class OrdersReportPopupGui implements Initializable {
         return seriesList;
     }
 
+    /**
+     * Class that handles Orders amount entity in table for orders report
+     */
     public static class OrdersAmount {
         public String machineName;
         public Integer ordersNum;

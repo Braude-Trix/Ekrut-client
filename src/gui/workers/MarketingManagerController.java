@@ -60,7 +60,7 @@ import models.TimeSale;
 import models.TypeSale;
 import models.Worker;
 import utils.StyleConstants;
-import utils.Util;
+import utils.Utils;
 
 /**
  * This class represents the side of Marketing Managers in our program.
@@ -278,7 +278,7 @@ private void setTextFormatterForTextAreaDescription() {
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -412,7 +412,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 */
 	@FXML
 	void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 
 	}
 

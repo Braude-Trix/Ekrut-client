@@ -16,7 +16,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import models.Customer;
 import models.Worker;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -42,7 +42,7 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
 	}
 	
     /**
@@ -65,7 +65,7 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -82,7 +82,7 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
     }
 
 
