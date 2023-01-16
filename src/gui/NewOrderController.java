@@ -41,6 +41,7 @@ import utils.StylePaths;
 import utils.Util;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.lang.Thread.sleep;
@@ -448,9 +449,32 @@ public class NewOrderController implements Initializable {
         return amount * pricePerItem * firstTimeMultiplier;
     }
 
+    private boolean getIfItsSaleTime(Sale sale)
+    {
+        TimeSale timeSale = sale.getSaleTime();
+        LocalTime currentTime = LocalTime.now();
+        switch (timeSale) {
+            case AllDay:
+                return true;
+            case Morning:
+                return currentTime.isAfter(LocalTime.of(6,0)) && currentTime.isBefore(LocalTime.of(12,0));
+            case Noon:
+                return currentTime.isAfter(LocalTime.of(12,0)) && currentTime.isBefore(LocalTime.of(16,0));
+            case Afternoon:
+                return currentTime.isAfter(LocalTime.of(16,0)) && currentTime.isBefore(LocalTime.of(20,0));
+            case Evening:
+                return currentTime.isAfter(LocalTime.of(20,0)) && currentTime.isBefore(LocalTime.of(24,0));
+            case Night:
+                return currentTime.isAfter(LocalTime.of(0,0)) && currentTime.isBefore(LocalTime.of(6,0));
+            default:
+                return false;
+        }
+    }
+    
     private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
     {
         Sale activeSale;
+        boolean isSaleTime;
         for(Sale currentSale : readySales) {
             if (currentSale != null) {
                 activeSale = currentSale;
@@ -459,9 +483,15 @@ public class NewOrderController implements Initializable {
                 LocalDate date = LocalDate.parse(dateString, formatter);
                 LocalDate today = LocalDate.now();
 
-                if (!date.isAfter(today)) {
-                    aliveSale = true;
-                    return findDiscount(amount, pricePerItem,activeSale);
+                if (NewOrderController.user instanceof Customer) {
+                    CustomerType customerType = ((Customer) NewOrderController.user).getType();
+                    if (customerType == CustomerType.Subscriber) {
+                        isSaleTime = getIfItsSaleTime(currentSale);
+                        if (!date.isAfter(today) && isSaleTime) {
+                            aliveSale = true;
+                            return findDiscount(amount, pricePerItem, activeSale);
+                        }
+                    }
                 }
             }
         }
@@ -752,6 +782,7 @@ public class NewOrderController implements Initializable {
         rotation.setCycleCount(Animation.INDEFINITE);
         rotation.play();
         user = LoginController.user;
+        aliveSale = false;
         saleLabel.setVisible(false);
         originalPrice.setVisible(false);
 
