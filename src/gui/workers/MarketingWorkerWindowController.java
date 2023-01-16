@@ -47,7 +47,7 @@ import models.Request;
 import models.Sale;
 import models.SaleStatus;
 import models.Worker;
-import utils.Util;
+import utils.Utils;
 
 /**
  * This class represents the side of Marketing Workers in our program.
@@ -267,7 +267,7 @@ public class MarketingWorkerWindowController implements Initializable {
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -670,7 +670,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	 */
 	@FXML
 	void logOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 
 	}
 

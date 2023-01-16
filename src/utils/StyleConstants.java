@@ -1,6 +1,12 @@
 package utils;
 
-public class StyleConstants {
+/**
+ * Util class that holds all styles and public constants variables
+ */
+public final class StyleConstants {
+    private StyleConstants() {
+    }
+
     public static double LOW_OPACITY = 0.3;
     public static int PLUS_MINUS_SIZE = 25;
     public static int REMOVE_BUTTON_SIZE = 20;
@@ -52,22 +58,4 @@ public class StyleConstants {
     public static String CONFIRM_DELIVERY_HEADER = "Confirm Deliveries - ";
     public static String PENDING_DELIVERY_HEADER = "Pending Deliveries - ";
     public static String SAVE = "Save";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

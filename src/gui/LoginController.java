@@ -36,7 +36,7 @@ import models.ResponseCode;
 import models.User;
 import models.Worker;
 import utils.IUtil;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -553,7 +553,7 @@ public class LoginController implements Initializable{
     
 	public class UtilWrapper implements IUtil {
 	    public boolean isBlankString(String s) {
-	        return Util.isBlankString(s);
+	        return Utils.isBlankString(s);
 	    }
 	    
 	    public String getTxtPassword() {

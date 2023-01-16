@@ -20,7 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import models.Method;
 import models.Request;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -54,7 +54,7 @@ public class OLController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		checkDeliveryNotCollected();
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
         if (LoginController.customerAndWorker != null) {
         	backImage.setVisible(true);
         	backImage.setDisable(false);
@@ -80,7 +80,7 @@ public class OLController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -155,7 +155,7 @@ public class OLController implements Initializable {
 	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
     }
 
 	private void setNotificationForApprovalDelivery(int amount)

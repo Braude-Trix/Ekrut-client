@@ -28,7 +28,7 @@ import models.Order;
 import models.OrderStatus;
 import models.PickUpMethod;
 import models.Request;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -72,7 +72,7 @@ public class EKController implements Initializable {
      */
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
         EKPageReplace = false;
         Thread timeOutThread = new Thread(new TimeOutControllerEkMain());
         staticTimeOutThread = timeOutThread;
@@ -97,7 +97,7 @@ public class EKController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -115,7 +115,7 @@ public class EKController implements Initializable {
     @FXML
     void LogOut(ActionEvent event) throws Exception {
     	EKPageReplace = true;
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 
     }
     
@@ -128,9 +128,9 @@ public class EKController implements Initializable {
     @FXML
     void SubmitPickupCode(ActionEvent event) {
     	removeErrorStyle();
-    	if (Util.isBlankString(txtPickupCode.getText())) {
+    	if (Utils.isBlankString(txtPickupCode.getText())) {
     		errorLabel.setText("Entered code is incorrect, please try again");
-    		Util.setFieldTextErrorBorder(txtPickupCode);
+    		Utils.setFieldTextErrorBorder(txtPickupCode);
     		return;
     	}
     	
@@ -153,7 +153,7 @@ public class EKController implements Initializable {
 			break;
 		default:
 			errorLabel.setText((Client.resFromServer.getDescription()));
-			Util.setFieldTextErrorBorder(txtPickupCode);
+			Utils.setFieldTextErrorBorder(txtPickupCode);
 			break;
 		}
     }
@@ -209,7 +209,7 @@ public class EKController implements Initializable {
      * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerEkMain implements Runnable {
-        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;//
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**
@@ -227,7 +227,7 @@ public class EKController implements Initializable {
                     try {
                         Platform.runLater(()-> {
                             try {
-                                Util.genricLogOut(getClass());
+                                Utils.genericLogOut(getClass());
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }

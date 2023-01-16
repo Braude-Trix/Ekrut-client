@@ -21,7 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import models.*;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -59,7 +59,7 @@ public class PickupController implements Initializable {
 		machinesSet = new ArrayList<>();
 		scene = null;
 		regionForMach = null;
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class PickupController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -99,7 +99,7 @@ public class PickupController implements Initializable {
 	 */
 	@FXML
 	void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 	}
 
 	/**

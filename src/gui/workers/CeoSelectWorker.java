@@ -281,9 +281,13 @@ public class CeoSelectWorker {
         private final String name;
         private final String region;
 
-        // constructor for workers without a specific region
+        //
         // like service or operational workers
-        
+
+        /**
+         * constructor for workers without a specific region
+         * like service or operational workers
+         */
         public WorkersData(Worker worker) {
         	this.worker = worker;
         	id = worker.getId().toString();

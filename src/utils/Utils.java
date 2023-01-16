@@ -21,7 +21,9 @@ import models.Request;
  * @author gal
  * This class is intended for code reuse
  */
-public class Util {
+public final class Utils {
+	private Utils() {
+	}
 
 	/**
 
@@ -33,7 +35,7 @@ public class Util {
 	/**
 	 * A method that checks whether spaces or tabs or an empty string has been inserted if so returns true otherwise false
 	 * @param string, Description: A string entered by the user
-	 * @return, Description: returns true if the string is spaces/tabs/empty otherwise false
+	 * @return Description: returns true if the string is spaces/tabs/empty otherwise false
 	 */
 	public static boolean isBlankString(String string) {
 		if (string.matches("\\p{IsWhite_Space}*")) {
@@ -54,7 +56,7 @@ public class Util {
 	 * Exit using the logout button and go to the login window
 	 * @param getClass, The class that caused the exit from the window
 	 */
-	public static void genricLogOut(Class getClass)   {
+	public static void genericLogOut(Class getClass)   {
 		requestLogOut(getClass);
 	}
 	
@@ -139,7 +141,7 @@ public class Util {
 	/**
 	 * A method that checks whether spaces or tabs or an empty string has been inserted if so returns true otherwise false
 	 * @param cs, Description: A string entered by the user
-	 * @return, boolean: returns true if the string is spaces/tabs/empty otherwise false
+	 * @return boolean: returns true if the string is spaces/tabs/empty otherwise false
 	 */
 	public static boolean isBlank(CharSequence cs) {
 		if (cs == null || cs.length() == 0) {

@@ -18,7 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import utils.Util;
+import utils.Utils;
 import models.DeliveryOrder;
 import models.OrderStatus;
 import models.PickUpMethod;
@@ -89,7 +89,7 @@ public class DeliveryFormController implements Initializable {
         setRegionComboBox();
         user = LoginController.user;
         setValuesInTextFields();
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
 	}
     
 	/**
@@ -110,7 +110,7 @@ public class DeliveryFormController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -172,7 +172,7 @@ public class DeliveryFormController implements Initializable {
 	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
     }
     
 
@@ -199,14 +199,14 @@ public class DeliveryFormController implements Initializable {
     }
     
     private boolean isBlankTextField(TextField textField, Label errorLabel) {
-    	if (Util.isBlankString(textField.getText())) {
+    	if (Utils.isBlankString(textField.getText())) {
     		errorLabel.setText("Required field");
-    		Util.setFieldTextErrorBorder(textField);
+    		Utils.setFieldTextErrorBorder(textField);
     		return true;
     	}
 		if (textField.getText().length() >= 100) {
 			errorLabel.setText("Maximum length is 100");
-			Util.setFieldTextErrorBorder(textField);
+			Utils.setFieldTextErrorBorder(textField);
 			return true;
 		}
 
