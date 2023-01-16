@@ -40,6 +40,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -369,13 +371,14 @@ private void setTextFormatterForTextAreaDescription() {
 
 					{
 						btn.setOnAction((ActionEvent event) -> {
-							// need to change status in db and in table
 							Sale sale = getTableView().getItems().get(getIndex());
-							// sale.setSaleStatus(SaleStatus.Ready);
 							requestSaleInitiate(sale);
 							handleReponsePutSales(getIndex());
-							// initSaleTemplateTable();
-							// getTableView().getItems().remove(getIndex());
+							//hiding preview sale:
+							salePreviewSection.setEffect(new BoxBlur(5, 5, 1) );
+							salePreviewHbox.setEffect(new Glow(0.62));
+							salePreviewPlaceHolder.setVisible(true);
+
 						});
 						btn.getStyleClass().add("initiateButton");
 					}
@@ -700,12 +703,21 @@ private void setTextFormatterForTextAreaDescription() {
 	 *         completed).
 	 */
 	private boolean isNotFilled() {
-		boolean nameSaleIsBlank = isBlankTextField(txtNameSale);
+		boolean nameSaleIsBlank = isBlankTextField(txtNameSale)||isNameLongerThan40Characters(txtNameSale);
 		boolean percentageBoxNotFilledCorrectly = percentageIsOnlyNaturalNumbersUnder99();
 		boolean comboBoxesIsNotFilled = isNotFilledComboBoxes();
 		boolean datesIsNotFilled = isNotFilledDates();
 		return nameSaleIsBlank || percentageBoxNotFilledCorrectly || comboBoxesIsNotFilled || datesIsNotFilled;
 
+	}
+
+	private boolean isNameLongerThan40Characters(TextField txtNameSale) {
+		if(txtNameSale.getText().length()>40) {
+			nameErrorLabel.setText("invalid length");
+			nameErrorLabel.setVisible(true);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -733,6 +745,8 @@ private void setTextFormatterForTextAreaDescription() {
 	private boolean isBlankTextField(TextField textField) {
 		if (textField.getText().matches("\\p{IsWhite_Space}*")) {
 			textField.getStyleClass().add("validation-error");
+			nameErrorLabel.setText("invalid name");
+
 			nameErrorLabel.setVisible(true);
 			return true;
 		}
@@ -866,9 +880,14 @@ private void setTextFormatterForTextAreaDescription() {
 			for (Node node : salePreviewHbox.getChildren()) {
 				node.setEffect(null);
 			}
+			
 			for (Node node : salePreviewSection.getChildren()) {
 				node.setEffect(null);
 			}
+			salePreviewHbox.setEffect(null);
+			salePreviewSection.setEffect(null);
+			
+
 			salePreviewPlaceHolder.setVisible(false);
 			if (previewSale.getSaleRegion().equals(Regions.All)) {
 				regionLabel.setText(previewSale.getSaleRegion().toString() + " Regions.");
