@@ -463,7 +463,7 @@ public class NewOrderController implements Initializable {
             case Afternoon:
                 return currentTime.isAfter(LocalTime.of(16,0)) && currentTime.isBefore(LocalTime.of(20,0));
             case Evening:
-                return currentTime.isAfter(LocalTime.of(20,0)) && currentTime.isBefore(LocalTime.of(24,0));
+                return currentTime.isAfter(LocalTime.of(20,0)) && currentTime.isBefore(LocalTime.of(23,59));
             case Night:
                 return currentTime.isAfter(LocalTime.of(0,0)) && currentTime.isBefore(LocalTime.of(6,0));
             default:
@@ -880,7 +880,9 @@ public class NewOrderController implements Initializable {
         }
     }
 
+
     private void ClearCartClicked() {
+    	
         for (ProductInMachineMonitor monitor : allProductsMonitors) {
             monitor.removeItem();
         }

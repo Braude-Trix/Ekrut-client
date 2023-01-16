@@ -143,7 +143,12 @@ public class BillWindowController implements Initializable {
     @FXML
     void proceedPaymentClicked(ActionEvent event) {
         if (!validateProductsInInventory()) {
-            restoreOrder = null;
+        	NewOrderController.aliveSale = false;
+        	restoreOrder = null;
+        	
+        	LoginController.order.getProductsInOrder().clear();
+        	LoginController.order.setPrice(0.0);
+        	
             replaceWindowToNewOrder();
             createAnAlert(Alert.AlertType.ERROR, StyleConstants.OUT_OF_STOCK_LABEL, StyleConstants.INVENTORY_UPDATE_ALERT_MSG);
             return;
@@ -157,7 +162,6 @@ public class BillWindowController implements Initializable {
         try {
             returnToMainPage();
         } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         changeToConfirmationOrderPopUpWindow();
     }
@@ -409,6 +413,7 @@ public class BillWindowController implements Initializable {
 
 
     private void changeToConfirmationOrderPopUpWindow() {
+        
         BillReplaced = true;
         AnchorPane pane;
         try {
@@ -432,6 +437,8 @@ public class BillWindowController implements Initializable {
         popupDialog.setMinWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
        // popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
        // popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
+       
+        
         popupDialog.show();
 
         if (UserInstallationController.configuration.equals("EK")) {
@@ -536,11 +543,9 @@ public class BillWindowController implements Initializable {
                             try {
                                 Util.genricLogOut(getClass());
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
                             }
                         });
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                     return;
                 }

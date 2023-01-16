@@ -5,9 +5,12 @@ import client.ClientUI;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import models.*;
+import utils.ReportPopupUtils;
 import utils.StyleConstants;
 
 import java.net.URL;
@@ -48,16 +51,19 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
 
     @FXML
     private VBox vboxContainer;
+    
 
-
+    @FXML
+    private Button OkBtn;
+    
     private String deliveryAddress;
     private String choosenMachine;
 
     private String pinCode = "";
     private boolean isSubscriber;
 
-
     private static Order order = BillWindowController.restoreOrder;
+	public static Stage popUpStage;
 
     /**
      * function that called when the current fxml is loaded, init controller vars and init the popup screen view.
@@ -66,6 +72,12 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
      * @param resourceBundle
      */
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println(OkBtn);
+        System.out.println(BillWindowController.popupDialog);
+        System.out.println(popUpStage);
+    	 OkBtn.setOnMouseClicked(event -> BillWindowController.popupDialog.close());
+    	
+
         initVars();
         initWindow();
     }
