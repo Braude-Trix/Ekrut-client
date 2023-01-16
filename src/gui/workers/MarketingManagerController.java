@@ -59,6 +59,7 @@ import models.SaleStatus;
 import models.TimeSale;
 import models.TypeSale;
 import models.Worker;
+import utils.StyleConstants;
 import utils.Util;
 
 /**
@@ -563,8 +564,8 @@ private void setTextFormatterForTextAreaDescription() {
 	private Sale createNewSale() {
 		String percentage;
 		// changing date format to be normal.
-		String startDate = StartDate.getValue().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
-		String endDate = EndDate.getValue().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
+		String startDate = StartDate.getValue().format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
+		String endDate = EndDate.getValue().format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
 
 		percentage = fixNumberPrefix(txtPercentage.getText());
 		Sale newSale = new Sale("1", startDate, endDate, comboBoxHoursSale.getValue(), txtNameSale.getText(),

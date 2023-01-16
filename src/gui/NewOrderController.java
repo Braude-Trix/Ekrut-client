@@ -36,6 +36,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.*;
+import utils.StyleConstants;
+import utils.StylePaths;
 import utils.Util;
 
 import java.time.LocalDate;

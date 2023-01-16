@@ -30,6 +30,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import logic.Messages;
 import models.*;
+import utils.StyleConstants;
+import utils.StylePaths;
 import utils.Util;
 
 /**
