@@ -29,6 +29,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import logic.Messages;
 import models.*;
+import utils.StyleConstants;
+import utils.StylePaths;
 import utils.Util;
 import utils.WorkerNodesUtils;
 

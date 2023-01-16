@@ -1,4 +1,4 @@
-package models;
+package utils;
 
 public class StyleConstants {
     public static double LOW_OPACITY = 0.3;

@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static utils.Util.forcedExit;
@@ -523,10 +524,10 @@ public class OperationalWorkerGui implements Initializable {
         private void loadAllRelevantRegions() {
             tasksData = new ArrayList<>();
             requestOpenedTasks(tasksData);
-            List<String> regions = tasksData.stream()
+            Set<String> regions = tasksData.stream()
                     .map(InventoryFillTask::getRegion)
                     .map(Enum::toString)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
             regionCombobox.getItems().clear();
             regionCombobox.getItems().addAll(regions);

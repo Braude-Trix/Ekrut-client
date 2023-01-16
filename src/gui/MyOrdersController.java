@@ -25,12 +25,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.Duration;
 import models.Method;
 import models.MyOrders;
 import models.OrderStatus;
 import models.PickUpMethod;
 import models.Request;
+import utils.StyleConstants;
 import utils.Util;
 
 /**
@@ -174,7 +174,7 @@ public class MyOrdersController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	errorUpdateStatusDB.setVisible(false);
-                        	String date = LocalDate.now().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
+                        	String date = LocalDate.now().format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
                         	if (isChangeStatusDeliveryOrderInDB(getTableView().getItems().get(getIndex()).getOrderId(),date)) {
                             	updateStatusDeliveryInLocallyListMyOrders(getTableView().getItems().get(getIndex()),date);
                             	getTableView().getItems().remove(getIndex());

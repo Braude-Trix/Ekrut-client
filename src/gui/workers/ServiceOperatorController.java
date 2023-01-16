@@ -93,7 +93,7 @@ public class ServiceOperatorController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-    	// fisher added -> if CEO clicked to view this worker's window
+    	// If CEO clicked to view this worker's window
     	// we remove logOut button and set current Worker as the one we get from CEO gui
     	if(isCEOLogged) {
 			logoutBtn.setVisible(false);
