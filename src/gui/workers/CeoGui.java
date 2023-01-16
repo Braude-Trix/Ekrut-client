@@ -135,7 +135,6 @@ public class CeoGui implements Initializable {
         	try {            	
                 Utils.genericLogOut(getClass());
             } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         });
 		setBackBtnIfExists();
@@ -198,7 +197,6 @@ public class CeoGui implements Initializable {
             try {
                 forcedExit();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         });
     }

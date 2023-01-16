@@ -80,7 +80,6 @@ public class ServiceOperatorController implements Initializable {
         try {
             Utils.genericLogOut(getClass());
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 

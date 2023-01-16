@@ -229,11 +229,9 @@ public class EKController implements Initializable {
                             try {
                                 Utils.genericLogOut(getClass());
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
                             }
                         });
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                     return;
                 }

@@ -129,7 +129,6 @@ public class RegionalDeliveryController implements Initializable {
             try {
                 forcedExit();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         });
     }
@@ -630,7 +629,6 @@ public class RegionalDeliveryController implements Initializable {
         try {
             Utils.genericLogOut(getClass());
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 

@@ -138,7 +138,6 @@ public class OperationalWorkerGui implements Initializable {
             try {
                 Utils.genericLogOut(getClass());
             } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         });
     }
@@ -913,7 +912,6 @@ public class OperationalWorkerGui implements Initializable {
             try {
                 forcedExit();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         });
     }

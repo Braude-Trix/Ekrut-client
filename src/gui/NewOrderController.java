@@ -134,7 +134,6 @@ public class NewOrderController implements Initializable {
             NewOrderReplaced = true;
             Utils.genericLogOut(getClass());
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -385,7 +384,6 @@ public class NewOrderController implements Initializable {
             try {
                 showTooltip(sale);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         });
         imageToPresent.setOnMouseExited(event -> hideTooltip());
@@ -1039,11 +1037,9 @@ public class NewOrderController implements Initializable {
                             try {
                                 Utils.genericLogOut(getClass());
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
                             }
                         });
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                     return;
                 }
