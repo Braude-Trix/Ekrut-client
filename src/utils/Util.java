@@ -26,9 +26,9 @@ public class Util {
 	/**
 
 	 The variable TIME_OUT_TIME_IN_MINUTES represents the time in minutes until a timeout occurs.
-	 The default value is set to 1 minute.
+	 The default value is set to 5 minute.
 	 */
-	public static int TIME_OUT_TIME_IN_MINUTES = 1;
+	public static int TIME_OUT_TIME_IN_MINUTES = 5;
 
 	/**
 	 * A method that checks whether spaces or tabs or an empty string has been inserted if so returns true otherwise false
