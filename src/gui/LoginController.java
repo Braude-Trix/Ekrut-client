@@ -417,7 +417,6 @@ public class LoginController implements Initializable{
      */
     @FXML
     void btnTouch(ActionEvent event) throws Exception {
-//        comboBoxSubscribers.getStyleClass().remove("validation-error");
         if (!isValidFillComboBoxes()){
             return;
         }
@@ -426,7 +425,6 @@ public class LoginController implements Initializable{
 
     private boolean isValidFillComboBoxes() {
         if (utilInterface.getValueSubscriberSelected() == null) {
-//            comboBoxSubscribers.getStyleClass().add("validation-error");
         	utilInterface.setErrorTouch("Please select subscriber id");
             return false;
         }

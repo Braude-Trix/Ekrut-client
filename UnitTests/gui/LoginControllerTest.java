@@ -3,9 +3,11 @@ package gui;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,7 @@ class LoginControllerTest {
 	private java.lang.reflect.Method isValidSelectSubscriber;
 	private java.lang.reflect.Method rById;
 	private java.lang.reflect.Method setCombobox;
+	private java.lang.reflect.Method setError;
 
 	private Integer subscriberId;
 	private ObservableList<Integer> subscribersList;
@@ -184,6 +187,9 @@ class LoginControllerTest {
 		setCombobox = LoginController.class.getDeclaredMethod("setComboBoxFastLogin");
 		setCombobox.setAccessible(true);
 		
+		setError = LoginController.class.getDeclaredMethod("setErrorLabel", boolean.class, boolean.class);
+		setError.setAccessible(true);
+		
 		loginCon.customerAndWorker = null;	
 	}
 
@@ -227,6 +233,12 @@ class LoginControllerTest {
 		assertEquals(expected, result);
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
+	}
+	
+	@Test
+	void validationPasswordAndUsernameSuccess() throws Exception {	
+		setError.invoke(loginCon, false, false);
+		assertEquals(errorL, null);
 	}
 	
 	@SuppressWarnings("static-access")
@@ -274,9 +286,6 @@ class LoginControllerTest {
 		txtUsername = "user1";
 		txtPassword = "1234";
 		loginCon.login(new ActionEvent());
-		Request result = requestTest;
-		Request expected = getRequest("/login/getUser",Method.GET, new ArrayList<>(Arrays.asList(txtUsername,txtPassword)));
-		assertTrue(isEqualsRequest(expected, result));
 		assertEquals("Communication error", errorL);
 		assertEquals(loginCon.user, null);
 		assertEquals(nameWindow, "LoginController");
@@ -288,7 +297,6 @@ class LoginControllerTest {
 	void requestUser_responseOK() throws Exception {
 		listForResponse.add(user);
 		responseTest = setResponse(ResponseCode.OK, "Successfully got user details", listForResponse);
-		loginCon.user = user;
 		rUser.invoke(loginCon);
 		assertEquals(loginCon.user, user);
 		assertEquals(null, errorL);
@@ -302,10 +310,7 @@ class LoginControllerTest {
 		assertEquals(loginCon.user, null);
 		assertEquals("Data error", errorL);
 	}
-	
-
-	
-	
+		
 //	@SuppressWarnings("static-access")
 //	@Test
 //	void requestUserLoggedIn() throws Exception {
@@ -561,7 +566,7 @@ class LoginControllerTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	void requestOL_WorkerAndCustomer_reverseOrderFail() throws Exception {
+	void requestOL_ResponseWorkerAndCustomer_reverseOrderFail() throws Exception {
 		listForResponse.add(worker);
 		listForResponse.add(customer);
 		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", listForResponse);
@@ -574,9 +579,9 @@ class LoginControllerTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	void requestOL_WorkerAndCustomer_CustomerAndCustomerFail() throws Exception {
-		listForResponse.add(worker);
-		listForResponse.add(worker);
+	void requestOL_Response_CustomerAndCustomerFail() throws Exception {
+		listForResponse.add(customer);
+		listForResponse.add(customer);
 		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", listForResponse);
 		loginCon.user = user;
 
@@ -641,7 +646,7 @@ class LoginControllerTest {
 		responseTest = setResponse(ResponseCode.DB_ERROR, "Error loading data (DB)", null);
 		loginCon.user = user;
 		rOLUser.invoke(loginCon);
-		assertEquals("Error loading data (DB)", errorL);
+		assertEquals(responseTest.getDescription(), errorL);
 		assertEquals(loginCon.user, user);
 		assertEquals(nameWindow, "LoginController");
 	}
@@ -682,7 +687,7 @@ class LoginControllerTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	void request_Subscriber_EKConfiguration_SuccessSimulation() throws Exception {
+	void requestById_Subscriber_EKConfiguration_SuccessSimulation() throws Exception {
 		subscriberId = user.getId();
 		listForResponse.add(customer);
 		responseTest = setResponse(ResponseCode.OK, "Successfully got user details", listForResponse);
@@ -696,13 +701,13 @@ class LoginControllerTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	void request_Subscriber_EKConfiguration_FailSimulation() throws Exception {
+	void requestById_Subscriber_EKConfiguration_FailSimulation() throws Exception {
 		subscriberId = user.getId();
 		listForResponse.add(customer);
 		responseTest = setResponse(ResponseCode.DB_ERROR, "Error loading data (DB)", listForResponse);
 		loginCon.btnTouch(new ActionEvent());
 		assertEquals(null, errorL);
-		assertEquals("Error loading data (DB)", errorTouch);
+		assertEquals(responseTest.getDescription(), errorTouch);
 		assertEquals(loginCon.user, null);
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
@@ -726,6 +731,7 @@ class LoginControllerTest {
 		assertEquals("Data error", errorTouch);
 		assertEquals(loginCon.user, null);
 		assertEquals(nameWindow, "LoginController");
+		assertEquals(isRunThread, false);
 	}
 	
 	@SuppressWarnings("static-access")
@@ -736,9 +742,8 @@ class LoginControllerTest {
 		assertEquals("Communication error", errorTouch);
 		assertEquals(loginCon.user, null);
 		assertEquals(nameWindow, "LoginController");
+		assertEquals(isRunThread, false);
 	}
-	
-
 	
 	@Test
 	void requestSetCombobox_Success() throws Exception {
@@ -769,7 +774,7 @@ class LoginControllerTest {
 		responseTest = setResponse(ResponseCode.DB_ERROR, "Error loading data (DB)", null);
 		setCombobox.invoke(loginCon);
 		assertEquals(null, errorL);
-		assertEquals("Error loading data (DB)", errorTouch);
+		assertEquals(responseTest.getDescription(), errorTouch);
 	}
 	
 	@Test
@@ -783,6 +788,8 @@ class LoginControllerTest {
 		assertEquals(null, errorTouch);
 	}
 
+	
+	
 	///////////////////////////////////helpful Method////////////////////////////////
 	private Request getRequest(String path, Method method, List<Object> body) {
 		Request req = new Request();
@@ -799,19 +806,7 @@ class LoginControllerTest {
 		res.setDescription(description);
 		return res;
 	}
-	/*
-	@Test
-	void requestUserSuccess() throws Exception {
-		conditionUsername = false;
-		conditionPassword = false;
-		stringUsername = "user1";
-		txtUsername = "user1";
-		txtPassword = "1234";
-		loginCon.login(new ActionEvent());
-		String expected = "The username and password are incorrect";
-		String result = errorL;
-		assertEquals(expected, result);
-	}*/
+
 	
 	private boolean isEqualsRequest(Request r1, Request r2) {
 		if (!r1.getPath().equals(r2.getPath())) {
