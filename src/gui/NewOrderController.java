@@ -38,7 +38,7 @@ import javafx.util.Duration;
 import models.*;
 import utils.StyleConstants;
 import utils.StylePaths;
-import utils.Util;
+import utils.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -132,7 +132,7 @@ public class NewOrderController implements Initializable {
     void logOutClicked(ActionEvent event) {
         try {
             NewOrderReplaced = true;
-            Util.genricLogOut(getClass());
+            Utils.genericLogOut(getClass());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -912,7 +912,7 @@ public class NewOrderController implements Initializable {
         stage.setResizable(false);
         stage.setOnCloseRequest(e -> {
             try {
-                Util.forcedExit();
+                Utils.forcedExit();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -1019,7 +1019,7 @@ public class NewOrderController implements Initializable {
      * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerNewOrder implements Runnable {
-        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;//
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**
@@ -1037,7 +1037,7 @@ public class NewOrderController implements Initializable {
                     try {
                         Platform.runLater(()-> {
                             try {
-                                Util.genricLogOut(getClass());
+                                Utils.genericLogOut(getClass());
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -1097,7 +1097,7 @@ public class NewOrderController implements Initializable {
 		stage.setResizable(false);
 		stage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

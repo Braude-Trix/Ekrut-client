@@ -45,7 +45,7 @@ import models.StatusInMachine;
 import models.TaskStatus;
 import models.Worker;
 import utils.ColorsAndFonts;
-import utils.Util;
+import utils.Utils;
 import utils.WorkerNodesUtils;
 
 import java.io.ByteArrayInputStream;
@@ -58,8 +58,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static utils.Util.forcedExit;
-import static utils.Util.isBlank;
+import static utils.Utils.forcedExit;
+import static utils.Utils.isBlank;
 
 /**
  * Gui controller for presenting Operational Worker window
@@ -136,7 +136,7 @@ public class OperationalWorkerGui implements Initializable {
         });
         logoutBtn.setOnMouseClicked((event) -> {
             try {
-                Util.genricLogOut(getClass());
+                Utils.genericLogOut(getClass());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -798,6 +798,9 @@ public class OperationalWorkerGui implements Initializable {
             return sumOfProducts <= MACHINE_CAPACITY;
         }
 
+        /**
+         * Class that handles Product In Machine entity in table for fill inventory task
+         */
         public class ProductInMachineData {
             private final ImageView image;
             private final String id;

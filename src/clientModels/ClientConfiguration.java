@@ -1,6 +1,8 @@
 package clientModels;
 
-//ClientConfiguration class - sets a configuration for client connection to server request
+/**
+ * Class that sets a configuration for client connection to server request
+ */
 public class ClientConfiguration {
 	private String Host;
 	private int port;
@@ -11,7 +13,6 @@ public class ClientConfiguration {
 		this.port = port;
 	}
 
-	//getters and setters
 	public String getHost() {
 		return Host;
 	}
@@ -24,7 +25,4 @@ public class ClientConfiguration {
 	public void setPort(int port) {
 		this.port = port;
 	}
-
-	
-
 }

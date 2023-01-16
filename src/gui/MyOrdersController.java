@@ -31,7 +31,7 @@ import models.OrderStatus;
 import models.PickUpMethod;
 import models.Request;
 import utils.StyleConstants;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -121,7 +121,7 @@ public class MyOrdersController implements Initializable {
 		getAllOrdersForSpecificUser();
 		setStyleForEmptyTable();
 		addButtonToTable();
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
 		txtOrderID.setDisable(true);
 	}
 	
@@ -141,7 +141,7 @@ public class MyOrdersController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -212,7 +212,7 @@ public class MyOrdersController implements Initializable {
 	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
     }
 
 	/**
@@ -467,9 +467,9 @@ public class MyOrdersController implements Initializable {
     }
     
     private boolean isErrorField() {
-    	if (Util.isBlankString(txtOrderID.getText())) {
+    	if (Utils.isBlankString(txtOrderID.getText())) {
     		errorLabel.setText("Required field");
-    		Util.setFieldTextErrorBorder(txtOrderID);
+    		Utils.setFieldTextErrorBorder(txtOrderID);
     		return true;
     	}
     	else if (!isExistPickupOrderID(txtOrderID)) {

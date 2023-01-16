@@ -131,6 +131,9 @@ public class UsersReportPopupGui implements Initializable {
         return tableData;
     }
 
+    /**
+     * Class that handles Users orders amount data entity in table for Users report
+     */
     public static class UserTableData {
 
         private final Integer userID;

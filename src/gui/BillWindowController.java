@@ -32,7 +32,7 @@ import logic.Messages;
 import models.*;
 import utils.StyleConstants;
 import utils.StylePaths;
-import utils.Util;
+import utils.Utils;
 
 /**
  * class that represents the bill window controller
@@ -514,7 +514,7 @@ public class BillWindowController implements Initializable {
     @FXML
     void logOutClicked(ActionEvent event) throws Exception {
         BillReplaced = true;
-        Util.genricLogOut(getClass());
+        Utils.genericLogOut(getClass());
     }
 
     /**
@@ -522,7 +522,7 @@ public class BillWindowController implements Initializable {
      * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerBillWindow implements Runnable {
-        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**
@@ -541,7 +541,7 @@ public class BillWindowController implements Initializable {
                     try {
                         Platform.runLater(()-> {
                             try {
-                                Util.genricLogOut(getClass());
+                                Utils.genericLogOut(getClass());
                             } catch (Exception e) {
                             }
                         });

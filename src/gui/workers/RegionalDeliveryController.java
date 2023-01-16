@@ -31,7 +31,7 @@ import logic.Messages;
 import models.*;
 import utils.StyleConstants;
 import utils.StylePaths;
-import utils.Util;
+import utils.Utils;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static utils.Util.forcedExit;
+import static utils.Utils.forcedExit;
 
 /**
  * class that represents Controller to RegionalDelivery
@@ -628,7 +628,7 @@ public class RegionalDeliveryController implements Initializable {
     @FXML
     private void logOutClicked(ActionEvent event) {
         try {
-            Util.genricLogOut(getClass());
+            Utils.genericLogOut(getClass());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

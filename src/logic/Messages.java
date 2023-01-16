@@ -10,14 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Messages {
-    public static void writeNewMsgToDB(String msg, Integer fromCustomerId, Integer toCustomerId) {
+    /**
+     * @param msg The message content to present in window
+     * @param fromUserId The userId of the sender
+     * @param toUserId The userId of the receiver
+     */
+    public static void writeNewMsgToDB(String msg, Integer fromUserId, Integer toUserId) {
         List<Object> paramList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/postMsg");
         request.setMethod(Method.POST);
         paramList.add(msg);
-        paramList.add(fromCustomerId);
-        paramList.add(toCustomerId);
+        paramList.add(fromUserId);
+        paramList.add(toUserId);
         request.setBody(paramList);
         ClientUI.chat.accept(request);// sending the request to the server.
         if (Client.resFromServer.getCode() != ResponseCode.OK) {
