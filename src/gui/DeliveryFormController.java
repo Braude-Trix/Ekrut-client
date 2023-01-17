@@ -94,8 +94,8 @@ public class DeliveryFormController implements Initializable {
     
 	/**
 	 * This method describes setting up a new scene.
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/DeliveryForm.fxml"));
@@ -126,7 +126,7 @@ public class DeliveryFormController implements Initializable {
     /**
      * This method includes validation of the data entered by the customer 
      * if everything is correct beyond the order continuation window (item selection)
-     * @param event, Description: Clicking the "continue" button
+     * @param event Description: Clicking the "continue" button
      */
     @FXML
     void ContinueToOrder(ActionEvent event) {
@@ -154,7 +154,7 @@ public class DeliveryFormController implements Initializable {
 	
     /**
      * This method requires when you click anywhere else on the screen to get the focus.
-     * @param event, Description: The screen is clicked the event is sent
+     * @param event Description: The screen is clicked the event is sent
      */
     @FXML
     void requestFocus(MouseEvent event) {
@@ -166,8 +166,8 @@ public class DeliveryFormController implements Initializable {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     @FXML
@@ -178,7 +178,7 @@ public class DeliveryFormController implements Initializable {
 
     /**
      * This method describes clicking the back button, returning to the main screen of the OL configuration
-     * @param event, Description: Clicking the "Back" button
+     * @param event Description: Clicking the "Back" button
      */
     @FXML
     void Back(MouseEvent event){

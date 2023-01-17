@@ -1072,8 +1072,8 @@ public class NewOrderController implements Initializable {
     /**
 	 * This method describes setting up a new scene.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     public void start(Stage primaryStage) throws Exception {

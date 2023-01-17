@@ -127,8 +127,8 @@ public class MyOrdersController implements Initializable {
 	
 	/**
 	 * This method describes setting up a new scene.
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/MyOrders.fxml"));
@@ -206,8 +206,8 @@ public class MyOrdersController implements Initializable {
 	 * This method describes what happens after clicking the logout button. Clicking
 	 * this button will lead to the login screen.
 	 * 
-	 * @param event, Description: Event - clicking the Logout button
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: Event - clicking the Logout button
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     @FXML
@@ -218,7 +218,7 @@ public class MyOrdersController implements Initializable {
 	/**
 	 * This method returns the client to the previous window 
 	 * (Main screen of the client in OL configuration)
-	 * @param event, Description: Event - clicking the Back button
+	 * @param event Description: Event - clicking the Back button
 	 */
     @FXML
     void Back(MouseEvent event){
@@ -421,7 +421,7 @@ public class MyOrdersController implements Initializable {
     /**
      * This method performs validation and confirms that the order id is indeed correct, 
      * if so it presents the customer with the code for pickup based on the order id entered
-     * @param event, Description: Clicking the "Get Code" button
+     * @param event Description: Clicking the "Get Code" button
      */
     @FXML
     void GetCode(ActionEvent event) {
@@ -505,7 +505,7 @@ public class MyOrdersController implements Initializable {
     /**
      * This method describes clicking on the hyperlink after a pickup code has been displayed, 
      * allows you to re-enter a pickup code
-     * @param event, Description: Clicking on a hyperlink that allows you to enter an additional code
+     * @param event Description: Clicking on a hyperlink that allows you to enter an additional code
      */
     @FXML
     void returnToEnterAnotherOrderId(MouseEvent event) {
@@ -515,7 +515,7 @@ public class MyOrdersController implements Initializable {
     
     /**
      * This method requires when you click anywhere else on the screen to get the focus.
-     * @param event, Description: The screen is clicked the event is sent
+     * @param event Description: The screen is clicked the event is sent
      */
     @FXML
     void requestFocus(MouseEvent event) {

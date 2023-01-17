@@ -81,8 +81,8 @@ public class EKController implements Initializable {
     
 	/**
 	 * This method describes setting up a new scene.
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/EKMain.fxml"));
@@ -108,8 +108,8 @@ public class EKController implements Initializable {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     @FXML
@@ -123,7 +123,7 @@ public class EKController implements Initializable {
      * This method describes clicking the submit button.
      *  Clicking this button, if the pickup code entered is correct, 
      *  will transfer the order to ek-op which it will have to bring to the customer.
-     * @param event, Description: Event - clicking the Submit button
+     * @param event Description: Event - clicking the Submit button
      */
     @FXML
     void SubmitPickupCode(ActionEvent event) {
@@ -166,7 +166,7 @@ public class EKController implements Initializable {
     
     /**
      * This method describes a transition to the window of starting an order
-     * @param event, Description: Clicking the "create new order" button
+     * @param event Description: Clicking the "create new order" button
      */
     @FXML
     void createNewOrder(ActionEvent event) {
@@ -182,7 +182,7 @@ public class EKController implements Initializable {
     
     /**
      * This method describes the possibility of entering an additional pickup code if the customer has another code.
-     * @param event, Description: Event - clicking the hyper link "Would you like to enter another code? Click here"
+     * @param event Description: Event - clicking the hyper link "Would you like to enter another code? Click here"
      */
     @FXML
     void EnterAnotherPickupCode(ActionEvent event) {
@@ -192,7 +192,7 @@ public class EKController implements Initializable {
     
     /**
      * This method requires when you click anywhere else on the screen to get the focus.
-     * @param event, Description: The screen is clicked the event is sent
+     * @param event Description: The screen is clicked the event is sent
      */
     @FXML
     void requestFocus(MouseEvent event) {

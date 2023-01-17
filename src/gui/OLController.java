@@ -63,8 +63,8 @@ public class OLController implements Initializable {
 	
 	/**
 	 * This method describes setting up a new scene.
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/OLMain.fxml"));
@@ -90,8 +90,8 @@ public class OLController implements Initializable {
     /**
      * This method describes what happens after clicking the MyOrders button.
      * The MyOrders window opens.
-     * @param event, Description: Event - clicking the MyOrders button.
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     * @param event Description: Event - clicking the MyOrders button.
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
      */
     @FXML
     void MoveMyOrdersWindow(ActionEvent event) throws Exception {		
@@ -103,7 +103,7 @@ public class OLController implements Initializable {
      * This method describes what happens after clicking the Delivery button.
      * In the event that there is a scene of a shipping details filling page, 
      * it will return the scene and if not, it will open a new scene
-     * @param event, Description: Event - clicking the Delivery button.
+     * @param event Description: Event - clicking the Delivery button.
      */
     @FXML
     void MoveDeliveryForm(ActionEvent event){
@@ -128,8 +128,8 @@ public class OLController implements Initializable {
      * This method describes what happens after clicking the Pickup button.
      * In the event that there is a scene of a pickup information filling page, 
      * it will return the scene and if not, it will open a new scene
-     * @param event, Description: Event - clicking the Pickup button.
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     * @param event Description: Event - clicking the Pickup button.
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
      */
     @FXML
     void MovePickupForm(ActionEvent event) throws Exception {
@@ -149,8 +149,8 @@ public class OLController implements Initializable {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     @FXML
@@ -196,7 +196,7 @@ public class OLController implements Initializable {
     /**
      * In the OL configuration on the main screen as a default the back button does not appear,
      * If the customer enters and is also an employee, he will have an option to go to a window of choosing between an employee and a customer
-     * @param event, Description: Pressing the back button
+     * @param event Description: Pressing the back button
      */
     @FXML
     void Back(MouseEvent event) {
