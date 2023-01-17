@@ -323,7 +323,7 @@ public class RegionalDeliveryController implements Initializable {
     }
     /**
      * function that add items the confirm orders table according to the worker region
-     * @param region
+     * @param region region name
      */
     public void addItemsToConfirmTable(String region) {
         List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
@@ -434,10 +434,12 @@ public class RegionalDeliveryController implements Initializable {
 
     /**
      * function that called when the fxml loaded, handle the username label text
-     * @param url
-     * @param resourceBundle
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         if (isCEOLogged) {
             logoutBtn.setVisible(false);
             worker = workerAccessByCeo;

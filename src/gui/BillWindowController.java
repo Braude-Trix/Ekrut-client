@@ -85,10 +85,12 @@ public class BillWindowController implements Initializable {
     /**
      * function that called while BillWindow fxml loaded, open the Timeout thread, init the window table and set vars
      *
-     * @param url
-     * @param resourceBundle
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
 
         if (UserInstallationController.configuration.equals("EK")) {
             BillReplaced = false;

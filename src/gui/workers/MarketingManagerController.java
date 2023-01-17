@@ -216,7 +216,7 @@ public class MarketingManagerController implements Initializable {
 	 * This Method runs first, initializing the scene, sets form,table and buttons.
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle resourceBundle) {
+	public void initialize(URL location, ResourceBundle resources) {
 		if (isCEOLogged)
             logoutBtn.setVisible(false);
 		else
@@ -536,7 +536,7 @@ private void setTextFormatterForTextAreaDescription() {
 	}
 
 	/**
-	 * This method requests to change sale status (Template->Ready) from the server.
+	 * This method requests to change sale status (Template to Ready) from the server.
 	 * creates a request object with body={Sale id, Sale status - Ready}
 	 * Request Method - Put, Request Path - /sales
 	 *
