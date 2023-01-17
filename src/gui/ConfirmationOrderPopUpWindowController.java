@@ -74,12 +74,7 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
      *                  the root object was not localized.
      */
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(OkBtn);
-        System.out.println(BillWindowController.popupDialog);
-        System.out.println(popUpStage);
-    	 OkBtn.setOnMouseClicked(event -> BillWindowController.popupDialog.close());
-    	
-
+        OkBtn.setOnMouseClicked(event -> BillWindowController.popupDialog.close());
         initVars();
         initWindow();
     }
