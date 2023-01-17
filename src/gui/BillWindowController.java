@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -77,8 +79,6 @@ public class BillWindowController implements Initializable {
         restoreOrder.setDate(LocalDate.now().format(formatter));
         if (restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
             ((PickupOrder) restoreOrder).setPickupCode(UUID.randomUUID().toString().replace("-", "").substring(0, 8));
-
-
     }
 
     /**
@@ -160,6 +160,7 @@ public class BillWindowController implements Initializable {
         NewOrderController.previousOrder.setOrderId(orderId);
         NewOrderController.previousOrder.setMachineId(machineId.toString());
         NewOrderController.previousOrder.setCustomerId(customerId);
+        NewOrderController.previousOrder.setPrice(roundTo2Digit(NewOrderController.previousOrder.getPrice()));
         orderList.add(NewOrderController.previousOrder);
         request.setBody(orderList);
         ClientUI.chat.accept(request);// sending the request to the server.
@@ -242,6 +243,11 @@ public class BillWindowController implements Initializable {
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
         primaryStage.show();
+    }
+
+    private double roundTo2Digit(double num) {
+        BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     /**
@@ -338,6 +344,4 @@ public class BillWindowController implements Initializable {
             });
         }
     }
-
-
 }

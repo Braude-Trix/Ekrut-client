@@ -72,8 +72,7 @@ public class NewOrderController implements Initializable {
 
     public static boolean NewOrderReplaced = false;
 
-    static User user = LoginController.user;//new Customer("Yuval", "Zohar", 318128841, "asdfjj2@gmail.com", "05234822234", "asdfk", "asdf",false, "00",CustomerType.Client,"3", Regions.South);
-    //static User user = new User();
+    static User user = LoginController.user;
 
     @FXML
     private Label NameLabel;
@@ -623,8 +622,6 @@ public class NewOrderController implements Initializable {
 
             } else {
                 counter.setText(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ONE);
-                //roundTo2Digit(calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice()))
-                // AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + product.getPrice() + StyleConstants.CURRENCY_SYMBOL);
                 AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + roundTo2Digit(calculatePriceAfterDiscount(1,product.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                 AddProductInOrderToOrder(product, amountSelected);
                 amountSelected = 1;
@@ -672,7 +669,6 @@ public class NewOrderController implements Initializable {
             TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice())+StyleConstants.CURRENCY_SYMBOL);
         }
 
-        //badihi
         private double roundTo2Digit(double num) {
             BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
             return bd.doubleValue();
