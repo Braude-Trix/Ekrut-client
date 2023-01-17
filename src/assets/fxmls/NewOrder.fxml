@@ -88,7 +88,7 @@
             <Image url="@../tooltipforsale.png" />
          </image>
       </ImageView>
-      <Text fx:id="textForSale" fill="WHITE" layoutX="503.0" layoutY="99.53125" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" AnchorPane.bottomAnchor="402.45703125" AnchorPane.leftAnchor="503.0" AnchorPane.rightAnchor="257.0" />
+      <Text fx:id="textForSale" fill="WHITE" layoutX="503.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0" AnchorPane.bottomAnchor="361.98828125" AnchorPane.leftAnchor="503.0" AnchorPane.rightAnchor="257.0" />
       <ImageView fx:id="imageToPresent" fitHeight="43.0" fitWidth="44.0" layoutX="428.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="430.0" />
       <Label fx:id="discountDisplayed" layoutX="94.0" layoutY="95.0" prefHeight="30.0" prefWidth="362.0" text="Discounts applied to all prices displayed" textFill="RED">
          <font>
