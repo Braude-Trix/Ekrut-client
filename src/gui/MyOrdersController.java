@@ -364,33 +364,33 @@ public class MyOrdersController implements Initializable {
     			MyOrders tempOrder = (MyOrders)order;
     			if (tempOrder.getPickUpMethod() == PickUpMethod.delivery || tempOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
         			checkAndAddDeliveryOrderNotCollected(tempOrder);
-    				String tempReceivedDate = getRecivedDate(tempOrder.getOrderId(), tempOrder.getPickUpMethod());
-    				if (tempReceivedDate == null)
-    				{
-    					tempReceivedDate = "-----";
-    				}
-    				tempOrder.setReceivedDate(tempReceivedDate);
+//    				String tempReceivedDate = getRecivedDate(tempOrder.getOrderId(), tempOrder.getPickUpMethod());
+//    				if (tempReceivedDate == null)
+//    				{
+//    					tempReceivedDate = "-----";
+//    				}
+//    				tempOrder.setReceivedDate(tempReceivedDate);
     			}
     			listMyOrders.add((MyOrders)order);
     		}
     	}
     }
     
-    private String getRecivedDate(String orderID, PickUpMethod method) {
-       	List<Object> orderDelivery = new ArrayList<>();
-       	orderDelivery.add(orderID);
-    	Request request = new Request();
-    	if (method == PickUpMethod.delivery) {
-            request.setPath("/order/ReceivedDateDelivery");
-    	}
-    	else {
-            request.setPath("/order/ReceivedDatePickup");
-    	}
-        request.setMethod(Method.GET);
-        request.setBody(orderDelivery);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        return handleRecivedDateFromServer();
-    }
+//    private String getRecivedDate(String orderID, PickUpMethod method) {
+//       	List<Object> orderDelivery = new ArrayList<>();
+//       	orderDelivery.add(orderID);
+//    	Request request = new Request();
+//    	if (method == PickUpMethod.delivery) {
+//            request.setPath("/order/ReceivedDateDelivery");
+//    	}
+//    	else {
+//            request.setPath("/order/ReceivedDatePickup");
+//    	}
+//        request.setMethod(Method.GET);
+//        request.setBody(orderDelivery);
+//        ClientUI.chat.accept(request);// sending the request to the server.
+//        return handleRecivedDateFromServer();
+//    }
     
     private void checkAndAddDeliveryOrderNotCollected(MyOrders order) {
 		if (order.getPickUpMethod() == PickUpMethod.delivery && order.getStatus() == OrderStatus.NotCollected ) {
@@ -398,14 +398,14 @@ public class MyOrdersController implements Initializable {
 		}
     }
     
-    private String handleRecivedDateFromServer() {
-          	switch (Client.resFromServer.getCode()) {
-            case OK:
-            	return (String) (Client.resFromServer.getBody().get(0));
-            default:
-            	return "Loading problem";
-        	}
-    }
+//    private String handleRecivedDateFromServer() {
+//          	switch (Client.resFromServer.getCode()) {
+//            case OK:
+//            	return (String) (Client.resFromServer.getBody().get(0));
+//            default:
+//            	return "Loading problem";
+//        	}
+//    }
     
     private void setStyleForEmptyTable() {
 		Label tableViewApproveLabel = new Label ("There are no deliveries awaiting approval");
