@@ -205,7 +205,8 @@ public class LoginController implements Initializable{
         }
         
         if (clientInterface.getResFromServer().getCode() == ResponseCode.DB_ERROR ||
-        		clientInterface.getResFromServer().getCode() == ResponseCode.SERVER_ERROR) {
+        		clientInterface.getResFromServer().getCode() == ResponseCode.SERVER_ERROR ||
+        		user == null) {
         	return;
         }
         
@@ -263,7 +264,7 @@ public class LoginController implements Initializable{
     	}
         switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-            	if (clientInterface.getResFromServer().getBody() != null) {
+            	if (clientInterface.getResFromServer().getBody() != null  && (clientInterface.getResFromServer().getBody().get(0) instanceof User)) {
                     user = (User) clientInterface.getResFromServer().getBody().get(0);
             	}
             	else {

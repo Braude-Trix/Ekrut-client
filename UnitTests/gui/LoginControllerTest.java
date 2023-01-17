@@ -3,11 +3,9 @@ package gui;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +20,6 @@ import models.Regions;
 import models.Request;
 import models.Response;
 import models.ResponseCode;
-import models.SaleStatus;
 import models.User;
 import models.Worker;
 import models.WorkerType;
@@ -314,6 +311,15 @@ class LoginControllerTest {
 		assertEquals("Data error", errorL);
 	}
 		
+	@SuppressWarnings("static-access")
+	@Test
+	void requestUser_ResponseAnotherObjectFail() throws Exception {
+		listForResponse.add("error");
+		responseTest = setResponse(ResponseCode.OK, "Successfully got user details", listForResponse);
+		rUser.invoke(loginCon);
+		assertEquals(loginCon.user, null);
+		assertEquals("Data error", errorL);
+	}
 //	@SuppressWarnings("static-access")
 //	@Test
 //	void requestUserLoggedIn() throws Exception {
@@ -649,14 +655,19 @@ class LoginControllerTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
-	void request_OLConfiguration_ErrorBodyData() throws Exception {
-		listForResponse.add("error");
-		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", listForResponse);
+	void request_OLConfiguration_ErrorBodyData() throws Exception {		
+		config.set(loginCon, "OL");
+		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", null);
+		conditionUsername = false;
+		conditionPassword = false;
+		txtUsername = "user1";
+		txtPassword = "1234";
 		loginCon.user = user;
-		rOLUser.invoke(loginCon);
+		selectHomePage.invoke(loginCon);
 		assertEquals("Data error", errorL);
 		assertEquals(loginCon.user, null);
 		assertEquals(nameWindow, "LoginController");
+		assertEquals(isRunThread, false);
 	}
 	
 	
