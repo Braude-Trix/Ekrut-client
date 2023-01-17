@@ -702,9 +702,11 @@ public class RegionalManagerGui implements Initializable {
 
         private void requestPendingUsers(List<User> userList) {
             Request request = new Request();
+            List<Object> resBody = new ArrayList<>();
+            resBody.add(region);
             request.setPath("/users/allPendingUsers");
             request.setMethod(Method.GET);
-            request.setBody(null);
+            request.setBody(resBody);
             ClientUI.chat.accept(request); // sending the request to the server.
             if (Client.resFromServer.getCode() == ResponseCode.OK) {
                 List<Object> body = Client.resFromServer.getBody();

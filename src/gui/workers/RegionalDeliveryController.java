@@ -120,7 +120,7 @@ public class RegionalDeliveryController implements Initializable {
 
         Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/RegionalDeliveryHomePage_Default.fxml"));
         Scene scene = new Scene(root);
-        primaryStage.setTitle("Regional Manager");
+        primaryStage.setTitle("Regional Delivery");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
