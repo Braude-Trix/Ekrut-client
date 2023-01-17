@@ -287,6 +287,7 @@ public class CeoSelectWorker {
         /**
          * constructor for workers without a specific region
          * like service or operational workers
+         * @param worker Worker object to get data from
          */
         public WorkersData(Worker worker) {
         	this.worker = worker;

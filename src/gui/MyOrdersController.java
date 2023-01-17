@@ -114,7 +114,7 @@ public class MyOrdersController implements Initializable {
 	 * displayed in the window depending on the client.
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle resourceBundle) {
+	public void initialize(URL location, ResourceBundle resources) {
 		listMyOrders = new ArrayList<>();
 		listDeliveryNotCollected = new ArrayList<>();
 		setCellFactoryOfTables();

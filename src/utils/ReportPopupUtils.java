@@ -35,7 +35,10 @@ public final class ReportPopupUtils {
         titleInfo.setText(title);
     }
 
+
     /**
+     * @param month month number
+     * @param year year number
      * @return number of days of specified month and year number
      */
     public static int getDaysOfMonth(int month, int year) {

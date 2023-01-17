@@ -767,7 +767,7 @@ public class NewOrderController implements Initializable {
      * This method initializes data before the screen comes up
      */
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle)
+    public void initialize(URL location, ResourceBundle resources)
     {
         NewOrderReplaced = false;
         if(UserInstallationController.configuration.equals("EK")){

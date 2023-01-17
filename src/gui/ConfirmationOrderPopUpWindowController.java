@@ -68,10 +68,12 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
     /**
      * function that called when the current fxml is loaded, init controller vars and init the popup screen view.
      *
-     * @param url
-     * @param resourceBundle
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         System.out.println(OkBtn);
         System.out.println(BillWindowController.popupDialog);
         System.out.println(popUpStage);

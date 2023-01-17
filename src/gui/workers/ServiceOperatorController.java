@@ -89,7 +89,7 @@ public class ServiceOperatorController implements Initializable {
      * This function load the main screen
      */
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle)
+    public void initialize(URL location, ResourceBundle resources)
     {
     	// If CEO clicked to view this worker's window
     	// we remove logOut button and set current Worker as the one we get from CEO gui

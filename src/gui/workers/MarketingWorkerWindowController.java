@@ -562,7 +562,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	}
 
 	/**
-	 * This method requests to change sale status (Ready->Running) from the server.
+	 * This method requests to change sale status (Ready to Running) from the server.
 	 * creates a request object with body={Sale id, Sale status - Running}
 	 * Request Method - Put, Request Path - /sales
 	 *

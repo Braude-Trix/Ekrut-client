@@ -85,8 +85,11 @@ public final class WorkerNodesUtils {
         return rangeList;
     }
 
+
     /**
      * Setting Image of the specified path to the specified ImageView
+     * @param pathToImg path location
+     * @param bgImage ImageView object
      */
     public static void setBackground(String pathToImg, ImageView bgImage) {
         Image image = new Image(pathToImg);
@@ -95,13 +98,19 @@ public final class WorkerNodesUtils {
 
     /**
      * Setting Hello full name for specified Label
+     * @param userNameLabel Label to insert text into
+     * @param worker Worker object to get name from
      */
     public static void setUserName(Label userNameLabel, Worker worker) {
         userNameLabel.setText("Hello " + worker.getFirstName() + " " + worker.getLastName());
     }
 
+
     /**
      * Setting Role and region of worker for specified Label
+     * @param userRoleLabel Label to insert text into
+     * @param region type of region
+     * @param workerType type of worker
      */
     public static void setRole(Label userRoleLabel, Regions region, WorkerType workerType) {
         if (region != null && region != Regions.All)
@@ -112,6 +121,8 @@ public final class WorkerNodesUtils {
 
     /**
      * Setting Role of worker for specified Label
+     * @param userRoleLabel Label to insert text into
+     * @param workerType type of worker
      */
     public static void setRole(Label userRoleLabel, WorkerType workerType) {
         userRoleLabel.setText(workerType.toString());
@@ -119,6 +130,8 @@ public final class WorkerNodesUtils {
 
     /**
      * Adding styled title to specified Vbox
+     * @param titleName name of title
+     * @param vBoxContainer VBox object to insert Label with name into
      */
     public static void setTitle(String titleName, VBox vBoxContainer) {
         Label title = new Label();
