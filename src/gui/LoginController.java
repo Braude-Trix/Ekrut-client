@@ -174,7 +174,7 @@ public class LoginController implements Initializable{
             setErrorLabel(isInputErrorUsername, isInputErrorPassword);
             return;
         }
-
+        user = null;
         SelectHomePageToOpen();
     }
 
@@ -204,7 +204,8 @@ public class LoginController implements Initializable{
         }
         
         if (clientInterface.getResFromServer().getCode() == ResponseCode.DB_ERROR ||
-        		clientInterface.getResFromServer().getCode() == ResponseCode.SERVER_ERROR) {
+        		clientInterface.getResFromServer().getCode() == ResponseCode.SERVER_ERROR ||
+        		user == null) {
         	return;
         }
         
