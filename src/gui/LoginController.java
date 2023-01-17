@@ -175,6 +175,7 @@ public class LoginController implements Initializable{
             return;
         }
 
+        user = null;
         SelectHomePageToOpen();
     }
 

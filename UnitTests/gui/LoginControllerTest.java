@@ -51,7 +51,8 @@ class LoginControllerTest {
 	private java.lang.reflect.Method rById;
 	private java.lang.reflect.Method setCombobox;
 	private java.lang.reflect.Method setError;
-
+	private java.lang.reflect.Method selectHomePage;
+	
 	private Integer subscriberId;
 	private ObservableList<Integer> subscribersList;
 	
@@ -189,6 +190,8 @@ class LoginControllerTest {
 		
 		setError = LoginController.class.getDeclaredMethod("setErrorLabel", boolean.class, boolean.class);
 		setError.setAccessible(true);
+		selectHomePage = LoginController.class.getDeclaredMethod("SelectHomePageToOpen");
+		selectHomePage.setAccessible(true);
 		
 		loginCon.customerAndWorker = null;	
 	}
@@ -363,12 +366,15 @@ class LoginControllerTest {
 	@SuppressWarnings("static-access")
 	@Test
 	void requestCustomerEkConfiguration_responseError() throws Exception {
+		config.set(loginCon, "EK");
 		responseTest = setResponse(ResponseCode.DB_ERROR, "Error loading data (DB)", null);
+		txtUsername = "user1";
+		txtPassword = "1234";
 		loginCon.user = user;
-		rEKCustomer.invoke(loginCon);
-		assertEquals(loginCon.user, user);
-		assertEquals("Error loading data (DB)", errorL);
+		selectHomePage.invoke(loginCon);
+		assertEquals(responseTest.getDescription(), errorL);
 		assertEquals(nameWindow, "LoginController");
+		assertEquals(isRunThread, false);
 	}
 	
 	@Test
@@ -398,6 +404,20 @@ class LoginControllerTest {
 		assertEquals(loginCon.user, null);
 		assertEquals("Data error", errorL);
 		assertEquals(nameWindow, "LoginController");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	void requestCustomerEkConfiguration_ServerFailBeforeRunThread() throws Exception {
+		config.set(loginCon, "EK");
+		responseTest = setResponse(ResponseCode.SERVER_ERROR, "Operation doesn't exist", null);
+		txtUsername = "user1";
+		txtPassword = "1234";
+		loginCon.user = user;
+		selectHomePage.invoke(loginCon);
+		assertEquals(responseTest.getDescription(), errorL);
+		assertEquals(nameWindow, "LoginController");
+		assertEquals(isRunThread, false);
 	}
 	
 	///////////////////////////////////OL FLOW////////////////////////////////
