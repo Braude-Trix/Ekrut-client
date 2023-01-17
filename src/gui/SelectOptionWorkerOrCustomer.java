@@ -48,8 +48,8 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
     /**
 	 * This method sets a scene to a given stage.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
@@ -76,8 +76,8 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     @FXML
@@ -88,7 +88,7 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 
     /**
      * This method describes the user's choice to log in as a customer and move to the desired window
-     * @param event, Description: Clicking on the "Customer" button
+     * @param event Description: Clicking on the "Customer" button
      */
     @FXML
     void customerClicked(ActionEvent event){
@@ -105,7 +105,7 @@ public class SelectOptionWorkerOrCustomer implements Initializable {
 
     /**
      * This method describes the user's choice to log in as a worker and move to the desired window by type of worker
-     * @param event, Description: Clicking on the "Employee" button
+     * @param event Description: Clicking on the "Employee" button
      */
     @FXML
     void employeeClicked(ActionEvent event) {

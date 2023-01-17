@@ -261,8 +261,8 @@ private void setTextFormatterForTextAreaDescription() {
 	/**
 	 * This method sets a scene to a given stage.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
@@ -407,8 +407,8 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: might throw exception.
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: might throw exception.
 	 */
 	@FXML
 	void LogOut(ActionEvent event) throws Exception {
@@ -421,7 +421,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * form This method runs when the client clicked the button(Create Sale
 	 * Template) on the left menu
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void creatingSale(ActionEvent event) {
@@ -439,7 +439,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method runs when the client clicked the button(Use Sale Template) on the
 	 * left menu
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void initiateSaleBtnClick(ActionEvent event) {
@@ -458,7 +458,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * client submitted the form. This method navigates the client back to home
 	 * page.
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void clickCreateSale(ActionEvent event) {
@@ -626,7 +626,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * method allows the client to choose an end date, starting from the start
 	 * datePicker.
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void SelectedDate(ActionEvent event) {
@@ -681,7 +681,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method shows and hides the percentage textField, according to the value
 	 * selected from Type comboBox
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void selectedType(ActionEvent event) {
@@ -850,7 +850,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method calls "openModal()" method whenever the user clicked a sale row
 	 * in the table. This method shows the user data about the sale.
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void templateSalesTableRowClicked(MouseEvent event) {

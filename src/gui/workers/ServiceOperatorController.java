@@ -143,8 +143,8 @@ public class ServiceOperatorController implements Initializable {
 
     /**
      * This method describes setting up a new scene for service operator.
-     * @param primaryStage, Description: The stage on which the scene is presented
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     * @param primaryStage Description: The stage on which the scene is presented
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
      */
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/ServiceOperator.fxml"));

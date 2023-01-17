@@ -116,7 +116,7 @@ public final class Utils {
     /**
      * This method describes a situation in which the user closed the application through X,
      * the user being automatically disconnected as a result
-     * @throws IOException, An exception may occur when closing the stage
+     * @throws IOException An exception may occur when closing the stage
      */
     public static void forcedExit() throws IOException {
     	List<Object> userDetails = new ArrayList<>();

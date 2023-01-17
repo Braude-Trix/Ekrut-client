@@ -100,8 +100,8 @@ public class UserInstallationController implements Initializable {
     /**
 	 * This method sets a scene to a given stage.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
@@ -126,7 +126,7 @@ public class UserInstallationController implements Initializable {
     /**
      * Clicking on this button describes choosing the EK installation configuration 
      * and therefore requires choosing a machine on which the system will work.
-     * @param event, Description: Clicking on the EK configuration button
+     * @param event Description: Clicking on the EK configuration button
      */
     @FXML
     void EkClicked(ActionEvent event) {
@@ -148,7 +148,7 @@ public class UserInstallationController implements Initializable {
 
     /**
      * This method click describes the OL configuration. And beyond the appropriate login window.
-     * @param event, Description: Clicking on the OL configuration button
+     * @param event Description: Clicking on the OL configuration button
      */
     @FXML
     void OLClicked(ActionEvent event){
@@ -165,7 +165,7 @@ public class UserInstallationController implements Initializable {
     /**
      * This method describes clicking on a region value in the combobox 
      * and changing the machines that are in the combobox of machines according to the selected region.
-     * @param event, Description: Clicking on a value in the region combobox.
+     * @param event Description: Clicking on a value in the region combobox.
      */
     @FXML
     void RegionComboBoxClicked(ActionEvent event) {
@@ -219,7 +219,7 @@ public class UserInstallationController implements Initializable {
 
     /**
      * This method describes a final installation in EK configuration after selecting a suitable machine and region.
-     * @param event, Description: The install button was pressed.
+     * @param event Description: The install button was pressed.
      */
     @FXML
     void installClicked(ActionEvent event){

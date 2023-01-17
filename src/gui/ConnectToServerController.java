@@ -42,8 +42,8 @@ public class ConnectToServerController {
     /**
 	 * This method sets a scene to a given stage.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws IOException Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     public static void start(Stage primaryStage) throws IOException {
@@ -71,8 +71,8 @@ public class ConnectToServerController {
     /**
      * connectToServer method - checks for valid server input and if valid - tried to connect to the server.
      * creates new stage using the singletone stage.
-     * @param event, Description: A click on the connect button occurred
-     * @throws Exception, Description: An exception will be thrown if there is a
+     * @param event Description: A click on the connect button occurred
+     * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
      */
     @FXML

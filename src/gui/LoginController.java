@@ -113,8 +113,8 @@ public class LoginController implements Initializable{
 
     /**
      * This method describes setting up a new scene.
-     * @param primaryStage, Description: The stage on which the scene is presented
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     * @param primaryStage Description: The stage on which the scene is presented
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
      */
     public void start(Stage primaryStage) throws Exception {
 
@@ -153,8 +153,8 @@ public class LoginController implements Initializable{
     /**
      * This method opens a customer or employee window depending on the type of user.
      * And only if the details are correct.
-     * @param event, Description: Event - clicking the Login button
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     * @param event Description: Event - clicking the Login button
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
      */
     @FXML
     void login(ActionEvent event) throws Exception {
@@ -373,7 +373,7 @@ public class LoginController implements Initializable{
     /**
      * @param stage, Description: This is a singleton stage to display the selected window on it
      * @param worker, Description: This parameter is the employee returned from the db
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
      */
     public static void setWindowByTypeWorker(Stage stage, Worker worker) throws Exception {
     	if (worker.getType() == null) {
@@ -413,8 +413,8 @@ public class LoginController implements Initializable{
 
     /**
      * This method responds to the event of interfacing with EKT (pressing a button).
-     * @param event, Description: Event - clicking the Touch button.
-     * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens.
+     * @param event Description: Event - clicking the Touch button.
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens.
      */
     @FXML
     void btnTouch(ActionEvent event) throws Exception {
@@ -469,7 +469,7 @@ public class LoginController implements Initializable{
     }
     /**
      * This method describes an event of clicking exit and exiting the application.
-     * @param event, Description: Event - clicking the Exit button.
+     * @param event Description: Event - clicking the Exit button.
      */
     @FXML
     void Exit(ActionEvent event) {
@@ -479,7 +479,7 @@ public class LoginController implements Initializable{
 
     /**
      * This method requires when you click anywhere else on the screen to get the focus.
-     * @param event, Description: The screen is clicked the event is sent
+     * @param event Description: The screen is clicked the event is sent
      */
     @FXML
     void requestFocus(MouseEvent event) {
