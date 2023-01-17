@@ -950,7 +950,7 @@ public class NewOrderController implements Initializable {
                 Image plus = new Image(StylePaths.PLUS_IMAGE);
                 ImageView plusImage = new ImageView(plus); //defultProductImage
                 String productId;
-                if(getMaxAmountOfProductInMachineFromDB(order,prod.getProductId())==0)
+                if(getMaxAmountOfProductInMachineFromDB(order,prod.getProductId())<=0)
                 {
                     continue;
                 }
@@ -1005,7 +1005,7 @@ public class NewOrderController implements Initializable {
 
 
         }
-        if(ProductsList.getItems().size() == 0)
+        if(ProductsList.getItems().size() == 0) 
         {
              outOfStock.setVisible(true);}
 

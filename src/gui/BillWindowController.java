@@ -28,7 +28,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import logic.Messages;
 import models.*;
 import utils.StyleConstants;
 import utils.StylePaths;
@@ -112,17 +111,6 @@ public class BillWindowController implements Initializable {
         billTable.setItems(productsInBill);
     }
 
-    private boolean validateProductsInInventory() {
-        List<ProductInMachine> machineProducts = requestMachineProducts(machineId);
-        for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
-            for (ProductInMachine productInMachine : machineProducts) {
-                if (productInOrder.getProduct().getProductId().equals(productInMachine.getProductId()) && productInOrder.getAmount() > productInMachine.getAmount())
-                    return false;
-            }
-        }
-        return true;
-    }
-
     /**
      * function that createAnAlert of javaFX using given alertType, String title of the alert and the alert message
      *
@@ -144,23 +132,10 @@ public class BillWindowController implements Initializable {
      */
     @FXML
     void proceedPaymentClicked(ActionEvent event) {
-        if (!validateProductsInInventory()) {
-        	NewOrderController.aliveSale = false;
-        	restoreOrder = null;
-        	
-        	LoginController.order.getProductsInOrder().clear();
-        	LoginController.order.setPrice(0.0);
-        	
-            replaceWindowToNewOrder();
-            createAnAlert(Alert.AlertType.ERROR, StyleConstants.OUT_OF_STOCK_LABEL, StyleConstants.INVENTORY_UPDATE_ALERT_MSG);
-            return;
-        }
-        NewOrderController.aliveSale = false;
-        requestSaveOrder();
-        requestSaveProductsInOrder();
-        updateInventoryInDB();
-        requestSaveDeliveryOrder();
-        requestSaveLatePickUpOrder();
+    	boolean isOk = requestSaveOrder();
+		if (!isOk)
+			return;
+		NewOrderController.aliveSale = false;
         try {
             returnToMainPage();
         } catch (IOException e) {
@@ -168,7 +143,7 @@ public class BillWindowController implements Initializable {
         changeToConfirmationOrderPopUpWindow();
     }
 
-    private void requestSaveOrder() {
+    private boolean requestSaveOrder() {
         List<Object> orderList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/newOrder");
@@ -183,239 +158,31 @@ public class BillWindowController implements Initializable {
                 orderId = "1" + orderId;
         }
         NewOrderController.previousOrder.setOrderId(orderId);
+        NewOrderController.previousOrder.setMachineId(machineId.toString());
+        NewOrderController.previousOrder.setCustomerId(customerId);
         orderList.add(NewOrderController.previousOrder);
         request.setBody(orderList);
         ClientUI.chat.accept(request);// sending the request to the server.
         switch (Client.resFromServer.getCode()) {
             case OK:
                 break;
+            case INVALID_DATA:
+            	NewOrderController.aliveSale = false;
+            	restoreOrder = null;
+            	
+            	LoginController.order.getProductsInOrder().clear();
+            	LoginController.order.setPrice(0.0);
+            	
+                replaceWindowToNewOrder();
+                createAnAlert(Alert.AlertType.ERROR, StyleConstants.OUT_OF_STOCK_LABEL, StyleConstants.INVENTORY_UPDATE_ALERT_MSG);
+                return false;
             default:
                 System.out.println(Client.resFromServer.getDescription());
         }
+        return true;
     }
-
-    private void requestSaveDeliveryOrder() {
-        if (NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.delivery) {
-            DeliveryOrder deliveryOrder = (DeliveryOrder) NewOrderController.previousOrder;
-            List<Object> paramList = new ArrayList<>();
-            Request request = new Request();
-            request.setPath("/saveDeliveryOrder");
-            request.setMethod(Method.POST);
-            paramList.add(deliveryOrder);
-            request.setBody(paramList);
-            ClientUI.chat.accept(request);// sending the request to the server.
-            switch (Client.resFromServer.getCode()) {
-                case OK:
-                    break;
-                default:
-                    System.out.println(Client.resFromServer.getDescription());
-            }
-        }
-    }
-
-    private void requestSaveLatePickUpOrder() {
-        if (NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
-            PickupOrder latePickUpOrder = (PickupOrder) NewOrderController.previousOrder;
-            List<Object> paramList = new ArrayList<>();
-            Request request = new Request();
-            request.setPath("/saveLatePickUpOrder");
-            request.setMethod(Method.POST);
-            paramList.add(latePickUpOrder);
-            request.setBody(paramList);
-            ClientUI.chat.accept(request);// sending the request to the server.
-            switch (Client.resFromServer.getCode()) {
-                case OK:
-                    break;
-                default:
-                    System.out.println(Client.resFromServer.getDescription());
-            }
-        }
-    }
-
-    private void requestSaveProductsInOrder() {
-        List<Object> orderList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/saveProductsInOrder");
-        request.setMethod(Method.POST);
-        orderList.add(restoreOrder.getOrderId());
-        orderList.add(NewOrderController.previousOrder.getProductsInOrder());
-        request.setBody(orderList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-    }
-
-    private int getMachineThreshold() {
-        int threshold = -1;
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/getMachineThreshold");
-        request.setMethod(Method.GET);
-        paramList.add(machineId);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                threshold = (Integer) Client.resFromServer.getBody().get(0);
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return threshold;
-    }
-
-
-    private void updateInventoryInDB() {
-        List<ProductInMachine> updatedInventory = getUpdatedInventory();
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/updateInventory");
-        request.setMethod(Method.PUT);
-        paramList.add(updatedInventory);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-    }
-
-    private List<ProductInMachine> getUpdatedInventory() {
-        boolean postMsg;
-        int currentlyAmount, newAmount;
-        String machineName;
-        List<ProductInMachine> updatedMachineList = new ArrayList<>();
-        List<ProductInMachine> productsInMachineList = requestMachineProducts(machineId);
-        StatusInMachine newStatusInMachine;
-        Integer getMachineThreshold = getMachineThreshold();
-        ProductInMachine productInMachine;
-        for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
-            postMsg = false;
-            currentlyAmount = getProductMachineAmountFromList(productsInMachineList, machineId, Integer.valueOf(productInOrder.getProduct().getProductId()));
-            newAmount = currentlyAmount - productInOrder.getAmount();
-            if (currentlyAmount > getMachineThreshold && newAmount < getMachineThreshold && machineId != 1)
-                postMsg = true;
-            if (newAmount == 0) newStatusInMachine = StatusInMachine.Not_Available;
-            else if (newAmount < getMachineThreshold) {
-                newStatusInMachine = StatusInMachine.Below;
-            } else {
-                newStatusInMachine = StatusInMachine.Above;
-            }
-            machineName = getMachineNameById();
-            updateManagerAboutProductsStatus(postMsg, "Inventory status:\nMachine id: " + machineId.toString() + "\nMachine name: " + machineName + "\nProduct id: " + Integer.valueOf(productInOrder.getProduct().getProductId()) +
-                    "\nProduct name: " + productInOrder.getProduct().getName() + "\nStatus in machine: " + newStatusInMachine.toString() + "\nProduct amount: " + newAmount);
-            productInMachine = new ProductInMachine(machineId.toString(), productInOrder.getProduct().getProductId(), newStatusInMachine, newAmount);
-            updatedMachineList.add(productInMachine);
-        }
-        return updatedMachineList;
-    }
-
-    private String getMachineNameById() {
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/getMachineName");
-        request.setMethod(Method.GET);
-        paramList.add(machineId.toString());
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return Client.resFromServer.getBody().get(0).toString();
-
-    }
-
-    private void updateManagerAboutProductsStatus(boolean postMsg, String message) {
-        if (postMsg) {
-            List<Integer> managersIds = getRegionalManagerIds();
-            for (Integer managerId : managersIds) {
-                Messages.writeNewMsgToDB(message, customerId, managerId);
-            }
-        }
-    }
-
-    private Regions getRegionByMachineId() {
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/requestRegionByMachineId");
-        request.setMethod(Method.GET);
-        paramList.add(machineId);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                return Regions.valueOf(Client.resFromServer.getBody().get(0).toString());
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return null;
-    }
-
-    private List<Integer> getRegionalManagerIds() {
-        List<Integer> managersIds = new ArrayList<>();
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/requestRegionalManagersIds");
-        request.setMethod(Method.GET);
-        paramList.add(getRegionByMachineId());
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                List<Object> result = Client.resFromServer.getBody();
-                for (Object obj : result) {
-                    managersIds.add((Integer) obj);
-                }
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return managersIds;
-    }
-
-
-    private Integer getProductMachineAmountFromList(List<ProductInMachine> productsInMachineList, Integer machineId, Integer productId) {
-        for (ProductInMachine productInMachine : productsInMachineList) {
-            if ((machineId.toString()).equals(productInMachine.getMachineId()) && Objects.equals(productId, Integer.valueOf(productInMachine.getProductId())))
-                return productInMachine.getAmount();
-        }
-        return -1;
-    }
-
-    private List<ProductInMachine> requestMachineProducts(Integer machineId) {
-        List<ProductInMachine> productInMachineList = new ArrayList<>();
-        List<Object> listObject = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/requestMachineProducts");
-        request.setMethod(Method.GET);
-        listObject.add(machineId);
-        request.setBody(listObject);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                List<Object> result = Client.resFromServer.getBody();
-                for (Object obj : result) {
-                    productInMachineList.add((ProductInMachine) obj);
-                }
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return productInMachineList;
-    }
-
 
     private void changeToConfirmationOrderPopUpWindow() {
-        
         BillReplaced = true;
         AnchorPane pane;
         try {
@@ -437,9 +204,6 @@ public class BillWindowController implements Initializable {
         popupDialog.centerOnScreen();
         popupDialog.setMinHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
         popupDialog.setMinWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-       // popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-       // popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
-       
         
         popupDialog.show();
 
