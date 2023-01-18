@@ -263,7 +263,7 @@ public class LoginController implements Initializable{
     	}
         switch (clientInterface.getResFromServer().getCode()) {
             case OK:
-            	if (clientInterface.getResFromServer().getBody() != null) {
+            	if (clientInterface.getResFromServer().getBody() != null  && (clientInterface.getResFromServer().getBody().get(0) instanceof User)) {
                     user = (User) clientInterface.getResFromServer().getBody().get(0);
             	}
             	else {
@@ -418,7 +418,6 @@ public class LoginController implements Initializable{
      */
     @FXML
     void btnTouch(ActionEvent event) throws Exception {
-//        comboBoxSubscribers.getStyleClass().remove("validation-error");
         if (!isValidFillComboBoxes()){
             return;
         }
@@ -427,7 +426,6 @@ public class LoginController implements Initializable{
 
     private boolean isValidFillComboBoxes() {
         if (utilInterface.getValueSubscriberSelected() == null) {
-//            comboBoxSubscribers.getStyleClass().add("validation-error");
         	utilInterface.setErrorTouch("Please select subscriber id");
             return false;
         }
