@@ -5,19 +5,18 @@ import client.ClientUI;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import models.*;
+import utils.ReportPopupUtils;
+import utils.StyleConstants;
 
-import javax.swing.text.Style;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 /**
  * class that handle the confirmation order popup controller
@@ -52,24 +51,30 @@ public class ConfirmationOrderPopUpWindowController implements Initializable {
 
     @FXML
     private VBox vboxContainer;
+    
 
-
+    @FXML
+    private Button OkBtn;
+    
     private String deliveryAddress;
     private String choosenMachine;
 
     private String pinCode = "";
     private boolean isSubscriber;
 
-
     private static Order order = BillWindowController.restoreOrder;
+	public static Stage popUpStage;
 
     /**
      * function that called when the current fxml is loaded, init controller vars and init the popup screen view.
      *
-     * @param url
-     * @param resourceBundle
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
+        OkBtn.setOnMouseClicked(event -> BillWindowController.popupDialog.close());
         initVars();
         initWindow();
     }

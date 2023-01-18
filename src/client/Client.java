@@ -32,11 +32,10 @@ public class Client extends AbstractClient {
 
 	/**
 	 * Constructs an instance of the client.
-	 *
-	 * @param host     The server to connect to.
-	 * @param port     The port number to connect on.
+	 * @param host The server to connect to.
+	 * @param port The port number to connect on.
+	 * @throws IOException Throws IOException according to OCSF's openConnection throws
 	 */
-
 	public Client(String host, int port) throws IOException {
 		super(host, port); // Call the superclass constructor
 		openConnection();

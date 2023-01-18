@@ -22,7 +22,7 @@ import models.Method;
 import models.Request;
 import models.User;
 import models.Worker;
-import utils.Util;
+import utils.Utils;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
@@ -78,9 +78,8 @@ public class ServiceOperatorController implements Initializable {
     @FXML
     void logOutClicked(ActionEvent event) {
         try {
-            Util.genricLogOut(getClass());
+            Utils.genericLogOut(getClass());
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -89,11 +88,10 @@ public class ServiceOperatorController implements Initializable {
      * @author Badihi
      * This function load the main screen
      */
-
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle)
+    public void initialize(URL location, ResourceBundle resources)
     {
-    	// fisher added -> if CEO clicked to view this worker's window
+    	// If CEO clicked to view this worker's window
     	// we remove logOut button and set current Worker as the one we get from CEO gui
     	if(isCEOLogged) {
 			logoutBtn.setVisible(false);
@@ -143,6 +141,11 @@ public class ServiceOperatorController implements Initializable {
     }
 
 
+    /**
+     * This method describes setting up a new scene for service operator.
+     * @param primaryStage Description: The stage on which the scene is presented
+     * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
+     */
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/ServiceOperator.fxml"));
 
@@ -156,7 +159,7 @@ public class ServiceOperatorController implements Initializable {
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
             try {
-                Util.forcedExit();
+                Utils.forcedExit();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

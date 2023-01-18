@@ -36,9 +36,12 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.*;
-import utils.Util;
+import utils.StyleConstants;
+import utils.StylePaths;
+import utils.Utils;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.lang.Thread.sleep;
@@ -69,8 +72,7 @@ public class NewOrderController implements Initializable {
 
     public static boolean NewOrderReplaced = false;
 
-    static User user = LoginController.user;//new Customer("Yuval", "Zohar", 318128841, "asdfjj2@gmail.com", "05234822234", "asdfk", "asdf",false, "00",CustomerType.Client,"3", Regions.South);
-    //static User user = new User();
+    static User user = LoginController.user;
 
     @FXML
     private Label NameLabel;
@@ -129,9 +131,8 @@ public class NewOrderController implements Initializable {
     void logOutClicked(ActionEvent event) {
         try {
             NewOrderReplaced = true;
-            Util.genricLogOut(getClass());
+            Utils.genericLogOut(getClass());
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -382,7 +383,6 @@ public class NewOrderController implements Initializable {
             try {
                 showTooltip(sale);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         });
         imageToPresent.setOnMouseExited(event -> hideTooltip());
@@ -446,9 +446,32 @@ public class NewOrderController implements Initializable {
         return amount * pricePerItem * firstTimeMultiplier;
     }
 
+    private boolean getIfItsSaleTime(Sale sale)
+    {
+        TimeSale timeSale = sale.getSaleTime();
+        LocalTime currentTime = LocalTime.now();
+        switch (timeSale) {
+            case AllDay:
+                return true;
+            case Morning:
+                return currentTime.isAfter(LocalTime.of(6,0)) && currentTime.isBefore(LocalTime.of(12,0));
+            case Noon:
+                return currentTime.isAfter(LocalTime.of(12,0)) && currentTime.isBefore(LocalTime.of(16,0));
+            case Afternoon:
+                return currentTime.isAfter(LocalTime.of(16,0)) && currentTime.isBefore(LocalTime.of(20,0));
+            case Evening:
+                return currentTime.isAfter(LocalTime.of(20,0)) && currentTime.isBefore(LocalTime.of(23,59));
+            case Night:
+                return currentTime.isAfter(LocalTime.of(0,0)) && currentTime.isBefore(LocalTime.of(6,0));
+            default:
+                return false;
+        }
+    }
+    
     private Double calculatePriceAfterDiscount(int amount, Double pricePerItem)
     {
         Sale activeSale;
+        boolean isSaleTime;
         for(Sale currentSale : readySales) {
             if (currentSale != null) {
                 activeSale = currentSale;
@@ -457,9 +480,15 @@ public class NewOrderController implements Initializable {
                 LocalDate date = LocalDate.parse(dateString, formatter);
                 LocalDate today = LocalDate.now();
 
-                if (!date.isAfter(today)) {
-                    aliveSale = true;
-                    return findDiscount(amount, pricePerItem,activeSale);
+                if (NewOrderController.user instanceof Customer) {
+                    CustomerType customerType = ((Customer) NewOrderController.user).getType();
+                    if (customerType == CustomerType.Subscriber) {
+                        isSaleTime = getIfItsSaleTime(currentSale);
+                        if (!date.isAfter(today) && isSaleTime) {
+                            aliveSale = true;
+                            return findDiscount(amount, pricePerItem, activeSale);
+                        }
+                    }
                 }
             }
         }
@@ -593,8 +622,6 @@ public class NewOrderController implements Initializable {
 
             } else {
                 counter.setText(StyleConstants.INIT_AMOUNT_OF_PRODUCTS_TO_ONE);
-                //roundTo2Digit(calculatePriceAfterDiscount(prod.getAmount(),prod.getProduct().getPrice()))
-                // AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + product.getPrice() + StyleConstants.CURRENCY_SYMBOL);
                 AddToCartButton.setText(StyleConstants.ADD_TO_CART_LABEL + roundTo2Digit(calculatePriceAfterDiscount(1,product.getPrice())) + StyleConstants.CURRENCY_SYMBOL);
                 AddProductInOrderToOrder(product, amountSelected);
                 amountSelected = 1;
@@ -642,7 +669,6 @@ public class NewOrderController implements Initializable {
             TotalOrderPrice.setText(StyleConstants.TOTAL_PRICE_LABEL + String.format(StyleConstants.NUMBER_OF_DECIMAL_DIGITS_CODE, order.getPrice())+StyleConstants.CURRENCY_SYMBOL);
         }
 
-        //badihi
         private double roundTo2Digit(double num) {
             BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
             return bd.doubleValue();
@@ -737,7 +763,7 @@ public class NewOrderController implements Initializable {
      * This method initializes data before the screen comes up
      */
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle)
+    public void initialize(URL location, ResourceBundle resources)
     {
         NewOrderReplaced = false;
         if(UserInstallationController.configuration.equals("EK")){
@@ -750,6 +776,7 @@ public class NewOrderController implements Initializable {
         rotation.setCycleCount(Animation.INDEFINITE);
         rotation.play();
         user = LoginController.user;
+        aliveSale = false;
         saleLabel.setVisible(false);
         originalPrice.setVisible(false);
 
@@ -847,7 +874,9 @@ public class NewOrderController implements Initializable {
         }
     }
 
+
     private void ClearCartClicked() {
+    	
         for (ProductInMachineMonitor monitor : allProductsMonitors) {
             monitor.removeItem();
         }
@@ -877,7 +906,7 @@ public class NewOrderController implements Initializable {
         stage.setResizable(false);
         stage.setOnCloseRequest(e -> {
             try {
-                Util.forcedExit();
+                Utils.forcedExit();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -917,7 +946,7 @@ public class NewOrderController implements Initializable {
                 Image plus = new Image(StylePaths.PLUS_IMAGE);
                 ImageView plusImage = new ImageView(plus); //defultProductImage
                 String productId;
-                if(getMaxAmountOfProductInMachineFromDB(order,prod.getProductId())==0)
+                if(getMaxAmountOfProductInMachineFromDB(order,prod.getProductId())<=0)
                 {
                     continue;
                 }
@@ -972,7 +1001,7 @@ public class NewOrderController implements Initializable {
 
 
         }
-        if(ProductsList.getItems().size() == 0)
+        if(ProductsList.getItems().size() == 0) 
         {
              outOfStock.setVisible(true);}
 
@@ -984,7 +1013,7 @@ public class NewOrderController implements Initializable {
      * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerNewOrder implements Runnable {
-        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;//
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**
@@ -1002,13 +1031,11 @@ public class NewOrderController implements Initializable {
                     try {
                         Platform.runLater(()-> {
                             try {
-                                Util.genricLogOut(getClass());
+                                Utils.genericLogOut(getClass());
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
                             }
                         });
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                     return;
                 }
@@ -1041,8 +1068,8 @@ public class NewOrderController implements Initializable {
     /**
 	 * This method describes setting up a new scene.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     public void start(Stage primaryStage) throws Exception {
@@ -1062,7 +1089,7 @@ public class NewOrderController implements Initializable {
 		stage.setResizable(false);
 		stage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

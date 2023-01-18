@@ -30,6 +30,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -45,7 +47,7 @@ import models.Request;
 import models.Sale;
 import models.SaleStatus;
 import models.Worker;
-import utils.Util;
+import utils.Utils;
 
 /**
  * This class represents the side of Marketing Workers in our program.
@@ -247,8 +249,8 @@ public class MarketingWorkerWindowController implements Initializable {
 	/**
 	 * This method sets a scene to a given stage.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
@@ -265,7 +267,7 @@ public class MarketingWorkerWindowController implements Initializable {
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -307,9 +309,12 @@ public class MarketingWorkerWindowController implements Initializable {
 				for (Node node : previewSaleHbox.getChildren()) {
 					node.setEffect(null);
 				}
+
 				for (Node node : salePreviewSection.getChildren()) {
 					node.setEffect(null);
 				}
+				previewSaleHbox.setEffect(null);
+				salePreviewSection.setEffect(null);
 				salePreviewPlaceHolder.setVisible(false);
 
 				if (previewSale.getSaleRegion().equals(Regions.All)) {
@@ -334,6 +339,8 @@ public class MarketingWorkerWindowController implements Initializable {
 				for (Node node : salePreviewSection1.getChildren()) {
 					node.setEffect(null);
 				}
+				previewSaleHbox1.setEffect(null);
+				salePreviewSection1.setEffect(null);
 				salePreviewPlaceHolder1.setVisible(false);
 				if (previewSale.getSaleRegion().equals(Regions.All)) {
 					regionLabel1.setText(previewSale.getSaleRegion().toString() + " Regions.");
@@ -524,13 +531,13 @@ public class MarketingWorkerWindowController implements Initializable {
 
 					{
 						btn.setOnAction((ActionEvent event) -> {
-							// need to change status in db and in table
 							Sale toStartSale = getTableView().getItems().get(getIndex());
-//							toStartSale.setSaleStatus(SaleStatus.Running);
-//							getTableView().getItems().remove(getIndex());
-//							runningSales.add(toStartSale);
+
 							requestSaleStart(toStartSale);
 							handleReponsePutReadySales(getIndex(), toStartSale);
+							salePreviewSection1.setEffect(new BoxBlur(5, 5, 1) );
+							previewSaleHbox1.setEffect(new Glow(0.62));
+							salePreviewPlaceHolder1.setVisible(true);
 						});
 						btn.getStyleClass().add("readyToStartButton");
 					}
@@ -555,7 +562,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	}
 
 	/**
-	 * This method requests to change sale status (Ready->Running) from the server.
+	 * This method requests to change sale status (Ready to Running) from the server.
 	 * creates a request object with body={Sale id, Sale status - Running}
 	 * Request Method - Put, Request Path - /sales
 	 *
@@ -663,7 +670,7 @@ public class MarketingWorkerWindowController implements Initializable {
 	 */
 	@FXML
 	void logOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 
 	}
 

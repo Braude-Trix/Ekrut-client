@@ -44,7 +44,7 @@ import models.User;
 import models.Worker;
 import models.WorkerType;
 import utils.ColorsAndFonts;
-import utils.Util;
+import utils.Utils;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static utils.Util.forcedExit;
+import static utils.Utils.forcedExit;
 import static utils.WorkerNodesUtils.getErrorLabel;
 import static utils.WorkerNodesUtils.getSuccessLabel;
 
@@ -162,9 +162,8 @@ public class RegionalManagerGui implements Initializable {
         });
         logoutBtn.setOnMouseClicked((event) -> {
             try {
-                Util.genricLogOut(getClass());
+                Utils.genericLogOut(getClass());
             } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         });
     }
@@ -627,6 +626,9 @@ public class RegionalManagerGui implements Initializable {
             accountsTable.setItems(FXCollections.observableList(pendingAccountData));
         }
 
+        /**
+         * Class that handles Pending account data entity in table for Regional manager approve gui
+         */
         public class PendingAccountData {
             private final String name;
             private final String id;
@@ -700,9 +702,11 @@ public class RegionalManagerGui implements Initializable {
 
         private void requestPendingUsers(List<User> userList) {
             Request request = new Request();
+            List<Object> resBody = new ArrayList<>();
+            resBody.add(region);
             request.setPath("/users/allPendingUsers");
             request.setMethod(Method.GET);
-            request.setBody(null);
+            request.setBody(resBody);
             ClientUI.chat.accept(request); // sending the request to the server.
             if (Client.resFromServer.getCode() == ResponseCode.OK) {
                 List<Object> body = Client.resFromServer.getBody();
@@ -756,7 +760,6 @@ public class RegionalManagerGui implements Initializable {
             try {
                 forcedExit();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         });
     }

@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DeliveryFormController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="505.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.221" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DeliveryFormController">
    <children>
       <ImageView fitHeight="505.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -53,7 +53,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtFirstName" focusTraversable="false" promptText="Enter First Name Here" />
+                                    <TextField fx:id="txtFirstName" promptText="Enter First Name Here" />
                                     <Label fx:id="errorLabelFirstName" textFill="RED" />
                                  </children>
                               </VBox>
@@ -65,7 +65,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtLastName" focusTraversable="false" promptText="Enter Last Name Here" />
+                                    <TextField fx:id="txtLastName" promptText="Enter Last Name Here" />
                                     <Label fx:id="errorLabelLastName" textFill="RED" />
                                  </children>
                               </VBox>
@@ -77,7 +77,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtPhoneNumber" focusTraversable="false" promptText="Example: 05xxxxxxxx" />
+                                    <TextField fx:id="txtPhoneNumber" promptText="Example: 05xxxxxxxx" />
                                     <Label fx:id="errorLabelPhone" textFill="RED" />
                                  </children>
                               </VBox>
@@ -120,7 +120,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtFullAddress" focusTraversable="false" promptText="Enter Full Address Here. Example: Yakinton 7th." />
+                                    <TextField fx:id="txtFullAddress" promptText="Enter Full Address Here. Example: Yakinton 7th." />
                                     <Label fx:id="errorLabelFullAddress" textFill="RED" />
                                  </children>
                               </VBox>
@@ -154,7 +154,7 @@
                                           <Label text="*" textFill="#dc5555" />
                                        </children>
                                     </HBox>
-                                    <TextField fx:id="txtPinCode" focusTraversable="false" promptText="Enter Pincode Here" />
+                                    <TextField fx:id="txtPinCode" promptText="Enter Pincode Here" />
                                     <Label fx:id="errorLabelPinCode" textFill="RED" />
                                  </children>
                               </VBox>

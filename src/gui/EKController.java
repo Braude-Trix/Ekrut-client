@@ -28,7 +28,7 @@ import models.Order;
 import models.OrderStatus;
 import models.PickUpMethod;
 import models.Request;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -72,7 +72,7 @@ public class EKController implements Initializable {
      */
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
         EKPageReplace = false;
         Thread timeOutThread = new Thread(new TimeOutControllerEkMain());
         staticTimeOutThread = timeOutThread;
@@ -81,8 +81,8 @@ public class EKController implements Initializable {
     
 	/**
 	 * This method describes setting up a new scene.
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/EKMain.fxml"));
@@ -97,7 +97,7 @@ public class EKController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -108,14 +108,14 @@ public class EKController implements Initializable {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
     	EKPageReplace = true;
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 
     }
     
@@ -123,14 +123,14 @@ public class EKController implements Initializable {
      * This method describes clicking the submit button.
      *  Clicking this button, if the pickup code entered is correct, 
      *  will transfer the order to ek-op which it will have to bring to the customer.
-     * @param event, Description: Event - clicking the Submit button
+     * @param event Description: Event - clicking the Submit button
      */
     @FXML
     void SubmitPickupCode(ActionEvent event) {
     	removeErrorStyle();
-    	if (Util.isBlankString(txtPickupCode.getText())) {
+    	if (Utils.isBlankString(txtPickupCode.getText())) {
     		errorLabel.setText("Entered code is incorrect, please try again");
-    		Util.setFieldTextErrorBorder(txtPickupCode);
+    		Utils.setFieldTextErrorBorder(txtPickupCode);
     		return;
     	}
     	
@@ -153,7 +153,7 @@ public class EKController implements Initializable {
 			break;
 		default:
 			errorLabel.setText((Client.resFromServer.getDescription()));
-			Util.setFieldTextErrorBorder(txtPickupCode);
+			Utils.setFieldTextErrorBorder(txtPickupCode);
 			break;
 		}
     }
@@ -166,7 +166,7 @@ public class EKController implements Initializable {
     
     /**
      * This method describes a transition to the window of starting an order
-     * @param event, Description: Clicking the "create new order" button
+     * @param event Description: Clicking the "create new order" button
      */
     @FXML
     void createNewOrder(ActionEvent event) {
@@ -182,7 +182,7 @@ public class EKController implements Initializable {
     
     /**
      * This method describes the possibility of entering an additional pickup code if the customer has another code.
-     * @param event, Description: Event - clicking the hyper link "Would you like to enter another code? Click here"
+     * @param event Description: Event - clicking the hyper link "Would you like to enter another code? Click here"
      */
     @FXML
     void EnterAnotherPickupCode(ActionEvent event) {
@@ -192,7 +192,7 @@ public class EKController implements Initializable {
     
     /**
      * This method requires when you click anywhere else on the screen to get the focus.
-     * @param event, Description: The screen is clicked the event is sent
+     * @param event Description: The screen is clicked the event is sent
      */
     @FXML
     void requestFocus(MouseEvent event) {
@@ -209,7 +209,7 @@ public class EKController implements Initializable {
      * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerEkMain implements Runnable {
-        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;//
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;//
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**
@@ -227,13 +227,11 @@ public class EKController implements Initializable {
                     try {
                         Platform.runLater(()-> {
                             try {
-                                Util.genricLogOut(getClass());
+                                Utils.genericLogOut(getClass());
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
                             }
                         });
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                     return;
                 }

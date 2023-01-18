@@ -24,6 +24,7 @@ public class ClientController {
    *
    * @param host The host to connect to.
    * @param port The port to connect on.
+   * @throws IOException Throws IOException when OCSF's openConnection throws
    */
   public ClientController(String host, int port) throws IOException {
     try 
@@ -34,7 +35,6 @@ public class ClientController {
     {
       System.out.println("Error: Can't setup connection!"+ " Terminating client.");
       throw new IOException();
-//      System.exit(1);
     }
   }
 
@@ -44,6 +44,7 @@ public class ClientController {
   /**
    * This method waits for input from the console.  Once it is 
    * received, it sends it to the client's message handler.
+   * @param request The models.Request object to send to the server
    */
   public void accept(Object request) {
 	  client.handleMessageFromClientUI(request);

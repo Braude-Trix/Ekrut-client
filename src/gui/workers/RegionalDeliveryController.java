@@ -29,7 +29,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import logic.Messages;
 import models.*;
-import utils.Util;
+import utils.StyleConstants;
+import utils.StylePaths;
+import utils.Utils;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
@@ -41,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static utils.Util.forcedExit;
+import static utils.Utils.forcedExit;
 
 /**
  * class that represents Controller to RegionalDelivery
@@ -118,7 +120,7 @@ public class RegionalDeliveryController implements Initializable {
 
         Parent root = FXMLLoader.load(getClass().getResource("/assets/workers/fxmls/RegionalDeliveryHomePage_Default.fxml"));
         Scene scene = new Scene(root);
-        primaryStage.setTitle("Regional Manager");
+        primaryStage.setTitle("Regional Delivery");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
@@ -127,7 +129,6 @@ public class RegionalDeliveryController implements Initializable {
             try {
                 forcedExit();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         });
     }
@@ -322,7 +323,7 @@ public class RegionalDeliveryController implements Initializable {
     }
     /**
      * function that add items the confirm orders table according to the worker region
-     * @param region
+     * @param region region name
      */
     public void addItemsToConfirmTable(String region) {
         List<DeliveryOrder> deliveryToRemove = new ArrayList<>();
@@ -433,10 +434,12 @@ public class RegionalDeliveryController implements Initializable {
 
     /**
      * function that called when the fxml loaded, handle the username label text
-     * @param url
-     * @param resourceBundle
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         if (isCEOLogged) {
             logoutBtn.setVisible(false);
             worker = workerAccessByCeo;
@@ -626,9 +629,8 @@ public class RegionalDeliveryController implements Initializable {
     @FXML
     private void logOutClicked(ActionEvent event) {
         try {
-            Util.genricLogOut(getClass());
+            Utils.genericLogOut(getClass());
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 

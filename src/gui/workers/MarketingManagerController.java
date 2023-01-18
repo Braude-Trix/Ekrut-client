@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -39,6 +40,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -56,7 +59,8 @@ import models.SaleStatus;
 import models.TimeSale;
 import models.TypeSale;
 import models.Worker;
-import utils.Util;
+import utils.StyleConstants;
+import utils.Utils;
 
 /**
  * This class represents the side of Marketing Managers in our program.
@@ -212,7 +216,7 @@ public class MarketingManagerController implements Initializable {
 	 * This Method runs first, initializing the scene, sets form,table and buttons.
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle resourceBundle) {
+	public void initialize(URL location, ResourceBundle resources) {
 		if (isCEOLogged)
             logoutBtn.setVisible(false);
 		else
@@ -257,8 +261,8 @@ private void setTextFormatterForTextAreaDescription() {
 	/**
 	 * This method sets a scene to a given stage.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
@@ -274,7 +278,7 @@ private void setTextFormatterForTextAreaDescription() {
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -368,13 +372,14 @@ private void setTextFormatterForTextAreaDescription() {
 
 					{
 						btn.setOnAction((ActionEvent event) -> {
-							// need to change status in db and in table
 							Sale sale = getTableView().getItems().get(getIndex());
-							// sale.setSaleStatus(SaleStatus.Ready);
 							requestSaleInitiate(sale);
 							handleReponsePutSales(getIndex());
-							// initSaleTemplateTable();
-							// getTableView().getItems().remove(getIndex());
+							//hiding preview sale:
+							salePreviewSection.setEffect(new BoxBlur(5, 5, 1) );
+							salePreviewHbox.setEffect(new Glow(0.62));
+							salePreviewPlaceHolder.setVisible(true);
+
 						});
 						btn.getStyleClass().add("initiateButton");
 					}
@@ -402,12 +407,12 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: might throw exception.
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: might throw exception.
 	 */
 	@FXML
 	void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 
 	}
 
@@ -416,7 +421,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * form This method runs when the client clicked the button(Create Sale
 	 * Template) on the left menu
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void creatingSale(ActionEvent event) {
@@ -434,7 +439,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method runs when the client clicked the button(Use Sale Template) on the
 	 * left menu
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void initiateSaleBtnClick(ActionEvent event) {
@@ -453,7 +458,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * client submitted the form. This method navigates the client back to home
 	 * page.
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void clickCreateSale(ActionEvent event) {
@@ -531,7 +536,7 @@ private void setTextFormatterForTextAreaDescription() {
 	}
 
 	/**
-	 * This method requests to change sale status (Template->Ready) from the server.
+	 * This method requests to change sale status (Template to Ready) from the server.
 	 * creates a request object with body={Sale id, Sale status - Ready}
 	 * Request Method - Put, Request Path - /sales
 	 *
@@ -559,8 +564,8 @@ private void setTextFormatterForTextAreaDescription() {
 	private Sale createNewSale() {
 		String percentage;
 		// changing date format to be normal.
-		String startDate = StartDate.getValue().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
-		String endDate = EndDate.getValue().format(DateTimeFormatter.ofPattern(models.StyleConstants.DATE_FORMAT));
+		String startDate = StartDate.getValue().format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
+		String endDate = EndDate.getValue().format(DateTimeFormatter.ofPattern(StyleConstants.DATE_FORMAT));
 
 		percentage = fixNumberPrefix(txtPercentage.getText());
 		Sale newSale = new Sale("1", startDate, endDate, comboBoxHoursSale.getValue(), txtNameSale.getText(),
@@ -621,7 +626,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * method allows the client to choose an end date, starting from the start
 	 * datePicker.
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void SelectedDate(ActionEvent event) {
@@ -676,12 +681,12 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method shows and hides the percentage textField, according to the value
 	 * selected from Type comboBox
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void selectedType(ActionEvent event) {
 		TypeSale typeSelected = comboBoxType.getValue();
-		if (typeSelected == TypeSale.PercentageDiscount || typeSelected == TypeSale.GetSecondOneAtDiscount) {
+		if (typeSelected == TypeSale.PercentageDiscount) {
 			hboxPercentage.setVisible(true);
 			selectedTypeWithPercentage = true;
 		} else {
@@ -699,12 +704,21 @@ private void setTextFormatterForTextAreaDescription() {
 	 *         completed).
 	 */
 	private boolean isNotFilled() {
-		boolean nameSaleIsBlank = isBlankTextField(txtNameSale);
+		boolean nameSaleIsBlank = isBlankTextField(txtNameSale)||isNameLongerThan40Characters(txtNameSale);
 		boolean percentageBoxNotFilledCorrectly = percentageIsOnlyNaturalNumbersUnder99();
 		boolean comboBoxesIsNotFilled = isNotFilledComboBoxes();
 		boolean datesIsNotFilled = isNotFilledDates();
 		return nameSaleIsBlank || percentageBoxNotFilledCorrectly || comboBoxesIsNotFilled || datesIsNotFilled;
 
+	}
+
+	private boolean isNameLongerThan40Characters(TextField txtNameSale) {
+		if(txtNameSale.getText().length()>40) {
+			nameErrorLabel.setText("invalid length");
+			nameErrorLabel.setVisible(true);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -732,6 +746,8 @@ private void setTextFormatterForTextAreaDescription() {
 	private boolean isBlankTextField(TextField textField) {
 		if (textField.getText().matches("\\p{IsWhite_Space}*")) {
 			textField.getStyleClass().add("validation-error");
+			nameErrorLabel.setText("invalid name");
+
 			nameErrorLabel.setVisible(true);
 			return true;
 		}
@@ -834,7 +850,7 @@ private void setTextFormatterForTextAreaDescription() {
 	 * This method calls "openModal()" method whenever the user clicked a sale row
 	 * in the table. This method shows the user data about the sale.
 	 * 
-	 * @param event, Description: the current event when the click happened.
+	 * @param event Description: the current event when the click happened.
 	 */
 	@FXML
 	void templateSalesTableRowClicked(MouseEvent event) {
@@ -865,9 +881,14 @@ private void setTextFormatterForTextAreaDescription() {
 			for (Node node : salePreviewHbox.getChildren()) {
 				node.setEffect(null);
 			}
+			
 			for (Node node : salePreviewSection.getChildren()) {
 				node.setEffect(null);
 			}
+			salePreviewHbox.setEffect(null);
+			salePreviewSection.setEffect(null);
+			
+
 			salePreviewPlaceHolder.setVisible(false);
 			if (previewSale.getSaleRegion().equals(Regions.All)) {
 				regionLabel.setText(previewSale.getSaleRegion().toString() + " Regions.");
@@ -881,8 +902,7 @@ private void setTextFormatterForTextAreaDescription() {
 			saleStartDateLabel.setText(previewSale.getSaleStartDate());
 			saleTimeLabel.setText(previewSale.getSaleTime().toString());
 			saleTypeLabel.setText(previewSale.getSaleType().toString());
-			if (saleTypeLabel.getText() == TypeSale.PercentageDiscount.toString()
-					|| saleTypeLabel.getText() == TypeSale.GetSecondOneAtDiscount.toString()) {
+			if (Objects.equals(saleTypeLabel.getText(), TypeSale.PercentageDiscount.toString())) {
 				saleTypeLabel.setText(saleTypeLabel.getText() + ":  " + previewSale.getSalePercentage() + "%");
 			}
 			saleStatusLabel.setText(previewSale.getSaleStatus().toString());

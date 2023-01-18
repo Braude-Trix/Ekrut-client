@@ -18,7 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import utils.Util;
+import utils.Utils;
 import models.DeliveryOrder;
 import models.OrderStatus;
 import models.PickUpMethod;
@@ -89,13 +89,13 @@ public class DeliveryFormController implements Initializable {
         setRegionComboBox();
         user = LoginController.user;
         setValuesInTextFields();
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
 	}
     
 	/**
 	 * This method describes setting up a new scene.
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a problem with the window that opens
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/assets/fxmls/DeliveryForm.fxml"));
@@ -110,7 +110,7 @@ public class DeliveryFormController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -126,7 +126,7 @@ public class DeliveryFormController implements Initializable {
     /**
      * This method includes validation of the data entered by the customer 
      * if everything is correct beyond the order continuation window (item selection)
-     * @param event, Description: Clicking the "continue" button
+     * @param event Description: Clicking the "continue" button
      */
     @FXML
     void ContinueToOrder(ActionEvent event) {
@@ -154,7 +154,7 @@ public class DeliveryFormController implements Initializable {
 	
     /**
      * This method requires when you click anywhere else on the screen to get the focus.
-     * @param event, Description: The screen is clicked the event is sent
+     * @param event Description: The screen is clicked the event is sent
      */
     @FXML
     void requestFocus(MouseEvent event) {
@@ -166,19 +166,19 @@ public class DeliveryFormController implements Initializable {
 	 * This method navigates the client to the login page and logging him out. This
 	 * method runs when the user clicked LogOut.
 	 * 
-	 * @param event, Description: the current event when the click happened.
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: the current event when the click happened.
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
     @FXML
     void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
     }
     
 
     /**
      * This method describes clicking the back button, returning to the main screen of the OL configuration
-     * @param event, Description: Clicking the "Back" button
+     * @param event Description: Clicking the "Back" button
      */
     @FXML
     void Back(MouseEvent event){
@@ -199,14 +199,14 @@ public class DeliveryFormController implements Initializable {
     }
     
     private boolean isBlankTextField(TextField textField, Label errorLabel) {
-    	if (Util.isBlankString(textField.getText())) {
+    	if (Utils.isBlankString(textField.getText())) {
     		errorLabel.setText("Required field");
-    		Util.setFieldTextErrorBorder(textField);
+    		Utils.setFieldTextErrorBorder(textField);
     		return true;
     	}
 		if (textField.getText().length() >= 100) {
 			errorLabel.setText("Maximum length is 100");
-			Util.setFieldTextErrorBorder(textField);
+			Utils.setFieldTextErrorBorder(textField);
 			return true;
 		}
 

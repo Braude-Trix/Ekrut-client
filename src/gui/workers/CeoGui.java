@@ -16,14 +16,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Worker;
 import models.WorkerType;
-import utils.Util;
+import utils.Utils;
 import utils.WorkerNodesUtils;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static utils.Util.forcedExit;
+import static utils.Utils.forcedExit;
 
 /**
  * Gui controller for presenting CEO window
@@ -133,14 +133,13 @@ public class CeoGui implements Initializable {
         	MarketingWorkerWindowController.isCEOLogged = false;
         	ServiceOperatorController.isCEOLogged = false;
         	try {            	
-                Util.genricLogOut(getClass());
+                Utils.genericLogOut(getClass());
             } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         });
 		setBackBtnIfExists();
-
     }
+
     private void setBackBtnIfExists() {
 		if (LoginController.customerAndWorker != null) {
 			backBtn.setVisible(true);
@@ -198,7 +197,6 @@ public class CeoGui implements Initializable {
             try {
                 forcedExit();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         });
     }

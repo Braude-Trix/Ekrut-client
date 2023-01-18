@@ -45,7 +45,7 @@ import models.StatusInMachine;
 import models.TaskStatus;
 import models.Worker;
 import utils.ColorsAndFonts;
-import utils.Util;
+import utils.Utils;
 import utils.WorkerNodesUtils;
 
 import java.io.ByteArrayInputStream;
@@ -55,10 +55,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static utils.Util.forcedExit;
-import static utils.Util.isBlank;
+import static utils.Utils.forcedExit;
+import static utils.Utils.isBlank;
 
 /**
  * Gui controller for presenting Operational Worker window
@@ -114,6 +115,8 @@ public class OperationalWorkerGui implements Initializable {
         if (isCEOLogged) {
             logoutBtn.setVisible(false);
             worker = workerAccessByCeo;
+        } else {
+            setBackBtnIfExist();
         }
     	// setting username
         WorkerNodesUtils.setUserName(userNameLabel, worker);
@@ -133,13 +136,10 @@ public class OperationalWorkerGui implements Initializable {
         });
         logoutBtn.setOnMouseClicked((event) -> {
             try {
-                Util.genricLogOut(getClass());
+                Utils.genericLogOut(getClass());
             } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         });
-		setBackBtnIfExist();
-
     }
     private void setBackBtnIfExist() {
 		if (LoginController.customerAndWorker != null) {
@@ -362,6 +362,7 @@ public class OperationalWorkerGui implements Initializable {
         private List<ProductInMachine> productsAmount = new ArrayList<>();
         private List<InventoryFillTask> tasksData;
         private int chosenMachineThreshold;
+        private Label yellow_below_label;
 
 
         private void loadMachineInventory() {
@@ -441,12 +442,12 @@ public class OperationalWorkerGui implements Initializable {
             instructionsHBox.setAlignment(Pos.TOP_LEFT);
             instructionsHBox.setPadding(new Insets(0, 0, 0, 22));
             Label red = new Label("Unavailable");
-            Label yellow = new Label("Below threshold");
+            yellow_below_label = new Label("Below threshold");
             Circle redCircle = new Circle(8, 8, 8);
             redCircle.setFill(javafx.scene.paint.Color.rgb(255,153,102));
             Circle yellowCircle = new Circle(8, 8, 8);
             yellowCircle.setFill(javafx.scene.paint.Color.rgb(255,204,0));
-            instructionsHBox.getChildren().addAll(redCircle, red, yellowCircle, yellow);
+            instructionsHBox.getChildren().addAll(redCircle, red, yellowCircle, yellow_below_label);
 
             // Adding Labels, tasksTable, instructionsHBox to accountsTableVBox
             inventoryTableVBox.getChildren().addAll(selectionVbox, productsTable, instructionsHBox);
@@ -482,6 +483,7 @@ public class OperationalWorkerGui implements Initializable {
             } else {
                 resetErrorsInForm();
                 chosenMachineThreshold = getMachineThreshold();
+                updateBelowLabel();
                 setTableData();
                 productsTable.setVisible(true);
                 instructionsHBox.setVisible(true);
@@ -521,10 +523,10 @@ public class OperationalWorkerGui implements Initializable {
         private void loadAllRelevantRegions() {
             tasksData = new ArrayList<>();
             requestOpenedTasks(tasksData);
-            List<String> regions = tasksData.stream()
+            Set<String> regions = tasksData.stream()
                     .map(InventoryFillTask::getRegion)
                     .map(Enum::toString)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
             regionCombobox.getItems().clear();
             regionCombobox.getItems().addAll(regions);
@@ -538,7 +540,7 @@ public class OperationalWorkerGui implements Initializable {
             newAmountColumn.setCellValueFactory(new PropertyValueFactory<>("newAmount"));
 
             imageColumn.setPrefWidth(45);
-            productNameColumn.setPrefWidth(150);
+            productNameColumn.setPrefWidth(200);
             currentAmountColumn.setPrefWidth(150);
         }
 
@@ -696,9 +698,14 @@ public class OperationalWorkerGui implements Initializable {
                     msgLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
                 }
                 chosenMachineThreshold = getMachineThreshold();
+                updateBelowLabel();
                 setTableData();
             }
             bottomBroderVbox.getChildren().add(msgLabel);
+        }
+
+        private void updateBelowLabel() {
+            yellow_below_label.setText(String.format("Below threshold (= %s)", chosenMachineThreshold));
         }
 
         private List<ProductInMachine> getOnlyChangedProductsInMachine() {
@@ -790,6 +797,9 @@ public class OperationalWorkerGui implements Initializable {
             return sumOfProducts <= MACHINE_CAPACITY;
         }
 
+        /**
+         * Class that handles Product In Machine entity in table for fill inventory task
+         */
         public class ProductInMachineData {
             private final ImageView image;
             private final String id;
@@ -804,6 +814,7 @@ public class OperationalWorkerGui implements Initializable {
                 this.name = name;
                 this.currentAmount = currentAmount;
                 this.newAmount = new TextField(String.valueOf(currentAmount));
+                this.newAmount.setPrefWidth(70);
 
                 // setting constraints on TextField
                 forceFieldToNumeric();
@@ -901,7 +912,6 @@ public class OperationalWorkerGui implements Initializable {
             try {
                 forcedExit();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         });
     }

@@ -1,6 +1,11 @@
-package models;
+package utils;
 
-public class StylePaths {
+/**
+ * Util class that holds all images, FXMLs, styles paths
+ */
+public final class StylePaths {
+    private StylePaths() {
+    }
 
     // Images Paths
     public static String PLUS_IMAGE = "assets/plus.png";
@@ -22,5 +27,4 @@ public class StylePaths {
     public static String REGIONAL_DELIVERY_SEC_BG = "/assets/regionalDeliverySecBackground.jpg";
     public static String REFRESH_IMAGE_PATH = "/assets/refresh-page-option.png";
     public static String SAVE_IMAGE_PATH = "/assets/save.png";
-
 }

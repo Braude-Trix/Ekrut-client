@@ -3,7 +3,7 @@ package models;
 import java.io.Serializable;
 
 public enum TypeSale implements Serializable {
-	Sale2Plus1, Sale1Plus1, Sale2Plus2, PercentageDiscount, GetSecondOneAtDiscount;
+	Sale2Plus1, Sale1Plus1, Sale2Plus2, PercentageDiscount;
 	
 	@Override
 	public String toString() {
@@ -20,5 +20,4 @@ public enum TypeSale implements Serializable {
 			return null;
 		}
 	}
-
 }

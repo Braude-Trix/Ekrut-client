@@ -21,19 +21,21 @@ import models.Request;
  * @author gal
  * This class is intended for code reuse
  */
-public class Util {
+public final class Utils {
+	private Utils() {
+	}
 
 	/**
 
 	 The variable TIME_OUT_TIME_IN_MINUTES represents the time in minutes until a timeout occurs.
-	 The default value is set to 1 minute.
+	 The default value is set to 5 minute.
 	 */
-	public static int TIME_OUT_TIME_IN_MINUTES = 1;
+	public static int TIME_OUT_TIME_IN_MINUTES = 5;
 
 	/**
 	 * A method that checks whether spaces or tabs or an empty string has been inserted if so returns true otherwise false
 	 * @param string, Description: A string entered by the user
-	 * @return, Description: returns true if the string is spaces/tabs/empty otherwise false
+	 * @return Description: returns true if the string is spaces/tabs/empty otherwise false
 	 */
 	public static boolean isBlankString(String string) {
 		if (string.matches("\\p{IsWhite_Space}*")) {
@@ -54,7 +56,7 @@ public class Util {
 	 * Exit using the logout button and go to the login window
 	 * @param getClass, The class that caused the exit from the window
 	 */
-	public static void genricLogOut(Class getClass)   {
+	public static void genericLogOut(Class getClass)   {
 		requestLogOut(getClass);
 	}
 	
@@ -114,7 +116,7 @@ public class Util {
     /**
      * This method describes a situation in which the user closed the application through X,
      * the user being automatically disconnected as a result
-     * @throws IOException, An exception may occur when closing the stage
+     * @throws IOException An exception may occur when closing the stage
      */
     public static void forcedExit() throws IOException {
     	List<Object> userDetails = new ArrayList<>();
@@ -139,7 +141,7 @@ public class Util {
 	/**
 	 * A method that checks whether spaces or tabs or an empty string has been inserted if so returns true otherwise false
 	 * @param cs, Description: A string entered by the user
-	 * @return, boolean: returns true if the string is spaces/tabs/empty otherwise false
+	 * @return boolean: returns true if the string is spaces/tabs/empty otherwise false
 	 */
 	public static boolean isBlank(CharSequence cs) {
 		if (cs == null || cs.length() == 0) {

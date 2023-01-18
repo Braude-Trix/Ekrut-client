@@ -21,7 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import models.*;
-import utils.Util;
+import utils.Utils;
 
 /**
  * @author gal
@@ -59,14 +59,14 @@ public class PickupController implements Initializable {
 		machinesSet = new ArrayList<>();
 		scene = null;
 		regionForMach = null;
-        Util.setNameNavigationBar(labelName);
+        Utils.setNameNavigationBar(labelName);
 	}
 
 	/**
 	 * This method describes setting up a new scene.
 	 * 
-	 * @param primaryStage, Description: The stage on which the scene is presented
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param primaryStage Description: The stage on which the scene is presented
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
 	public void start(Stage primaryStage) throws Exception {
@@ -82,7 +82,7 @@ public class PickupController implements Initializable {
 		primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
 			try {
-				Util.forcedExit();
+				Utils.forcedExit();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -93,19 +93,19 @@ public class PickupController implements Initializable {
 	 * This method describes what happens after clicking the logout button. Clicking
 	 * this button will lead to the login screen.
 	 * 
-	 * @param event, Description: Event - clicking the Logout button
-	 * @throws Exception, Description: An exception will be thrown if there is a
+	 * @param event Description: Event - clicking the Logout button
+	 * @throws Exception Description: An exception will be thrown if there is a
 	 *                    problem with the window that opens
 	 */
 	@FXML
 	void LogOut(ActionEvent event) throws Exception {
-		Util.genricLogOut(getClass());
+		Utils.genericLogOut(getClass());
 	}
 
 	/**
 	 * This method returns the client to the previous window 
 	 * (Main screen of the client in OL configuration)
-	 * @param event, Description: Event - clicking the Back button
+	 * @param event Description: Event - clicking the Back button
 	 */
 	@FXML
 	void Back(MouseEvent event){
@@ -135,7 +135,7 @@ public class PickupController implements Initializable {
 	 * This method describes an event of a selection from a combo box of the regions
 	 * and the definition of the machines included in it within the combo box
 	 * 
-	 * @param event, Description: Region selection event from a combo box.
+	 * @param event Description: Region selection event from a combo box.
 	 */
 	@FXML
 	void selectItem(ActionEvent event) {
@@ -192,7 +192,7 @@ public class PickupController implements Initializable {
 	 * goes to the window that allows you to start choosing products to order. Only
 	 * if all the details on the page have been entered correctly.
 	 * 
-	 * @param event, Description: Event - clicking the Continue button
+	 * @param event Description: Event - clicking the Continue button
 	 */
 	@FXML
 	void ContinueToOrder(ActionEvent event) {

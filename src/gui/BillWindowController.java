@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,9 +30,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import logic.Messages;
 import models.*;
-import utils.Util;
+import utils.StyleConstants;
+import utils.StylePaths;
+import utils.Utils;
 
 /**
  * class that represents the bill window controller
@@ -76,17 +79,17 @@ public class BillWindowController implements Initializable {
         restoreOrder.setDate(LocalDate.now().format(formatter));
         if (restoreOrder.getPickUpMethod() == PickUpMethod.latePickUp)
             ((PickupOrder) restoreOrder).setPickupCode(UUID.randomUUID().toString().replace("-", "").substring(0, 8));
-
-
     }
 
     /**
      * function that called while BillWindow fxml loaded, open the Timeout thread, init the window table and set vars
      *
-     * @param url
-     * @param resourceBundle
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
 
         if (UserInstallationController.configuration.equals("EK")) {
             BillReplaced = false;
@@ -106,17 +109,6 @@ public class BillWindowController implements Initializable {
         ObservableList<ProductInOrder> productsInBill = FXCollections.observableArrayList();
         productsInBill.addAll(order.getProductsInOrder());
         billTable.setItems(productsInBill);
-    }
-
-    private boolean validateProductsInInventory() {
-        List<ProductInMachine> machineProducts = requestMachineProducts(machineId);
-        for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
-            for (ProductInMachine productInMachine : machineProducts) {
-                if (productInOrder.getProduct().getProductId().equals(productInMachine.getProductId()) && productInOrder.getAmount() > productInMachine.getAmount())
-                    return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -140,27 +132,18 @@ public class BillWindowController implements Initializable {
      */
     @FXML
     void proceedPaymentClicked(ActionEvent event) {
-        if (!validateProductsInInventory()) {
-            restoreOrder = null;
-            replaceWindowToNewOrder();
-            createAnAlert(Alert.AlertType.ERROR, StyleConstants.OUT_OF_STOCK_LABEL, StyleConstants.INVENTORY_UPDATE_ALERT_MSG);
-            return;
-        }
-        NewOrderController.aliveSale = false;
-        requestSaveOrder();
-        requestSaveProductsInOrder();
-        updateInventoryInDB();
-        requestSaveDeliveryOrder();
-        requestSaveLatePickUpOrder();
+    	boolean isOk = requestSaveOrder();
+		if (!isOk)
+			return;
+		NewOrderController.aliveSale = false;
         try {
             returnToMainPage();
         } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         changeToConfirmationOrderPopUpWindow();
     }
 
-    private void requestSaveOrder() {
+    private boolean requestSaveOrder() {
         List<Object> orderList = new ArrayList<>();
         Request request = new Request();
         request.setPath("/newOrder");
@@ -175,236 +158,30 @@ public class BillWindowController implements Initializable {
                 orderId = "1" + orderId;
         }
         NewOrderController.previousOrder.setOrderId(orderId);
+        NewOrderController.previousOrder.setMachineId(machineId.toString());
+        NewOrderController.previousOrder.setCustomerId(customerId);
+        NewOrderController.previousOrder.setPrice(roundTo2Digit(NewOrderController.previousOrder.getPrice()));
         orderList.add(NewOrderController.previousOrder);
         request.setBody(orderList);
         ClientUI.chat.accept(request);// sending the request to the server.
         switch (Client.resFromServer.getCode()) {
             case OK:
                 break;
+            case INVALID_DATA:
+            	NewOrderController.aliveSale = false;
+            	restoreOrder = null;
+            	
+            	LoginController.order.getProductsInOrder().clear();
+            	LoginController.order.setPrice(0.0);
+            	
+                replaceWindowToNewOrder();
+                createAnAlert(Alert.AlertType.ERROR, StyleConstants.OUT_OF_STOCK_LABEL, StyleConstants.INVENTORY_UPDATE_ALERT_MSG);
+                return false;
             default:
                 System.out.println(Client.resFromServer.getDescription());
         }
+        return true;
     }
-
-    private void requestSaveDeliveryOrder() {
-        if (NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.delivery) {
-            DeliveryOrder deliveryOrder = (DeliveryOrder) NewOrderController.previousOrder;
-            List<Object> paramList = new ArrayList<>();
-            Request request = new Request();
-            request.setPath("/saveDeliveryOrder");
-            request.setMethod(Method.POST);
-            paramList.add(deliveryOrder);
-            request.setBody(paramList);
-            ClientUI.chat.accept(request);// sending the request to the server.
-            switch (Client.resFromServer.getCode()) {
-                case OK:
-                    break;
-                default:
-                    System.out.println(Client.resFromServer.getDescription());
-            }
-        }
-    }
-
-    private void requestSaveLatePickUpOrder() {
-        if (NewOrderController.previousOrder.getPickUpMethod() == PickUpMethod.latePickUp) {
-            PickupOrder latePickUpOrder = (PickupOrder) NewOrderController.previousOrder;
-            List<Object> paramList = new ArrayList<>();
-            Request request = new Request();
-            request.setPath("/saveLatePickUpOrder");
-            request.setMethod(Method.POST);
-            paramList.add(latePickUpOrder);
-            request.setBody(paramList);
-            ClientUI.chat.accept(request);// sending the request to the server.
-            switch (Client.resFromServer.getCode()) {
-                case OK:
-                    break;
-                default:
-                    System.out.println(Client.resFromServer.getDescription());
-            }
-        }
-    }
-
-    private void requestSaveProductsInOrder() {
-        List<Object> orderList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/saveProductsInOrder");
-        request.setMethod(Method.POST);
-        orderList.add(restoreOrder.getOrderId());
-        orderList.add(NewOrderController.previousOrder.getProductsInOrder());
-        request.setBody(orderList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-    }
-
-    private int getMachineThreshold() {
-        int threshold = -1;
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/getMachineThreshold");
-        request.setMethod(Method.GET);
-        paramList.add(machineId);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                threshold = (Integer) Client.resFromServer.getBody().get(0);
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return threshold;
-    }
-
-
-    private void updateInventoryInDB() {
-        List<ProductInMachine> updatedInventory = getUpdatedInventory();
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/updateInventory");
-        request.setMethod(Method.PUT);
-        paramList.add(updatedInventory);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-    }
-
-    private List<ProductInMachine> getUpdatedInventory() {
-        boolean postMsg;
-        int currentlyAmount, newAmount;
-        String machineName;
-        List<ProductInMachine> updatedMachineList = new ArrayList<>();
-        List<ProductInMachine> productsInMachineList = requestMachineProducts(machineId);
-        StatusInMachine newStatusInMachine;
-        Integer getMachineThreshold = getMachineThreshold();
-        ProductInMachine productInMachine;
-        for (ProductInOrder productInOrder : restoreOrder.getProductsInOrder()) {
-            postMsg = false;
-            currentlyAmount = getProductMachineAmountFromList(productsInMachineList, machineId, Integer.valueOf(productInOrder.getProduct().getProductId()));
-            newAmount = currentlyAmount - productInOrder.getAmount();
-            if (currentlyAmount > getMachineThreshold && newAmount < getMachineThreshold && machineId != 1)
-                postMsg = true;
-            if (newAmount == 0) newStatusInMachine = StatusInMachine.Not_Available;
-            else if (newAmount < getMachineThreshold) {
-                newStatusInMachine = StatusInMachine.Below;
-            } else {
-                newStatusInMachine = StatusInMachine.Above;
-            }
-            machineName = getMachineNameById();
-            updateManagerAboutProductsStatus(postMsg, "Inventory status:\nMachine id: " + machineId.toString() + "\nMachine name: " + machineName + "\nProduct id: " + Integer.valueOf(productInOrder.getProduct().getProductId()) +
-                    "\nProduct name: " + productInOrder.getProduct().getName() + "\nStatus in machine: " + newStatusInMachine.toString() + "\nProduct amount: " + newAmount);
-            productInMachine = new ProductInMachine(machineId.toString(), productInOrder.getProduct().getProductId(), newStatusInMachine, newAmount);
-            updatedMachineList.add(productInMachine);
-        }
-        return updatedMachineList;
-    }
-
-    private String getMachineNameById() {
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/getMachineName");
-        request.setMethod(Method.GET);
-        paramList.add(machineId.toString());
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return Client.resFromServer.getBody().get(0).toString();
-
-    }
-
-    private void updateManagerAboutProductsStatus(boolean postMsg, String message) {
-        if (postMsg) {
-            List<Integer> managersIds = getRegionalManagerIds();
-            for (Integer managerId : managersIds) {
-                Messages.writeNewMsgToDB(message, customerId, managerId);
-            }
-        }
-    }
-
-    private Regions getRegionByMachineId() {
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/requestRegionByMachineId");
-        request.setMethod(Method.GET);
-        paramList.add(machineId);
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                return Regions.valueOf(Client.resFromServer.getBody().get(0).toString());
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return null;
-    }
-
-    private List<Integer> getRegionalManagerIds() {
-        List<Integer> managersIds = new ArrayList<>();
-        List<Object> paramList = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/requestRegionalManagersIds");
-        request.setMethod(Method.GET);
-        paramList.add(getRegionByMachineId());
-        request.setBody(paramList);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                List<Object> result = Client.resFromServer.getBody();
-                for (Object obj : result) {
-                    managersIds.add((Integer) obj);
-                }
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return managersIds;
-    }
-
-
-    private Integer getProductMachineAmountFromList(List<ProductInMachine> productsInMachineList, Integer machineId, Integer productId) {
-        for (ProductInMachine productInMachine : productsInMachineList) {
-            if ((machineId.toString()).equals(productInMachine.getMachineId()) && Objects.equals(productId, Integer.valueOf(productInMachine.getProductId())))
-                return productInMachine.getAmount();
-        }
-        return -1;
-    }
-
-    private List<ProductInMachine> requestMachineProducts(Integer machineId) {
-        List<ProductInMachine> productInMachineList = new ArrayList<>();
-        List<Object> listObject = new ArrayList<>();
-        Request request = new Request();
-        request.setPath("/requestMachineProducts");
-        request.setMethod(Method.GET);
-        listObject.add(machineId);
-        request.setBody(listObject);
-        ClientUI.chat.accept(request);// sending the request to the server.
-        switch (Client.resFromServer.getCode()) {
-            case OK:
-                List<Object> result = Client.resFromServer.getBody();
-                for (Object obj : result) {
-                    productInMachineList.add((ProductInMachine) obj);
-                }
-                break;
-            default:
-                System.out.println(Client.resFromServer.getDescription());
-        }
-        return productInMachineList;
-    }
-
 
     private void changeToConfirmationOrderPopUpWindow() {
         BillReplaced = true;
@@ -428,8 +205,7 @@ public class BillWindowController implements Initializable {
         popupDialog.centerOnScreen();
         popupDialog.setMinHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
         popupDialog.setMinWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-       // popupDialog.setWidth(ConfirmationOrderPopUpWindowController.POP_UP_WIDTH);
-       // popupDialog.setHeight(ConfirmationOrderPopUpWindowController.POP_UP_HEIGHT);
+        
         popupDialog.show();
 
         if (UserInstallationController.configuration.equals("EK")) {
@@ -469,6 +245,11 @@ public class BillWindowController implements Initializable {
         primaryStage.show();
     }
 
+    private double roundTo2Digit(double num) {
+        BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     /**
      * function that handle while back button is clicked. it will open the new order window
      *
@@ -505,7 +286,7 @@ public class BillWindowController implements Initializable {
     @FXML
     void logOutClicked(ActionEvent event) throws Exception {
         BillReplaced = true;
-        Util.genricLogOut(getClass());
+        Utils.genericLogOut(getClass());
     }
 
     /**
@@ -513,7 +294,7 @@ public class BillWindowController implements Initializable {
      * The time out event occurs when the elapsed time since the time out start time exceeds a specified time out time.
      */
     static class TimeOutControllerBillWindow implements Runnable {
-        private int TimeOutTime = Util.TIME_OUT_TIME_IN_MINUTES;
+        private int TimeOutTime = Utils.TIME_OUT_TIME_IN_MINUTES;
         private long TimeOutStartTime = System.currentTimeMillis();
 
         /**
@@ -532,13 +313,11 @@ public class BillWindowController implements Initializable {
                     try {
                         Platform.runLater(()-> {
                             try {
-                                Util.genricLogOut(getClass());
+                                Utils.genericLogOut(getClass());
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
                             }
                         });
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
                     return;
                 }
@@ -565,6 +344,4 @@ public class BillWindowController implements Initializable {
             });
         }
     }
-
-
 }
