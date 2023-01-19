@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import client.Client;
 import client.ClientUI;
+import client.ClientWrapper;
 import client.IClient;
 import gui.workers.*;
 import javafx.application.Platform;
@@ -31,7 +32,6 @@ import models.Customer;
 import models.Method;
 import models.Order;
 import models.Request;
-import models.Response;
 import models.ResponseCode;
 import models.User;
 import models.Worker;
@@ -595,22 +595,8 @@ public class LoginController implements Initializable{
 			comboBoxSubscribers.getItems().addAll(options);
 		}
 	}
-	
-	public class ClientWrapper implements IClient{
 
-		@Override
-		public void setRequestForServer(Request request) {
-	        ClientUI.chat.accept(request);			
-		}
-
-		@Override
-		public Response getResFromServer() {
-			return Client.resFromServer;
-		}
-		
-	}
-	
-	public class InitWindow implements IInitWindow{
+    public class InitWindow implements IInitWindow{
 
 		@Override
 		public void runWindow(String nameController) throws Exception {
