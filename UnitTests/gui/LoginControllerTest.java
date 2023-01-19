@@ -187,6 +187,9 @@ class LoginControllerTest {
 		loginCon.customerAndWorker = null;	
 	}
 
+	// Functionality: Failing to login using invalid username.
+	// input data:String username(""), String password("1234"), String expected, String result, login-detail conditions.
+	// expected result:correct user achieved. response changed correctly: (response code = OK, response Description = successfully got user msg).
 	@Test
 	void validationUsernameFail() throws Exception {
 		conditionUsername = true;
