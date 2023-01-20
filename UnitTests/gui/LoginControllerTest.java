@@ -192,10 +192,10 @@ class LoginControllerTest {
 		
 		loginCon.customerAndWorker = null;	
 	}
-
-	// Functionality: Failing to login using invalid username.
-	// input data:String username(""), String password("1234"), String expected, String result, login-detail conditions.
-	// expected result:correct user achieved. response changed correctly: (response code = OK, response Description = successfully got user msg).
+	
+	// Functionality: Validation error when using invalid username.
+	// input data:String username(""), String password("1234"), String expected, String result, login-detail conditions, LoginController loginCon.
+	// expected result:failed to login - bad username. (error label turned to the bad username label.)
 	@Test
 	void validationUsernameFail() throws Exception {
 		conditionUsername = true;
@@ -209,7 +209,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+ 
+	// Functionality: Validation error when using invalid password.
+	// input data:String username("user1"), String password(""), String expected, String result, login-detail conditions, LoginController loginCon.
+	// expected result:failed to login - bad password. (error label turned to the bad password label.)
 	@Test
 	void validationPasswordFail() throws Exception {
 		conditionUsername = false;
@@ -223,7 +226,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Validation error when using invalid username and password.
+	// input data:String username(""), String password(""), String expected, String result, login-detail conditions, LoginController loginCon.
+	// expected result:failed to login - bad username&password. (error label turned to the bad username and password label.)
 	@Test
 	void validationPasswordAndUsernameFail() throws Exception {
 		conditionUsername = true;
@@ -237,13 +243,20 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Successfully validating when using validated username & password.
+	// input data:login-detail conditions, LoginController loginCon.
+	// expected result:successfully not showing error label (error label is empty)
 	@Test
 	void validationPasswordAndUsernameSuccess() throws Exception {	
 		setError.invoke(loginCon, false, false);
 		assertEquals(errorL, null);
 	}
 	
+	
+	// Functionality: Failing to get user from DB because of a DB_ERROR.
+	// input data:Response responseTest(DB ERROR),String username("user1"), String password("1234"),login-detail conditions, LoginController loginCon.
+	// expected result:Failed to get user, (error label is set accordingly and window is LoginController )
 	@SuppressWarnings("static-access")
 	@Test
 	void requestUserFailDB() throws Exception {
@@ -261,7 +274,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Failing to get a nonexisting user from DB - INVALID_DATA error.
+	// input data:Response responseTest(INVALID_DATA),String username("user1"), String password("1234"),login-detail conditions, LoginController loginCon.
+	// expected result:Failed to get user, (error label is set accordingly and window is LoginController )
 	@SuppressWarnings("static-access")
 	@Test
 	void requestUserNotExist() throws Exception {
@@ -279,7 +295,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Failing to get a user from DB - Null Response error.
+	// input data:String username("user1"), String password("1234"),login-detail conditions, LoginController loginCon.
+	// expected result:Failed to get user, (error label is set accordingly and window is LoginController )
 	@SuppressWarnings("static-access")
 	@Test
 	void requestUserResponseNull() throws Exception {
@@ -295,6 +314,9 @@ class LoginControllerTest {
 		assertEquals(isRunThread, false);
 	}
 	
+	// Functionality: Successfully getting a user from DB (Response OK)
+	// input data:User user, Response responseTest(Code OK), LoginController loginCon.
+	// expected result:user achieved correctly, (error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestUser_responseOK() throws Exception {
@@ -304,43 +326,39 @@ class LoginControllerTest {
 		assertEquals(loginCon.user, user);
 		assertEquals(null, errorL);
 	}
-	
+
+	// Functionality: Response body is null when trying to request user.
+	// input data:Response responseTest(Code OK, Body null),  LoginController loginCon.
+	// expected result:Error - bad response body, (error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestUser_BodyResponseNull() throws Exception {
 		responseTest = setResponse(ResponseCode.OK, "Successfully got user details", null);
-		rUser.invoke(loginCon);
+		rUser.invoke(loginCon);//private method - requestUser
 		assertEquals(loginCon.user, null);
 		assertEquals("Data error", errorL);
 	}
 		
+
+	// Functionality: Response body contains a non-user object, after requesting a user.
+	// input data:Response responseTest(Code OK, Body String(-not an instance of User)),  LoginController loginCon.
+	// expected result:Error - bad response body,expected User and got String, (error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestUser_ResponseAnotherObjectFail() throws Exception {
 		listForResponse.add("error");
 		responseTest = setResponse(ResponseCode.OK, "Successfully got user details", listForResponse);
-		rUser.invoke(loginCon);
+		rUser.invoke(loginCon);//private method - requestUser
 		assertEquals(loginCon.user, null);
 		assertEquals("Data error", errorL);
 	}
-//	@SuppressWarnings("static-access")
-//	@Test
-//	void requestUserLoggedIn() throws Exception {
-//		responseTest = setResponse(ResponseCode.INVALID_DATA, "The user is already logged in", null);
-//		conditionUsername = false;
-//		conditionPassword = false;
-//		txtUsername = "user1";
-//		txtPassword = "1234";
-//		loginCon.login(new ActionEvent());
-//		Request result = requestTest;
-//		Request expected = getRequest("/login/getUser",Method.GET, new ArrayList<>(Arrays.asList(txtUsername,txtPassword)));
-//		assertTrue(isEqualsRequest(expected, result));
-//		assertEquals(responseTest.getDescription(), errorL);
-//		assertEquals(loginCon.user, null);
-//	}
+
 		
 	///////////////////////////////////EK FLOW////////////////////////////////
 	
+	// Functionality: Successfully requesting a Registered customer with EK Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Customer),  LoginController loginCon.
+	// expected result:Success, correct customer returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestCustomerEkConfiguration_registeredUser() throws Exception {
@@ -358,6 +376,9 @@ class LoginControllerTest {
 		assertEquals(isRunThread, true);
 	}
 	
+	// Functionality: Failing when requesting a unregistered customer with EK Configuration.
+	// input data:Response responseTest(Code INVALID_DATA, Body null),  LoginController loginCon.
+	// expected result:Failure - user isn't a customer, ,(new unregistered user window opened).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestCustomerEkConfiguration_UnregisteredUser() throws Exception {
@@ -368,10 +389,13 @@ class LoginControllerTest {
 		Request expected = getRequest("/login/getUserForEkConfiguration",Method.GET, new ArrayList<>(Arrays.asList(user)));
 		assertTrue(isEqualsRequest(expected, result));
 		assertEquals(loginCon.user, user);
-		assertEquals(null, errorL);
+		assertEquals(null, errorL);//no error label, new window opens.
 		assertEquals(nameWindow, "UnregisteredUserController");
 	}
 	
+	// Functionality: Failing when requesting a customer with EK Configuration - DB ERROR.
+	// input data:Response responseTest(Code DB_ERROR, Body null),  LoginController loginCon.
+	// expected result:Failure - DB ERROR, ,(error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestCustomerEkConfiguration_responseError() throws Exception {
@@ -385,7 +409,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Failing when requesting a customer with EK Configuration - Null Response.
+	// input data:Response responseTest(null),  LoginController loginCon.
+	// expected result:Failure - bad response, ,(error label is set accordingly).
 	@Test
 	void requestCustomerEkConfiguration_responseNull() throws Exception {
 		responseTest = null;
@@ -393,7 +420,10 @@ class LoginControllerTest {
 		assertEquals("Communication error", errorL);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
+
+	// Functionality: Failing when requesting a customer with EK Configuration - Null Response Body.
+	// input data:Response responseTest(Code OK, Body null),  LoginController loginCon.
+	// expected result:Failure - bad response body ,(error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestCustomerEkConfiguration_BodyResponseNull() throws Exception {
@@ -403,7 +433,10 @@ class LoginControllerTest {
 		assertEquals("Data error", errorL);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
+
+	// Functionality: Failing when requesting a customer with EK Configuration - Response Body - Worker.
+	// input data:Response responseTest(Code OK, Body Worker), LoginController loginCon.
+	// expected result:Failure - bad response body,Body not contains customer ,(error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestCustomerEkConfiguration_BodyResponseWorkerFail() throws Exception {
@@ -414,10 +447,13 @@ class LoginControllerTest {
 		assertEquals("Data error", errorL);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
+
+	// Functionality: Failing when requesting a customer with EK Configuration - Server Error.
+	// input data:Response responseTest(Code OK, Body Worker), LoginController loginCon.
+	// expected result:Failure - Server error,response contains Code-SERVER_ERROR ,(error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
-	void requestCustomerEkConfiguration_ServerFailBeforeRunThread() throws Exception {
+	void requestCustomerEkConfiguration_ServerFail() throws Exception {
 		config.set(loginCon, "EK");
 		responseTest = setResponse(ResponseCode.SERVER_ERROR, "Operation doesn't exist", null);
 		txtUsername = "user1";
@@ -431,6 +467,10 @@ class LoginControllerTest {
 	
 	///////////////////////////////////OL FLOW////////////////////////////////
 	
+	
+	// Functionality: Successfully requesting a Registered customer with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Customer),  LoginController loginCon.
+	// expected result:Success, correct customer returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_CustomerOLConfiguration_registeredUser() throws Exception {
@@ -448,6 +488,9 @@ class LoginControllerTest {
 		assertEquals(isRunThread, true);
 	}
 	
+	// Functionality: Successfully requesting a Registered Marketing Worker with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Worker),  LoginController loginCon.
+	// expected result:Success, correct Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_MarketingWorker_OLConfiguration_registeredUser() throws Exception {
@@ -465,7 +508,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "MarketingWorkerWindowController");
 		assertEquals(isRunThread, true);
 	}
-	
+
+	// Functionality: Successfully requesting a Registered Marketing Manager with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Worker),  LoginController loginCon.
+	// expected result:Success, correct Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_MarketingManager_OLConfiguration_registeredUser() throws Exception {
@@ -483,7 +529,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "MarketingManagerController");
 		assertEquals(isRunThread, true);
 	}
-	
+
+	// Functionality: Successfully requesting a Registered CEO with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Worker),  LoginController loginCon.
+	// expected result:Success, correct Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_CEO_OLConfiguration_registeredUser() throws Exception {
@@ -501,7 +550,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "CeoGui");
 		assertEquals(isRunThread, true);
 	}
-	
+
+	// Functionality: Successfully requesting a Registered Operational Worker with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Worker),  LoginController loginCon.
+	// expected result:Success, correct Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_OperationalWorker_OLConfiguration_registeredUser() throws Exception {
@@ -519,7 +571,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "OperationalWorkerGui");
 		assertEquals(isRunThread, true);
 	}
-	
+
+	// Functionality: Successfully requesting a Registered Regional Delivery Worker with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Worker),  LoginController loginCon.
+	// expected result:Success, correct Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_RegionalDelivery_OLConfiguration_registeredUser() throws Exception {
@@ -537,7 +592,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "RegionalDeliveryController");
 		assertEquals(isRunThread, true);
 	}
-	
+
+	// Functionality: Successfully requesting a Registered Regional Manager with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Worker),  LoginController loginCon.
+	// expected result:Success, correct Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_RegionalManager_OLConfiguration_registeredUser() throws Exception {
@@ -555,7 +613,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "RegionalManagerGui");
 		assertEquals(isRunThread, true);
 	}
-	
+
+	// Functionality: Successfully requesting a Registered Service Operator with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Worker),  LoginController loginCon.
+	// expected result:Success, correct Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_ServiceOperator_OLConfiguration_registeredUser() throws Exception {
@@ -574,6 +635,9 @@ class LoginControllerTest {
 		assertEquals(isRunThread, true);
 	}
 	
+	// Functionality: Successfully requesting a Registered Customer&Worker with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Customer&Worker),  LoginController loginCon.
+	// expected result:Success, correct Customer&Worker returned in res body,(error label is empty).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_WorkerAndCustomer_OLConfiguration_registeredUser() throws Exception {
@@ -593,6 +657,9 @@ class LoginControllerTest {
 		assertEquals(isRunThread, true);
 	}
 	
+	// Functionality: Failing to request a Customer&Worker with OL Configuration when inserting Worker and then Customer(bad order).
+	// input data:Response responseTest(Code OK, Body wanted Worker&Customer),  LoginController loginCon.
+	// expected result:Failure - Wrong Order, Response body contains Worker&Customer and not Customer&Worker,(error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestOL_ResponseWorkerAndCustomer_reverseOrderFail() throws Exception {
@@ -605,7 +672,10 @@ class LoginControllerTest {
 		assertEquals(loginCon.customerAndWorker, null);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
+
+	// Functionality: Failing to request a Customer&Customer with OL Configuration.
+	// input data:Response responseTest(Code OK, Body wanted Customer&Customer),  LoginController loginCon.
+	// expected result:Failure - Bad response body, Response body contains Two Customers,(error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestOL_Response_CustomerAndCustomerFail() throws Exception {
@@ -620,7 +690,9 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 	}
 	
-	
+	// Functionality: Failing to request an unregistered user with OL Configuration.
+	// input data:Response responseTest(Code INVALID_DATA, Body null),  LoginController loginCon.
+	// expected result:Failure - user isn't a customer,(error label is set accordingly).	
 	@SuppressWarnings("static-access")
 	@Test
 	void request_OLConfiguration_UnregisteredUser() throws Exception {
@@ -631,7 +703,10 @@ class LoginControllerTest {
 		assertEquals(loginCon.user, user);
 		assertEquals(nameWindow, "UnregisteredUserController");
 	}
-	
+
+	// Functionality: Failing to request Worker without a type, with OL Configuration.
+	// input data:Response responseTest(Code OK, Body Worker with no type),  LoginController loginCon.
+	// expected result:Failure - Worker has no type,(error label is set accordingly).	
 	@SuppressWarnings("static-access")
 	@Test
 	void request_OLConfiguration_unknownWorkerTypeNull() throws Exception {
@@ -644,18 +719,11 @@ class LoginControllerTest {
 		assertEquals(loginCon.user, null);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
-	@SuppressWarnings("static-access")
-	@Test
-	void request_OLConfiguration_NullBodyResponse() throws Exception {
-		responseTest = setResponse(ResponseCode.OK, "The employee has successfully logged in", null);
-		loginCon.user = user;
-		rOLUser.invoke(loginCon);
-		assertEquals("Data error", errorL);
-		assertEquals(loginCon.user, null);
-		assertEquals(nameWindow, "LoginController");
-	}
-	
+
+
+	// Functionality: getting Null response body when requesting OL user with OL Configuration.
+	// input data:Response responseTest(Code OK, Body null),  LoginController loginCon.
+	// expected result:Failure - bad response body,(error label is set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void request_OLConfiguration_ErrorBodyData() throws Exception {		
@@ -672,8 +740,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
-	
+
+	// Functionality: Failing to request request OL user with OL Configuration - DB ERROR.
+	// input data:Response responseTest(Code DB_ERROR, Body null),  LoginController loginCon.
+	// expected result:Failure - DB Error,(error label is set accordingly).	
 	@SuppressWarnings("static-access")
 	@Test
 	void request_OLConfiguration_DBFailed() throws Exception {
@@ -684,7 +754,10 @@ class LoginControllerTest {
 		assertEquals(loginCon.user, user);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
+
+	// Functionality: Failing to request request OL user with OL Configuration - Null Response.
+	// input data:Response responseTest(null),  LoginController loginCon.
+	// expected result:Failure - bad response,(error label is set accordingly).	
 	@Test
 	void request_OLConfiguration_nullResponse() throws Exception {
 		responseTest = null;
@@ -692,7 +765,10 @@ class LoginControllerTest {
 		assertEquals("Communication error", errorL);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
+
+	// Functionality: Successfully Requesting User with OL Configuration.
+	// input data:Request expected,  LoginController loginCon.
+	// expected result:Successfully Requested.	
 	@SuppressWarnings("static-access")
 	@Test
 	void requestOLUser_Success() throws Exception {
@@ -704,6 +780,12 @@ class LoginControllerTest {
 	}
 	
 	///////////////////////////////////Login Simulation//////////////////////////////
+	
+	
+
+	// Functionality: Trying to simulate Touch without selecting a subscriber.
+	// input data: LoginController loginCon.
+	// expected result:Failure - can't simulate Touch without selecting a subscriber. (Error label set accordingly).
 	@Test
 	void EKConfiguration_TouchSimulation_NotSelectedSubscriber() throws Exception {	
 		loginCon.btnTouch(new ActionEvent());
@@ -711,7 +793,10 @@ class LoginControllerTest {
 		assertEquals("Please select subscriber id", errorTouch);
 		assertEquals(nameWindow, "LoginController");
 	}
-	
+
+	// Functionality: Successfully Selected Subscriber when simulating Touch.
+	// input data: int subscriberId, LoginController loginCon.
+	// expected result:Successfully validated subscriber when simulating Touch.
 	@Test
 	void EKConfiguration_TouchSimulation_SelectedSubscriber() throws Exception {
 		subscriberId = user.getId();
@@ -719,6 +804,9 @@ class LoginControllerTest {
 		assertTrue(isValid);
 	}
 	
+	// Functionality: Successfully simulating Touch.
+	// input data: int subscriberId, LoginController loginCon, List listForResponse.
+	// expected result:Successfully simulated Touch.
 	@SuppressWarnings("static-access")
 	@Test
 	void requestById_Subscriber_EKConfiguration_SuccessSimulation() throws Exception {
@@ -732,7 +820,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "EKController");
 		assertEquals(isRunThread, true);
 	}
-	
+
+	// Functionality: Failure when simulating Touch - DB ERROR.
+	// input data: int subscriberId, LoginController loginCon, List listForResponse, Response responseTest(Code DB_ERROR, body subscriber).
+	// expected result:Failure, DB Error when simulated Touch (Error label set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestById_Subscriber_EKConfiguration_FailSimulation() throws Exception {
@@ -746,7 +837,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Successfully requesting a customer by id
+	// input data: int subscriberId, LoginController loginCon, Request expected.
+	// expected result:Successfully requested a customer by id.
 	@Test
 	void requestById_Success() throws Exception {
 		subscriberId = user.getId();
@@ -755,7 +849,10 @@ class LoginControllerTest {
 		Request expected = getRequest("/login/getCustomerById",Method.GET, new ArrayList<>(Arrays.asList(subscriberId)));
 		assertTrue(isEqualsRequest(expected, result));
 	}
-	
+
+	// Functionality: Failure when requesting a customer by id - Response body is null.
+	// input data: int subscriberId, LoginController loginCon, List listForResponse, Response responseTest(Code OK, body null).
+	// expected result:Failure - bad response body, body should be User but got null (Error label set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestById_BodyResponseNull() throws Exception {
@@ -767,7 +864,10 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Failure when requesting a customer by id - Response is null.
+	// input data: int subscriberId, LoginController loginCon, List listForResponse, Response responseTest(null).
+	// expected result:Failure - bad response, response shouldn't be null (Error label set accordingly).
 	@SuppressWarnings("static-access")
 	@Test
 	void requestById_NullResponse() throws Exception {
@@ -778,22 +878,31 @@ class LoginControllerTest {
 		assertEquals(nameWindow, "LoginController");
 		assertEquals(isRunThread, false);
 	}
-	
+
+	// Functionality: Successfully requesting all subscribers.
+	// input data: Request expected;
+	// expected result:Successfully requested all subscribers.
 	@Test
-	void requestSetCombobox_Success() throws Exception {
+	void requestAllSubscribers_Success() throws Exception {
 		setCombobox.invoke(loginCon);
 		Request result = requestTest;
 		Request expected = getRequest("/login/getAllSubscriberForFastLogin",Method.GET, null);
 		assertTrue(isEqualsRequest(expected, result));
 	}
 	
+	// Functionality: Getting a null response when requesting all subscribers using setComboBoxFastLogin method.
+	// input data: Response null
+	// expected result:Failure - response can't be null - communication error (Error label set accordingly)
 	@Test
 	void requestSetCombobox_NullResponse() throws Exception {
 		setCombobox.invoke(loginCon);
 		assertEquals(null, errorL);
 		assertEquals("Communication error", errorTouch);
 	}
-	
+
+	// Functionality: Getting a null body response when requesting all subscribers using setComboBoxFastLogin method.
+	// input data: Response (Code OK, body null)
+	// expected result:Failure - response body can't be null - (Error label set accordingly)
 	@Test
 	void requestSetCombobox_BodyResponseNull() throws Exception {
 		responseTest = setResponse(ResponseCode.OK, "Successfully sent all subscribers id", null);
@@ -802,7 +911,10 @@ class LoginControllerTest {
 		assertEquals(null, errorTouch);
 		assertEquals(null, subscribersList);		
 	}
-	
+
+	// Functionality: Failure when requesting all subscribers using setComboBoxFastLogin method - DB ERROR.
+	// input data: Response (Code DB_ERROR, body null)
+	// expected result:Failure - DB ERROR - (Error label set accordingly)
 	@Test
 	void requestSetCombobox_ErrorDBResponse() throws Exception {
 		responseTest = setResponse(ResponseCode.DB_ERROR, "Error loading data (DB)", null);
@@ -811,6 +923,9 @@ class LoginControllerTest {
 		assertEquals(responseTest.getDescription(), errorTouch);
 	}
 	
+	// Functionality: Successfully getting all subscribers using setComboBoxFastLogin method.
+	// input data: Response (Code OK, body subscriber id)
+	// expected result:Successfully requested and received list of subscribers.
 	@Test
 	void requestSetCombobox_OKResponse() throws Exception {
 		listForResponse.add(customer.getId());
