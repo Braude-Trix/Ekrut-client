@@ -1,8 +1,7 @@
 package gui.workers;
 
-import client.Client;
-import client.ClientUI;
-import gui.ConnectToServerController;
+import client.IClient;
+import client.ClientWrapper;
 import gui.StageSingleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -53,14 +51,33 @@ import static gui.workers.RegionalManagerGui.VALIDATION_ERROR_MSG;
 public class SelectReportGui {
     public static Stage popupDialog;
     private static ReportType reportType;
-    private ComboBox<String> machineComboBox;
-    private ComboBox<String> yearComboBox;
-    private ComboBox<String> monthComboBox;
+    private IComboBox machineComboBox;
+    private IComboBox yearComboBox;
+    private IComboBox monthComboBox;
     private List<ComboBox<String>> comboBoxList;
     private Button viewButton;
     private Label errLabel;
     private List<Machine> machinesSet;
     private Object reportFromServer;
+    private IClient clientInterface;
+    private IReportPopupOpen popupOpen;
+
+    public SelectReportGui() {
+        clientInterface = new ClientWrapper();
+        popupOpen = new ReportPopupOpen();
+        machineComboBox = new comboBoxWrapper();
+        yearComboBox = new comboBoxWrapper();
+        monthComboBox = new comboBoxWrapper();
+    }
+
+    public SelectReportGui(IClient iclient, IReportPopupOpen iReportPopupOpen,
+                           IComboBox machineCB, IComboBox yearCB, IComboBox monthCB) {
+        clientInterface = iclient;
+        popupOpen = iReportPopupOpen;
+        machineComboBox = machineCB;
+        yearComboBox = yearCB;
+        monthComboBox = monthCB;
+    }
 
     void loadInventoryReport() {
         reportType = ReportType.INVENTORY;
@@ -83,16 +100,15 @@ public class SelectReportGui {
 
         // Create a combo box
         machinesSet = new ArrayList<>();
-        //List<String> dummyForMachine = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
-        machineComboBox = new ComboBox();//FXCollections.observableList(dummyForMachine));
         setMachinesNameComboBox(RegionalManagerGui.region);
-        machineComboBox.setPromptText("Choose Machine");
-        machineSelectVBox.getChildren().addAll(machineSelectLabel, machineComboBox);
+        machineComboBox.getComboBox().setPromptText("Choose Machine");
+        machineSelectVBox.getChildren().addAll(machineSelectLabel, machineComboBox.getComboBox());
 
         VBox dateSelectVBox = getDateSelectVBox();
 
         contentVBox.getChildren().addAll(machineSelectVBox, dateSelectVBox);
-        comboBoxList = Arrays.asList(machineComboBox, yearComboBox, monthComboBox);
+        comboBoxList = Arrays.asList(
+                machineComboBox.getComboBox(), yearComboBox.getComboBox(), monthComboBox.getComboBox());
 
         // View report button
         VBox buttonVBox = getViewReportVBox();
@@ -107,20 +123,18 @@ public class SelectReportGui {
 		request.setPath("/machines/getMachine");
 		request.setMethod(Method.GET);
 		request.setBody(regionReq);
-		ClientUI.chat.accept(request);// sending the request to the server.
+        clientInterface.setRequestForServer(request);// sending the request to the server.
 
 		handleResponseGetMachines();
 	}
 
 	private void handleResponseGetMachines() {
-		//Client.resFromServer.setCode(ResponseCode.SERVER_ERROR);
-		switch (Client.resFromServer.getCode()) {
+		switch (clientInterface.getResFromServer().getCode()) {
 		case OK:
-			updateMachines((Client.resFromServer.getBody()));
+			updateMachines((clientInterface.getResFromServer().getBody()));
 			break;
 		default:
-			errLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
-			//RegionalManagerGui.controller.bottomBroderVbox.getChildren().add(errLabel);
+			errLabel = WorkerNodesUtils.getErrorLabel(clientInterface.getResFromServer().getDescription());
 			break;
 		}
 	}
@@ -128,9 +142,8 @@ public class SelectReportGui {
 	private void updateMachines(List<Object> listMachine) {
 		machinesSet.clear();
 		if (listMachine == null) {
-			machineComboBox.setDisable(true);
+			machineComboBox.getComboBox().setDisable(true);
 			errLabel = WorkerNodesUtils.getErrorLabel("There are no machines in this region at the moment");
-			//RegionalManagerGui.controller.bottomBroderVbox.getChildren().add(errLabel);
 			return;
 		}
 		ObservableList<String> options = FXCollections.observableArrayList();
@@ -141,8 +154,8 @@ public class SelectReportGui {
 				options.add(tempMachine.getName());
 			}
 		}
-		machineComboBox.getItems().addAll(options);
-		machineComboBox.setDisable(false);
+		machineComboBox.getComboBox().getItems().addAll(options);
+		machineComboBox.getComboBox().setDisable(false);
 	}
 
     void loadOrdersReport() {
@@ -159,7 +172,7 @@ public class SelectReportGui {
         VBox dateSelectVBox = getDateSelectVBox();
 
         contentVBox.getChildren().add(dateSelectVBox);
-        comboBoxList = Arrays.asList(yearComboBox, monthComboBox);
+        comboBoxList = Arrays.asList(yearComboBox.getComboBox(), monthComboBox.getComboBox());
 
         // View report button
         VBox buttonVBox = getViewReportVBox();
@@ -181,7 +194,7 @@ public class SelectReportGui {
         VBox dateSelectVBox = getDateSelectVBox();
 
         contentVBox.getChildren().add(dateSelectVBox);
-        comboBoxList = Arrays.asList(yearComboBox, monthComboBox);
+        comboBoxList = Arrays.asList(yearComboBox.getComboBox(), monthComboBox.getComboBox());
 
         // View report button
         VBox buttonVBox = getViewReportVBox();
@@ -201,16 +214,16 @@ public class SelectReportGui {
         dateHBox.setAlignment(Pos.CENTER);
         dateHBox.setSpacing(25);
         List<String> dummyForMonth = WorkerNodesUtils.getListInRange(1, 12);
-        monthComboBox = new ComboBox(FXCollections.observableList(dummyForMonth));
-        monthComboBox.setPromptText("Month");
+        monthComboBox.getComboBox().getItems().setAll(FXCollections.observableList(dummyForMonth));
+        monthComboBox.getComboBox().setPromptText("Month");
         List<String> dummyForYear = WorkerNodesUtils.getListInRange(2018, Year.now().getValue());
-        yearComboBox = new ComboBox(FXCollections.observableList(dummyForYear));
-        yearComboBox.setPromptText("Year");
-        yearComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+        yearComboBox.getComboBox().getItems().setAll(FXCollections.observableList(dummyForYear));
+        monthComboBox.getComboBox().setPromptText("Year");
+        monthComboBox.getComboBox().getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             setMaxMonthWhenCurrentYear(Integer.parseInt(newValue));
         });
 
-        dateHBox.getChildren().addAll(monthComboBox, yearComboBox);
+        dateHBox.getChildren().addAll(monthComboBox.getComboBox(), yearComboBox.getComboBox());
 
         dateSelectVBox.getChildren().addAll(dateSelectLabel, dateHBox);
         return dateSelectVBox;
@@ -233,7 +246,7 @@ public class SelectReportGui {
             } else { // all form data is validated
                 boolean isLoaded = loadReportPopup();
                 if (!isLoaded) {
-                    errLabel = WorkerNodesUtils.getErrorLabel(Client.resFromServer.getDescription());
+                    errLabel = WorkerNodesUtils.getErrorLabel(clientInterface.getResFromServer().getDescription());
                     bottomBroderVbox.getChildren().add(errLabel);
                 }
             }
@@ -242,12 +255,12 @@ public class SelectReportGui {
     }
 
     private boolean loadReportPopup() {
-        int year = Integer.parseInt(yearComboBox.getSelectionModel().getSelectedItem());
-        int month = Integer.parseInt(monthComboBox.getSelectionModel().getSelectedItem());
+        int year = Integer.parseInt(yearComboBox.getSelected());
+        int month = Integer.parseInt(monthComboBox.getSelected());
         Regions region = RegionalManagerGui.region;
         Integer machineId = null; // if not inventory report
         if (reportType == ReportType.INVENTORY) {
-            String machineName = machineComboBox.getSelectionModel().getSelectedItem();
+            String machineName = machineComboBox.getSelected();
             machineId = Integer.valueOf(machinesSet.stream()
                     .filter(machine -> Objects.equals(machine.getName(), machineName))
                     .map(Machine::getId)
@@ -256,68 +269,87 @@ public class SelectReportGui {
         SavedReportRequest savedReport = new SavedReportRequest(year, month, reportType, region, machineId);
         requestReportFromServer(savedReport);
 
-        if (Client.resFromServer.getCode() != ResponseCode.OK) {
+        if (clientInterface.getResFromServer().getCode() != ResponseCode.OK) {
             return false;
         }
-        reportFromServer = Client.resFromServer.getBody().get(0);
+        reportFromServer = clientInterface.getResFromServer().getBody().get(0);
+        setInitValuesInReportsPopup();
 
         switch (reportType) {
             case INVENTORY:
-                openReportPopup("/assets/workers/fxmls/InventoryReportPage.fxml");
+                popupOpen.openReportPopup("/assets/workers/fxmls/InventoryReportPage.fxml");
                 break;
             case ORDERS:
-                openReportPopup("/assets/workers/fxmls/OrdersReportPage.fxml");
+                popupOpen.openReportPopup("/assets/workers/fxmls/OrdersReportPage.fxml");
                 break;
             case USERS:
-                openReportPopup("/assets/workers/fxmls/UsersReportPage.fxml");
+                popupOpen.openReportPopup("/assets/workers/fxmls/UsersReportPage.fxml");
                 break;
         }
         return true;
     }
 
-    private void openReportPopup(String fxmlPath) {
-        Stage primaryStage = StageSingleton.getInstance().getStage();
-        popupDialog = new Stage();
-        popupDialog.initModality(Modality.APPLICATION_MODAL);
-        popupDialog.initStyle(StageStyle.UNDECORATED);
-        popupDialog.initOwner(primaryStage);
-
-        AnchorPane anchorPane;
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlPath));
-            setInitValuesInReportsPopup();
-            anchorPane = loader.load();
-            setControllerInReportsPopup(loader);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
+    class comboBoxWrapper implements IComboBox {
+        private ComboBox<String> comboBox;
+        public comboBoxWrapper() {
+            comboBox = new ComboBox<>();
+        }
+        @Override
+        public ComboBox<String> getComboBox() {
+            return comboBox;
         }
 
-        Scene dialogScene = new Scene(anchorPane);
-        dialogScene.getStylesheets().add("styles/charts.css");
-        popupDialog.setScene(dialogScene);
-        popupDialog.setResizable(false);
-        popupDialog.show();
-        WorkerNodesUtils.setStageMovable(popupDialog);
+        @Override
+        public String getSelected() {
+            return comboBox.getSelectionModel().getSelectedItem();
+        }
+    }
+
+    class ReportPopupOpen implements IReportPopupOpen {
+        @Override
+        public void openReportPopup(String fxmlPath) {
+            Stage primaryStage = StageSingleton.getInstance().getStage();
+            popupDialog = new Stage();
+            popupDialog.initModality(Modality.APPLICATION_MODAL);
+            popupDialog.initStyle(StageStyle.UNDECORATED);
+            popupDialog.initOwner(primaryStage);
+
+            AnchorPane anchorPane;
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource(fxmlPath));
+                anchorPane = loader.load();
+                setControllerInReportsPopup(loader);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            Scene dialogScene = new Scene(anchorPane);
+            dialogScene.getStylesheets().add("styles/charts.css");
+            popupDialog.setScene(dialogScene);
+            popupDialog.setResizable(false);
+            popupDialog.show();
+            WorkerNodesUtils.setStageMovable(popupDialog);
+        }
     }
 
     private void setInitValuesInReportsPopup() {
         switch (reportType) {
             case INVENTORY:
-                InventoryReportPopupGui.machineName = machineComboBox.getValue();
-                InventoryReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
-                InventoryReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
+                InventoryReportPopupGui.machineName = machineComboBox.getSelected();
+                InventoryReportPopupGui.year = Integer.parseInt(yearComboBox.getSelected());
+                InventoryReportPopupGui.month = Integer.parseInt(monthComboBox.getSelected());
                 InventoryReportPopupGui.inventoryReportData = (InventoryReport) reportFromServer;
                 break;
             case ORDERS:
-                OrdersReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
-                OrdersReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
+                OrdersReportPopupGui.year = Integer.parseInt(yearComboBox.getSelected());
+                OrdersReportPopupGui.month = Integer.parseInt(monthComboBox.getSelected());
                 OrdersReportPopupGui.ordersReportData = (OrdersReport) reportFromServer;
                 break;
             case USERS:
-                UsersReportPopupGui.year = Integer.parseInt(yearComboBox.getValue());
-                UsersReportPopupGui.month = Integer.parseInt(monthComboBox.getValue());
+                UsersReportPopupGui.year = Integer.parseInt(yearComboBox.getSelected());
+                UsersReportPopupGui.month = Integer.parseInt(monthComboBox.getSelected());
                 UsersReportPopupGui.usersReportData = (UsersReport) reportFromServer;
                 break;
         }
@@ -368,18 +400,18 @@ public class SelectReportGui {
     }
 
     private void setMaxMonthWhenCurrentYear(int selectedYear) {
-        String oldSelectedMonth = monthComboBox.getValue();
-        monthComboBox.getItems().clear();
+        String oldSelectedMonth = monthComboBox.getComboBox().getValue();
+        monthComboBox.getComboBox().getItems().clear();
         if (selectedYear == Year.now().getValue()) { // if current year
             int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-            monthComboBox.getItems().addAll(WorkerNodesUtils.getListInRange(1, currentMonth));
+            monthComboBox.getComboBox().getItems().addAll(WorkerNodesUtils.getListInRange(1, currentMonth));
         } else {
-            monthComboBox.getItems().addAll(WorkerNodesUtils.getListInRange(1, 12));
+            monthComboBox.getComboBox().getItems().addAll(WorkerNodesUtils.getListInRange(1, 12));
         }
 
         // restoring user last selection
-        if (monthComboBox.getItems().contains(oldSelectedMonth)) {
-            monthComboBox.getSelectionModel().select(oldSelectedMonth);
+        if (monthComboBox.getComboBox().getItems().contains(oldSelectedMonth)) {
+            monthComboBox.getComboBox().getSelectionModel().select(oldSelectedMonth);
         }
     }
 
@@ -399,6 +431,6 @@ public class SelectReportGui {
         request.setPath("/reports");
         request.setMethod(Method.GET);
         request.setBody(paramList);
-        ClientUI.chat.accept(request);
+        clientInterface.setRequestForServer(request);
     }
 }
