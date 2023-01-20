@@ -218,8 +218,8 @@ public class SelectReportGui {
         monthComboBox.getComboBox().setPromptText("Month");
         List<String> dummyForYear = WorkerNodesUtils.getListInRange(2018, Year.now().getValue());
         yearComboBox.getComboBox().getItems().setAll(FXCollections.observableList(dummyForYear));
-        monthComboBox.getComboBox().setPromptText("Year");
-        monthComboBox.getComboBox().getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+        yearComboBox.getComboBox().setPromptText("Year");
+        yearComboBox.getComboBox().getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             setMaxMonthWhenCurrentYear(Integer.parseInt(newValue));
         });
 

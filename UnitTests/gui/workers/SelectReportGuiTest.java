@@ -55,8 +55,8 @@ class SelectReportGuiTest {
 				new Machine("123", "EM Building braude", Regions.North.name(), "5"),
 				new Machine("999", "Not Exists", Regions.North.name(), "5"));
 	}
-	
-    private Request getRequestRequest(SavedReportRequest reportRequest) {
+
+    private Request getReportRequest(SavedReportRequest reportRequest) {
         List<Object> paramList = new ArrayList<>();
         paramList.add(reportRequest);
 
@@ -66,7 +66,7 @@ class SelectReportGuiTest {
         request.setBody(paramList);
     	return request;
     }
-	
+
 	private Response getOkResponse() {
 		Response okResponse = new Response();
 		okResponse.setBody(Arrays.asList(REPORT));
@@ -79,7 +79,7 @@ class SelectReportGuiTest {
 		Response errorResponse = new Response();
 		errorResponse.setBody(null);
 		errorResponse.setDescription("Server had error in fetching report");
-		errorResponse.setCode(ResponseCode.SERVER_ERROR);
+		errorResponse.setCode(ResponseCode.INVALID_DATA);
 		return errorResponse;
 	}
 
@@ -88,13 +88,13 @@ class SelectReportGuiTest {
 		 reportType = SelectReportGui.class.getDeclaredField("reportType");
 		 machinesSet = SelectReportGui.class.getDeclaredField("machinesSet");
 		 loadReportPopup = SelectReportGui.class.getDeclaredMethod("loadReportPopup");
-		 
+
 		 reportType.setAccessible(true);
 		 machinesSet.setAccessible(true);
 		 loadReportPopup.setAccessible(true);
 		 RegionalManagerGui.region = REGION;
 	 }
-	 
+
 	 @BeforeEach
 	 public void setUp() {
 		 clientMock = mock(IClient.class);
@@ -114,10 +114,10 @@ class SelectReportGuiTest {
 		when(monthMock.getSelected()).thenReturn("12");
 		when(clientMock.getResFromServer()).thenReturn(getOkResponse());
         SavedReportRequest expectedRequestBody = new SavedReportRequest(2022, 12, REPORT_TYPE, REGION, 123);
-    	Request expectedRequest = getRequestRequest(expectedRequestBody);
+    	Request expectedRequest = getReportRequest(expectedRequestBody);
 
 		Boolean actualIsLoaded = (Boolean) loadReportPopup.invoke(selectReportGui);
-		
+
 		verify(clientMock).setRequestForServer(expectedRequest);
 		verify(popUpMock).openReportPopup(INVENTORY_FXML);
         assertEquals(InventoryReportPopupGui.machineName, "EM Building braude");
@@ -136,7 +136,7 @@ class SelectReportGuiTest {
 		when(monthMock.getSelected()).thenReturn("12");
 		when(clientMock.getResFromServer()).thenReturn(getErrorResponse());
         SavedReportRequest expectedRequestBody = new SavedReportRequest(2022, 12, REPORT_TYPE, REGION, 123);
-    	Request expectedRequest = getRequestRequest(expectedRequestBody);
+    	Request expectedRequest = getReportRequest(expectedRequestBody);
 
 		Boolean actualIsLoaded = (Boolean) loadReportPopup.invoke(selectReportGui);
 
@@ -157,5 +157,5 @@ class SelectReportGuiTest {
 		} catch (Exception e) {
 			assertTrue(true);
 		}
-	}	
+	}
 }
