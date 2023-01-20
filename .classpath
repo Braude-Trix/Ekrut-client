@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="UnitTests"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry exported="true" kind="lib" path="C:/Development/Ekrut-client/lib/mockito-all-2.0.2-beta.jar"/>
+	<classpathentry kind="lib" path="C:/Users/sharo/OneDrive/Desktop/ekrutFinalDay/Ekrut-client/lib/mockito-all-2.0.2-beta.jar"/>
 	<classpathentry kind="output" path="OCSF/bin"/>
 </classpath>
