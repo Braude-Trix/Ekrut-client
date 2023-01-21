@@ -104,7 +104,11 @@ class SelectReportGuiTest {
 		 monthMock = mock(IComboBox.class);
          selectReportGui = new SelectReportGui(clientMock, popUpMock, machineMock, yearMock, monthMock);
 	 }
-
+	 
+	// Functionality: Validation and loading report when using valid machine, year & month.
+	// input data: String machine("EM Building braude"), String year("2022"),
+	//		String month("12"), Request expectedRequest, and returning a valid Response.
+	// expected result: successeded loading report with input data.
 	@Test
 	void successfullyLoadingReport() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		reportType.set(selectReportGui, REPORT_TYPE);
@@ -127,6 +131,10 @@ class SelectReportGuiTest {
 		assertTrue(actualIsLoaded);
 	}
 
+	// Functionality: failed in validation and loading report.
+	// input data: String machine("EM Building braude"), String year("2022"),
+	//		String month("12"), Request expectedRequest, and returning a Response with ResponseCode.INVALID_DATA.
+	// expected result: failed loading report with input data beacuse of ResponseCode.
 	@Test
 	void failedLoadingReportOnServerError() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		reportType.set(selectReportGui, REPORT_TYPE);
@@ -145,6 +153,9 @@ class SelectReportGuiTest {
 		assertFalse(actualIsLoaded);
 	}
 
+	// Functionality: failed in validation and loading report without any data.
+	// input data: String machine(null), String year(null), String month(null).
+	// expected result: trying and failing converting year/month to integer and catching Exception 
 	@Test
 	void failedLoadingReportOnInvalidInput() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		when(machineMock.getSelected()).thenReturn(null);
