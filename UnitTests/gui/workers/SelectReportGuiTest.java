@@ -105,10 +105,12 @@ class SelectReportGuiTest {
          selectReportGui = new SelectReportGui(clientMock, popUpMock, machineMock, yearMock, monthMock);
 	 }
 
-	// Functionality: Validation and loading report when using valid machine, year & month.
-	// input data: String machine("EM Building braude"), String year("2022"),
-	//		String month("12"), Request expectedRequest, and returning a valid Response.
-	// expected result: succeeded loading report with input data.
+	// Functionality: Test the loadReportPopup method when it is successful.
+	// Input data: machine = "EM Building braude", year = "2022",
+	// month = "12", reportType = REPORT_TYPE, machinesSet = predefine machines.
+	// Expected result: The client will send the request to the server
+	// with the expected request body and the reportPopup will open
+	// with the expected machine name, year, month, and report data.
 	@Test
 	void successfullyLoadingReport() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		reportType.set(selectReportGui, REPORT_TYPE);
@@ -131,10 +133,11 @@ class SelectReportGuiTest {
 		assertTrue(actualIsLoaded);
 	}
 
-	// Functionality: failed in validation and loading report.
-	// input data: String machine("EM Building braude"), String year("2022"),
-	//		String month("12"), Request expectedRequest, and returning a Response with ResponseCode.INVALID_DATA.
-	// expected result: failed loading report with input data because of ResponseCode.
+	// Functionality: Test the checkGetReportRequest method when the server returns an error.
+	// Input data: Report type = REPORT_TYPE, machine = "EM Building braude",
+	// year = "2022", month = "12", response = predefine response with error.
+	// Expected result: The request sent to the server should match the expected request,
+	// the report popup is not opened, the method returns false.
 	@Test
 	void failedLoadingReportOnServerError() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		reportType.set(selectReportGui, REPORT_TYPE);
@@ -153,9 +156,9 @@ class SelectReportGuiTest {
 		assertFalse(actualIsLoaded);
 	}
 
-	// Functionality: failed in validation and loading report without any data.
-	// input data: String machine(null), String year(null), String month(null).
-	// expected result: trying and failing converting year/month to integer and catching Exception
+	// Functionality: Test the loadReportPopup method when it fails because invalid input.
+	// Input data: selected machine = null,selected year = null,selected month = null.
+	// Expected result: An exception is thrown and the method does not open the report popup.
 	@Test
 	void failedLoadingReportOnInvalidInput() throws IllegalArgumentException {
 		when(machineMock.getSelected()).thenReturn(null);
